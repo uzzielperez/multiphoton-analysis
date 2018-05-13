@@ -1,20 +1,15 @@
-// -*- C++ -*-
-//
-// Package:    multiphoton-analysis/MultiPhotonAnalyzer
-// Class:      MultiPhotonAnalyzer
-// 
-/**\class MultiPhotonAnalyzer MultiPhotonAnalyzer.cc multiphoton-analysis/MultiPhotonAnalyzer/plugins/MultiPhotonAnalyzer.cc
+/*
 
  Description: [one line class summary]
 
  Implementation:
-     [Notes on implementation]
+   Source Code: Instantiate Structs->Branch Definition->InitializeMemberInfo->UpdateInfo->FillInfo->FillTree 
+   Configuration File: 
+   Usage: 
 */
 //
 // Original Author:  Cilicia Uzziel Perez
 //         Created:  Sun, 13 May 2018 09:08:40 GMT
-//
-//
 
 using namespace std;
 
@@ -45,15 +40,39 @@ using namespace std;
 
 // Common Classes
 #include "multiphoton-analysis/CommonClasses/interface/EventInfo.h"
-//#include "diphoton-analysis/CommonClasses/interface/BeamSpotInfo.h"
-//#include "diphoton-analysis/CommonClasses/interface/VertexInfo.h"
-//#include "diphoton-analysis/CommonClasses/interface/TriggerInfo.h"
-//#include "diphoton-analysis/CommonClasses/interface/JetInfo.h"
-//#include "diphoton-analysis/CommonClasses/interface/PhotonID.h"
-//#include "diphoton-analysis/CommonClasses/interface/PhotonInfo.h"
-//#include "diphoton-analysis/CommonClasses/interface/GenParticleInfo.h"
-//#include "diphoton-analysis/CommonClasses/interface/DiPhotonInfo.h"
-//#include "diphoton-analysis/CommonClasses/interface/PileupInfo.h"
+//#include "multiphoton-analysis/CommonClasses/interface/BeamSpotInfo.h"
+//#include "multiphoton-analysis/CommonClasses/interface/VertexInfo.h"
+//#include "multiphoton-analysis/CommonClasses/interface/TriggerInfo.h"
+//#include "multiphoton-analysis/CommonClasses/interface/JetInfo.h"
+//#include "multiphoton-analysis/CommonClasses/interface/PhotonID.h"
+//#include "multiphoton-analysis/CommonClasses/interface/PhotonInfo.h"
+//#include "multiphoton-analysis/CommonClasses/interface/GenParticleInfo.h"
+//#include "multiphoton-analysis/CommonClasses/interface/DiPhotonInfo.h"
+//#include "multiphoton-analysis/CommonClasses/interface/PileupInfo.h"
+//
+//// for EGM IDs
+//#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+//
+//// for photons
+//#include "DataFormats/PatCandidates/interface/Photon.h"
+//
+//// for jets
+//#include "DataFormats/PatCandidates/interface/Jet.h"
+//
+//// for genParticles
+//#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+//
+//// for genEventInfo
+//#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
+//
+//// for deltaR
+//#include "DataFormats/Math/interface/deltaR.h"
+//
+//// for trigger and filter decisions
+//#include "DataFormats/Common/interface/TriggerResults.h"
+//#include "FWCore/Common/interface/TriggerNames.h"
+//
+//
 
 //
 // class declaration
@@ -83,8 +102,8 @@ class MultiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResource
       
       // -----Tokens & InputTags
       //edm::EDGetTokenT<vector<reco::GenParticle> > genParticlesToken_;
-      edm::InputTag genParticles_;
-      edm::InputTag particles_;
+      //edm::InputTag genParticles_;
+      //edm::InputTag particles_;
 
       // ----Trees  
       TTree *fgenTree;
@@ -92,7 +111,9 @@ class MultiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResource
       // ----Structs (Instantiate here)  
       // event 
       ExoDiPhotons::eventInfo_t fEventInfo;
-     
+      //ExoDiPhotons::genParticleInfo_t fGenPhoton1Info;
+      //ExoDiPhotons::genParticleInfo_t fGenPhoton2Info;
+
       // ----Flags (switch in configuration file) 
       // MC flag 
       bool isGEN_; 
@@ -122,7 +143,9 @@ MultiPhotonAnalyzer::MultiPhotonAnalyzer(const edm::ParameterSet& iConfig)
    //-----Branches
    //GenParticles
    fgenTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
- 
+   //fTree->Branch("GenPhoton1",&fGenPhoton1Info,ExoDiPhotons::genParticleBranchDefString.c_str());
+   //fTree->Branch("GenPhoton2",&fGenPhoton2Info,ExoDiPhotons::genParticleBranchDefString.c_str());
+   
    //-----Tokens
 }
 
@@ -147,27 +170,23 @@ MultiPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iS
    using namespace edm;
    using namespace std;
 
-  //--------Data Format Access
-  //Accessing GenParticles from the event. reco::GenParticleCollection is typedef for vector<reco::GenParticle>
-  //edm::Handle<vector<reco::GenParticle> > genParticles;
-  //iEvent.getByToken(genParticlesToken_,genParticles);
-
-   //Intialization
+   //------ Event Information 
    ExoDiPhotons::InitEventInfo(fEventInfo);
-   
-   //Fill Info
    ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
-   
-   //----Debug
-   //Event
+   //Debug
    cout <<  "Run: " << iEvent.id().run() 
         << ", LS: " <<  iEvent.id().luminosityBlock() 
         << ", Event: " << iEvent.id().event() 
         << endl;
 
+   //------- GEN Information
+
+    
    //----Fill Tree
    if(isGEN_) fgenTree->Fill();
 
+
+  
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
    Handle<ExampleData> pIn;
    iEvent.getByLabel("example",pIn);

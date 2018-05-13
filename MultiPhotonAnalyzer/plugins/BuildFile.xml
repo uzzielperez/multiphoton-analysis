@@ -5,4 +5,7 @@
 <use name="SimDataFormats/GeneratorProducts"/> 
 <use name="GeneratorInterface/Core"/>
 <use name="CommonTools/UtilAlgos"/>
+<use name="DataFormats/PatCandidates"/>
+<use name="DataFormats/EgammaCandidates"/>
+<flags CXXFLAGS="-Wall -Werror"/>
 <flags EDM_PLUGIN="1"/>
