@@ -1,6 +1,11 @@
 #ifndef ngNtuplizer_h
 #define ngNtuplizer_h
 
+//System include files
+#include <memory>
+#include <vector>
+
+//Standard Headers 
 #include "TTree.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -28,10 +33,59 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
-#include "HiggsAnalysis/HiggsTo2photons/interface/CiCPhotonID.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
 #include "HLTrigger/HLTcore/interface/HLTPrescaleProvider.h"
+//#include "HiggsAnalysis/HiggsTo2photons/interface/CiCPhotonID.h"
+
+//Common Classes
+#include "multiphoton-analysis/CommonClasses/interface/EventInfo.h"
+
+
+//ROOT
+#include "TLorentzVector.h"
+#include "TH2D.h"
+
 
 using namespace std;
 
+class MultiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
+   public:
+      explicit MultiPhotonAnalyzer(const edm::ParameterSet&);
+      ~MultiPhotonAnalyzer();
 
+     // static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+
+
+   private:
+      //virtual void beginJob() override;
+      
+      virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
+      
+      //virtual void endJob() override;
+
+      // ----------member data ---------------------------
+      edm::Service<TFileService> fs; 
+    
+      // -----Tokens & InputTags
+      //edm::EDGetTokenT<vector<reco::GenParticle> > genParticlesToken_;
+      //edm::InputTag genParticles_;
+      //edm::InputTag particles_;
+
+      // ----Trees  
+      TTree *fgenTree;
+    
+      // ----Structs (Instantiate here)  
+      // event 
+      ExoDiPhotons::eventInfo_t fEventInfo;
+      //ExoDiPhotons::genParticleInfo_t fGenPhoton1Info;
+      //ExoDiPhotons::genParticleInfo_t fGenPhoton2Info;
+
+      // ----Flags (switch in configuration file) 
+      // MC flag 
+      bool isGEN_; 
+};
+
+
+
+
+#endif

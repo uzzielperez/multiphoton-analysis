@@ -1,46 +1,36 @@
-/*
 
- Description: [one line class summary]
-
- Implementation:
-   Source Code: Instantiate Structs->Branch Definition->InitializeMemberInfo->UpdateInfo->FillInfo->FillTree 
-   Configuration File: 
-   Usage: 
-*/
-//
-// Original Author:  Cilicia Uzziel Perez
-//         Created:  Sun, 13 May 2018 09:08:40 GMT
+#include "multiphoton-analysis/CommonClasses/interface/ngNtuplizer.h"
 
 using namespace std;
 
-// system include files
-#include <memory>
-#include <vector>
-
-// user include files
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/one/EDAnalyzer.h"
-
-#include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/MakerMacros.h"
-
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
-
-// GenParticles 
-#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
-#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
-#include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
-
-// T-headers, TFileService 
-#include "FWCore/ServiceRegistry/interface/Service.h"
-#include "CommonTools/UtilAlgos/interface/TFileService.h"
-#include "TLorentzVector.h"
-#include "TH2D.h"
-#include "TTree.h"
-
-// Common Classes
-#include "multiphoton-analysis/CommonClasses/interface/EventInfo.h"
-//#include "multiphoton-analysis/CommonClasses/interface/BeamSpotInfo.h"
+//// system include files
+//#include <memory>
+//#include <vector>
+//
+//// user include files
+//#include "FWCore/Framework/interface/Frameworkfwd.h"
+//#include "FWCore/Framework/interface/one/EDAnalyzer.h"
+//
+//#include "FWCore/Framework/interface/Event.h"
+//#include "FWCore/Framework/interface/MakerMacros.h"
+//
+//#include "FWCore/ParameterSet/interface/ParameterSet.h"
+//
+//// GenParticles 
+//#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
+//#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+//#include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
+//
+//// T-headers, TFileService 
+//#include "FWCore/ServiceRegistry/interface/Service.h"
+//#include "CommonTools/UtilAlgos/interface/TFileService.h"
+//#include "TLorentzVector.h"
+//#include "TH2D.h"
+//#include "TTree.h"
+//
+//// Common Classes
+//#include "multiphoton-analysis/CommonClasses/interface/EventInfo.h"
+////#include "multiphoton-analysis/CommonClasses/interface/BeamSpotInfo.h"
 //#include "multiphoton-analysis/CommonClasses/interface/VertexInfo.h"
 //#include "multiphoton-analysis/CommonClasses/interface/TriggerInfo.h"
 //#include "multiphoton-analysis/CommonClasses/interface/JetInfo.h"
@@ -79,46 +69,46 @@ using namespace std;
 //
 
 // If the analyzer does not use TFileService, please remove
-// the template argument to the base class so the class inherits
+// the template argument to the base class so the nclude "HiggsAnalysis/HiggsTo2photons/interface/CiCPhotonID.h"class inherits
 // from  edm::one::EDAnalyzer<> and also remove the line from
 // constructor "usesResource("TFileService");"
 // This will improve performance in multithreaded jobs.
-
-class MultiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
-   public:
-      explicit MultiPhotonAnalyzer(const edm::ParameterSet&);
-      ~MultiPhotonAnalyzer();
-
-      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-
-
-   private:
-      virtual void beginJob() override;
-      virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
-      virtual void endJob() override;
-
-      // ----------member data ---------------------------
-      edm::Service<TFileService> fs;
-      
-      // -----Tokens & InputTags
-      //edm::EDGetTokenT<vector<reco::GenParticle> > genParticlesToken_;
-      //edm::InputTag genParticles_;
-      //edm::InputTag particles_;
-
-      // ----Trees  
-      TTree *fgenTree;
-      
-      // ----Structs (Instantiate here)  
-      // event 
-      ExoDiPhotons::eventInfo_t fEventInfo;
-      //ExoDiPhotons::genParticleInfo_t fGenPhoton1Info;
-      //ExoDiPhotons::genParticleInfo_t fGenPhoton2Info;
-
-      // ----Flags (switch in configuration file) 
-      // MC flag 
-      bool isGEN_; 
-};
-
+//
+//class MultiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
+//   public:
+//      explicit MultiPhotonAnalyzer(const edm::ParameterSet&);
+//      ~MultiPhotonAnalyzer();
+//
+//      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+//
+//
+//   private:
+//      virtual void beginJob() override;
+//      virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
+//      virtual void endJob() override;
+//
+//      // ----------member data ---------------------------
+//      edm::Service<TFileService> fs;
+//      
+//      // -----Tokens & InputTags
+//      //edm::EDGetTokenT<vector<reco::GenParticle> > genParticlesToken_;
+//      //edm::InputTag genParticles_;
+//      //edm::InputTag particles_;
+//
+//      // ----Trees  
+//      TTree *fgenTree;
+//      
+//      // ----Structs (Instantiate here)  
+//      // event 
+//      ExoDiPhotons::eventInfo_t fEventInfo;
+//      //ExoDiPhotons::genParticleInfo_t fGenPhoton1Info;
+//      //ExoDiPhotons::genParticleInfo_t fGenPhoton2Info;
+//
+//      // ----Flags (switch in configuration file) 
+//      // MC flag 
+//      bool isGEN_; 
+//};
+//
 //
 // constants, enums and typedefs
 //
