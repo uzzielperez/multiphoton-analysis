@@ -48,8 +48,9 @@
 
 using namespace std;
 
-class MultiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
+class MultiPhotonAnalyzer : public edm::EDAnalyzer  {
    public:
+
       explicit MultiPhotonAnalyzer(const edm::ParameterSet&);
       ~MultiPhotonAnalyzer();
 
@@ -58,31 +59,12 @@ class MultiPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResource
 
    private:
       //virtual void beginJob() override;
-      
-      virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
-      
+      virtual void analyze(const edm::Event&, const edm::EventSetup&) override; 
       //virtual void endJob() override;
 
       // ----------member data ---------------------------
-      edm::Service<TFileService> fs; 
-    
-      // -----Tokens & InputTags
-      //edm::EDGetTokenT<vector<reco::GenParticle> > genParticlesToken_;
-      //edm::InputTag genParticles_;
-      //edm::InputTag particles_;
+      //edm::Service<TFileService> fs; 
 
-      // ----Trees  
-      TTree *fgenTree;
-    
-      // ----Structs (Instantiate here)  
-      // event 
-      ExoDiPhotons::eventInfo_t fEventInfo;
-      //ExoDiPhotons::genParticleInfo_t fGenPhoton1Info;
-      //ExoDiPhotons::genParticleInfo_t fGenPhoton2Info;
-
-      // ----Flags (switch in configuration file) 
-      // MC flag 
-      bool isGEN_; 
 };
 
 
