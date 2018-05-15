@@ -19,7 +19,7 @@ process.TFileService = cms.Service("TFileService",
                     fileName = cms.string("TestADDPythia.root")
 )
 
-process.demo = cms.EDAnalyzer('nGenPhotonAnalyzer',
+process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         genparticles = cms.InputTag("genParticles")
 ) 
 

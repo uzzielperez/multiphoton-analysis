@@ -32,10 +32,10 @@ using namespace std;
 using namespace edm;
 
 
-class nGenPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
+class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
    public:
-      explicit nGenPhotonAnalyzer(const edm::ParameterSet&);
-      ~nGenPhotonAnalyzer();
+      explicit nPhotonAnalyzer(const edm::ParameterSet&);
+      ~nPhotonAnalyzer();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 

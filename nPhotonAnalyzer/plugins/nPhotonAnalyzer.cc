@@ -3,7 +3,7 @@
 using namespace std;
 using namespace edm;
 
-nGenPhotonAnalyzer::nGenPhotonAnalyzer(const edm::ParameterSet& ps)
+nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
 
 {
    usesResource("TFileService");
@@ -19,7 +19,7 @@ nGenPhotonAnalyzer::nGenPhotonAnalyzer(const edm::ParameterSet& ps)
 }
 
 
-nGenPhotonAnalyzer::~nGenPhotonAnalyzer()
+nPhotonAnalyzer::~nPhotonAnalyzer()
 {
  
    // do anything here that needs to be done at desctruction time
@@ -32,7 +32,7 @@ nGenPhotonAnalyzer::~nGenPhotonAnalyzer()
 
 // ------------ method called for each event  ------------
 void
-nGenPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
+nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
    using namespace std;   
@@ -93,23 +93,23 @@ nGenPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSe
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
-nGenPhotonAnalyzer::beginJob()
+nPhotonAnalyzer::beginJob()
 {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
 void 
-nGenPhotonAnalyzer::endJob() 
+nPhotonAnalyzer::endJob() 
 {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
-nGenPhotonAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+nPhotonAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
   desc.setUnknown();
   descriptions.addDefault(desc);
 }
-DEFINE_FWK_MODULE(nGenPhotonAnalyzer);
+DEFINE_FWK_MODULE(nPhotonAnalyzer);
