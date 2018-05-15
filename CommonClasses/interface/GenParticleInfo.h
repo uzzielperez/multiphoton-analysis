@@ -138,27 +138,43 @@ namespace ExoDiPhotons
 
   }//miniAOD
 
-void fillGenInfo(genParticleInfo_t &genParticleInfo, const edm::Handle<vector<reco::GenParticle> > genParticles)
-{ 
-    int photoncount = 0;
 
-    //vector<reco::GenParticle> genPhotons;
-    //vector<int> interactingPartons;
+//void fillGenInfo(genParticleInfo_t &genParticleInfo, const edm::Handle<vector<reco::GenParticle> > genParticles)
+void fillGenInfo(vector<genParticleInfo_t>& nInfoStructs, const edm::Handle<vector<reco::GenParticle> > genParticles)
+{
+  genParticleInfo_t fGenPhoton1Info = nInfoStructs[0];
+  genParticleInfo_t fGenPhoton2Info = nInfoStructs[1];
+ 
+  //---Go through Collection
+   int photoncount = 0; 
+   for(vector<reco::GenParticle>::const_iterator ip = genParticles->begin(); ip != genParticles->end(); ++ip){
+      if(ip->status()==1 && ip->pdgId()==22){
+         //cout << "Photon end state found" << endl;
+        photoncount = photoncount + 1;
+        double pt = ip->pt();
+        double eta = ip->eta();
+        double phi = ip->phi();
+        //double E = ip->energy();
 
-    for(vector<reco::GenParticle>::const_iterator ip = genParticles->begin(); ip != genParticles->end(); ++ip){
-       //if(ip->status()==3){
-        //interactingPartons.push_back(ip->pdgId());
-          if(ip->status()==1 && ip->pdgId()==22){
-          //cout << "Photon end state found" << endl;
-          photoncount = photoncount + 1;       
-          }//end photon end state condition
-       //}//end of hard process condition
-     }//end loop over gen particles 
-     
-          
-     cout << "Number of photons in event: " << photoncount << endl;
-     
-
+        //Ordering photons
+        if (pt > fGenPhoton1Info.pt){
+            fGenPhoton2Info.pt = fGenPhoton1Info.pt;
+            fGenPhoton2Info.eta = fGenPhoton1Info.eta;
+            fGenPhoton2Info.phi = fGenPhoton1Info.phi;
+            
+            fGenPhoton1Info.pt = pt;
+            fGenPhoton1Info.eta = eta;
+            fGenPhoton1Info.phi = phi;
+        }      
+        if ((pt < fGenPhoton1Info.pt) && (pt > fGenPhoton2Info.pt)){
+            fGenPhoton2Info.pt = pt;
+            fGenPhoton2Info.eta = eta;
+            fGenPhoton2Info.phi = phi;
+        }
+      }//end photon end state condition
+  }//end loop over gen particles 
+  cout << "Number of photons in event: " << photoncount << endl;
+        
 }//Pythia8 local genInfo end
 
  // sort two photons by highest pt
