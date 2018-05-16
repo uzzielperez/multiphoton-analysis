@@ -10,11 +10,12 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    
    fgenTree = fs->make<TTree>("fgenTree","GENDiphotonTree");
    
-   fgenTree->Branch("GenPhoton1", &fGenPhoton1Info, ExoDiPhotons::genParticleBranchDefString.c_str());
-   fgenTree->Branch("GenPhoton2", &fGenPhoton2Info, ExoDiPhotons::genParticleBranchDefString.c_str());
-    
+   fgenTree->Branch("GenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
+   fgenTree->Branch("GenPhoton2",  &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
+   fgenTree->Branch("GenDiPhoton", &fGenDiPhotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
+
    genParticlesToken_  = consumes<vector<reco::GenParticle>>    (ps.getParameter<InputTag>("genparticles")); 
-   
+      
 
 }
 
@@ -38,19 +39,20 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    using namespace std;   
    
    //---Initialize
-   ExoDiPhotons::InitGenParticleInfo(fGenPhoton1Info);
-   ExoDiPhotons::InitGenParticleInfo(fGenPhoton2Info);
-  
+   ExoDiPhotons::InitGenParticleInfo( fGenPhoton1Info );
+   ExoDiPhotons::InitGenParticleInfo( fGenPhoton2Info );
+   ExoDiPhotons::InitDiphotonInfo(    fGenDiPhotonInfo );
+   
    //---Handle, getByToken
    edm::Handle<vector<reco::GenParticle> > genParticles;
    iEvent.getByToken(genParticlesToken_, genParticles);
    
    //---Update Information
-   ExoDiPhotons::fillGenPhoInfo(fGenPhoton1Info, fGenPhoton2Info,  genParticles);
+   ExoDiPhotons::fillGenDiPhoInfo(fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
 
    //Fill
    fgenTree->Fill(); 
-
+  
 }
 
 

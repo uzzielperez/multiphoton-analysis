@@ -1,6 +1,8 @@
 #ifndef GEN_PARTICLE_INFO
 #define GEN_PARTICLE_INFO
 
+#include "multiphoton-analysis/CommonClasses/interface/DiPhotonInfo.h"
+
 using namespace std;
 
 namespace ExoDiPhotons
@@ -138,16 +140,33 @@ namespace ExoDiPhotons
 
   }//miniAOD
 
+// sort two photons by highest pt
+bool comparePhotonsByPt(genParticleInfo_t photon1, genParticleInfo_t photon2) {
+       return(photon1.pt>=photon2.pt);
+}
 
-void fillGenPhoInfo(genParticleInfo_t& fGenPhoton1Info, 
-                 genParticleInfo_t& fGenPhoton2Info, 
-                 const edm::Handle<vector<reco::GenParticle> > genParticles)
+void fillGenDiPhoInfo(genParticleInfo_t& fGenPhoton1Info, 
+                      genParticleInfo_t& fGenPhoton2Info,
+                      diphotonInfo_t &diphotonInfo,
+                     const edm::Handle<vector<reco::GenParticle> > genParticles)
 { 
   //---Go through Collection
-   int photoncount = 0; 
+   int photoncount = 0;
+   vector<reco::GenParticle> pho; 
+   //some vector for photons
+
    for(vector<reco::GenParticle>::const_iterator ip = genParticles->begin(); ip != genParticles->end(); ++ip){
       if(ip->status()==1 && ip->pdgId()==22){
-         //cout << "Photon end state found" << endl;
+      //
+      //Sort function here 
+      //
+
+      //
+      //Call Exo::DiPhotonFillInfo(fGenPhoton
+      //
+
+      
+      //cout << "Photon end state found" << endl;
         photoncount = photoncount + 1;
         double pt = ip->pt();
         double eta = ip->eta();
@@ -170,15 +189,13 @@ void fillGenPhoInfo(genParticleInfo_t& fGenPhoton1Info,
             fGenPhoton2Info.phi = phi;
         }
       }//end photon end state condition
-  }//end loop over gen particles 
-  cout << "Number of photons in event: " << photoncount << endl;
-        
+   }//end loop over gen particles 
+  
+    cout << "Number of photons in event: " << photoncount << endl;
+   
 }//Pythia8 local genInfo end
 
- // sort two photons by highest pt
- //   bool comparePhotonsByPt(const edm::Ptr<const reco::Candidate> photon1, const edm::Ptr<const reco::Candidate> photon2) {
- //       return(photon1->pt()>=photon2->pt());
- //         }
+
 
 
 }//end of namespace

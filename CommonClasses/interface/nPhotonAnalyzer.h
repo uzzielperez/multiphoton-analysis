@@ -24,9 +24,11 @@
 
 // Miscellaneous
 #include "DataFormats/Math/interface/deltaR.h"
+#include "DataFormats/PatCandidates/interface/Photon.h"
 
 // Common Classes
 #include "multiphoton-analysis/CommonClasses/interface/GenParticleInfo.h"
+#include "multiphoton-analysis/CommonClasses/interface/DiPhotonInfo.h"
 
 using namespace std;
 using namespace edm;
@@ -49,15 +51,13 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       edm::InputTag genParticles_;
       edm::InputTag particles_;
       
-      //numPhotons = 2; //find a way to set this at the configuration file. For now, store at least 2 photons 
-
       TTree *fgenTree;
 
       bool isPythia8gen_; 
 
-      ExoDiPhotons::genParticleInfo_t fGenPhoton1Info; 
-      ExoDiPhotons::genParticleInfo_t fGenPhoton2Info;
-      //ExoDiPhotons::genParticleInfo_t fGenNPhotonInfo[numPhotons-1];
+      ExoDiPhotons::genParticleInfo_t   fGenPhoton1Info; 
+      ExoDiPhotons::genParticleInfo_t   fGenPhoton2Info;
+      ExoDiPhotons::diphotonInfo_t      fGenDiPhotonInfo;      
       
 };
 
