@@ -139,12 +139,10 @@ namespace ExoDiPhotons
   }//miniAOD
 
 
-//void fillGenInfo(genParticleInfo_t &genParticleInfo, const edm::Handle<vector<reco::GenParticle> > genParticles)
-void fillGenInfo(vector<genParticleInfo_t>& nInfoStructs, const edm::Handle<vector<reco::GenParticle> > genParticles)
-{
-  genParticleInfo_t fGenPhoton1Info = nInfoStructs[0];
-  genParticleInfo_t fGenPhoton2Info = nInfoStructs[1];
- 
+void fillGenPhoInfo(genParticleInfo_t& fGenPhoton1Info, 
+                 genParticleInfo_t& fGenPhoton2Info, 
+                 const edm::Handle<vector<reco::GenParticle> > genParticles)
+{ 
   //---Go through Collection
    int photoncount = 0; 
    for(vector<reco::GenParticle>::const_iterator ip = genParticles->begin(); ip != genParticles->end(); ++ip){
