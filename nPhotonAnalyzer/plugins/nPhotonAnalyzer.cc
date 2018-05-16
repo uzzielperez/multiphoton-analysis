@@ -45,46 +45,15 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    edm::Handle<vector<reco::GenParticle> > genParticles;
    iEvent.getByToken(genParticlesToken_, genParticles);
 
-//   //---Go through Collection
-//   int photoncount = 0; 
-//   for(vector<reco::GenParticle>::const_iterator ip = genParticles->begin(); ip != genParticles->end(); ++ip){
-//      if(ip->status()==1 && ip->pdgId()==22){
-//         //cout << "Photon end state found" << endl;
-//        photoncount = photoncount + 1;
-//        double pt = ip->pt();
-//        double eta = ip->eta();
-//        double phi = ip->phi();
-//        //double E = ip->energy();
-//
-//        //Ordering photons
-//        if (pt > fGenPhoton1Info.pt){
-//            fGenPhoton2Info.pt = fGenPhoton1Info.pt;
-//            fGenPhoton2Info.eta = fGenPhoton1Info.eta;
-//            fGenPhoton2Info.phi = fGenPhoton1Info.phi;
-//            
-//            fGenPhoton1Info.pt = pt;
-//            fGenPhoton1Info.eta = eta;
-//            fGenPhoton1Info.phi = phi;
-//        }      
-//        if ((pt < fGenPhoton1Info.pt) && (pt > fGenPhoton2Info.pt)){
-//            fGenPhoton2Info.pt = pt;
-//            fGenPhoton2Info.eta = eta;
-//            fGenPhoton2Info.phi = phi;
-//        }
-//      }//end photon end state condition
-//  }//end loop over gen particles 
-//  cout << "Number of photons in event: " << photoncount << endl;
-//  
    //structs container 
    vector<ExoDiPhotons::genParticleInfo_t> fGenStructsInfo;
    fGenStructsInfo.push_back(fGenPhoton1Info); 
    fGenStructsInfo.push_back(fGenPhoton2Info); 
   
    ExoDiPhotons::fillGenInfo(fGenStructsInfo,  genParticles);
-   //ExoDiPhotons::fillGenInfo(fGenStructsInfo,  genParticles);  
-   //ExoDiPhotons::fillGenInfo(fGenPhoton1Info,  genParticles);        
-   //ExoDiPhotons::fillGenInfo(fGenPhoton2Info,  genParticles);
-
+   fGenPhoton1Info = fGenStructsInfo[0];
+   fGenPhoton2Info = fGenStructsInfo[1];
+   
    //Fill
    fgenTree->Fill(); 
 
