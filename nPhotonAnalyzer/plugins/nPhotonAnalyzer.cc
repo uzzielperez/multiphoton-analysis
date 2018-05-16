@@ -49,33 +49,12 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    vector<ExoDiPhotons::genParticleInfo_t> fGenStructsInfo;
    fGenStructsInfo.push_back(fGenPhoton1Info); 
    fGenStructsInfo.push_back(fGenPhoton2Info); 
-   //fGenStructsInfo.emplace_back(move(fGenPhoton1Info));
-   //fGenStructsInfo.emplace_back(move(fGenPhoton2Info));
    
+   //Update Information
    ExoDiPhotons::fillGenInfo(fGenStructsInfo,  genParticles);
    fGenPhoton1Info = fGenStructsInfo[0];
-   fGenPhoton2Info = fGenStructsInfo[1];
-  
-  cout << "Photon1' pt: " << fGenStructsInfo[0].pt
-       << ";  eta: "     << fGenStructsInfo[0].eta 
-       << ";  phi: "     << fGenStructsInfo[0].phi
-       << endl;
-  
-  cout << "Photon2' pt: " << fGenStructsInfo[1].pt
-       << ";  eta: "     << fGenStructsInfo[1].eta 
-       << ";  phi: "     << fGenStructsInfo[1].phi
-       << endl;
- 
-  cout << "Photon1'' pt: " << fGenPhoton1Info.pt
-       << ";  eta: "     << fGenPhoton1Info.eta 
-       << ";  phi: "     << fGenPhoton2Info.phi
-       << endl;
-  
-  cout << "Photon2'' pt: " << fGenPhoton2Info.pt
-       << ";  eta: "     << fGenPhoton2Info.eta 
-       << ";  phi: "     << fGenPhoton2Info.phi
-       << endl;
-
+   fGenPhoton2Info = fGenStructsInfo[1]; 
+   
 
    //Fill
    fgenTree->Fill(); 
