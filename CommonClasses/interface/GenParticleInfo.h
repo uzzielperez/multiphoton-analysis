@@ -142,10 +142,19 @@ namespace ExoDiPhotons
 //void fillGenInfo(genParticleInfo_t &genParticleInfo, const edm::Handle<vector<reco::GenParticle> > genParticles)
 void fillGenInfo(vector<genParticleInfo_t>& nInfoStructs, const edm::Handle<vector<reco::GenParticle> > genParticles)
 {
-  genParticleInfo_t fGenPhoton1Info = nInfoStructs[0];
-  genParticleInfo_t fGenPhoton2Info = nInfoStructs[1];
  
-  //---Go through Collection
+  //Debug 
+  cout << "Photon1 pt: " << nInfoStructs[0].pt
+       << ";  eta: "     << nInfoStructs[0].eta 
+       << ";  phi: "     << nInfoStructs[0].phi
+       << endl;
+  
+  cout << "Photon2 pt: " << nInfoStructs[1].pt
+       << ";  eta: "     << nInfoStructs[1].eta 
+       << ";  phi: "     << nInfoStructs[1].phi
+       << endl;
+     
+   //---Go through Collection
    int photoncount = 0; 
    for(vector<reco::GenParticle>::const_iterator ip = genParticles->begin(); ip != genParticles->end(); ++ip){
       if(ip->status()==1 && ip->pdgId()==22){
@@ -154,27 +163,37 @@ void fillGenInfo(vector<genParticleInfo_t>& nInfoStructs, const edm::Handle<vect
         double pt = ip->pt();
         double eta = ip->eta();
         double phi = ip->phi();
-        //double E = ip->energy();
 
         //Ordering photons
-        if (pt > fGenPhoton1Info.pt){
-            fGenPhoton2Info.pt = fGenPhoton1Info.pt;
-            fGenPhoton2Info.eta = fGenPhoton1Info.eta;
-            fGenPhoton2Info.phi = fGenPhoton1Info.phi;
+        if (pt > nInfoStructs[0].pt){
+            nInfoStructs[1].pt=nInfoStructs[0].pt;
+            nInfoStructs[1].eta=nInfoStructs[0].eta;
+            nInfoStructs[1].phi=nInfoStructs[0].phi;
             
-            fGenPhoton1Info.pt = pt;
-            fGenPhoton1Info.eta = eta;
-            fGenPhoton1Info.phi = phi;
+            nInfoStructs[0].pt=pt;
+            nInfoStructs[0].eta=eta;
+            nInfoStructs[0].phi=phi;
         }      
-        if ((pt < fGenPhoton1Info.pt) && (pt > fGenPhoton2Info.pt)){
-            fGenPhoton2Info.pt = pt;
-            fGenPhoton2Info.eta = eta;
-            fGenPhoton2Info.phi = phi;
+        if ((pt < nInfoStructs[0].pt) && (pt > nInfoStructs[1].pt)){
+            nInfoStructs[1].pt=pt;
+            nInfoStructs[1].eta=eta;
+            nInfoStructs[1].phi=phi;
         }
       }//end photon end state condition
   }//end loop over gen particles 
   cout << "Number of photons in event: " << photoncount << endl;
-        
+  //Debug 
+  cout << "Photon1 pt: " << nInfoStructs[0].pt
+       << ";  eta: "     << nInfoStructs[0].eta 
+       << ";  phi: "     << nInfoStructs[0].phi
+       << endl;
+  
+  cout << "Photon2 pt: " << nInfoStructs[1].pt
+       << ";  eta: "     << nInfoStructs[1].eta 
+       << ";  phi: "     << nInfoStructs[1].phi
+       << endl;
+
+
 }//Pythia8 local genInfo end
 
  // sort two photons by highest pt

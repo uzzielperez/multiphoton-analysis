@@ -57,8 +57,7 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 
       ExoDiPhotons::genParticleInfo_t fGenPhoton1Info; 
       ExoDiPhotons::genParticleInfo_t fGenPhoton2Info;
-      //ExoDiPhotons::genParticleInfo_t fGenNPhotonInfo[numPhotons-1];
-      
+ 
 };
 
 
