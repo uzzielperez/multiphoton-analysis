@@ -157,15 +157,6 @@ void fillGenDiPhoInfo(genParticleInfo_t& fGenPhoton1Info,
 
    for(vector<reco::GenParticle>::const_iterator ip = genParticles->begin(); ip != genParticles->end(); ++ip){
       if(ip->status()==1 && ip->pdgId()==22){
-      //
-      //Sort function here 
-      //
-
-      //
-      //Call Exo::DiPhotonFillInfo(fGenPhoton
-      //
-
-      
       //cout << "Photon end state found" << endl;
         photoncount = photoncount + 1;
         double pt = ip->pt();
