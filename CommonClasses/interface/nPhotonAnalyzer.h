@@ -45,20 +45,20 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       virtual void beginJob() override;
       virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
       virtual void endJob() override;
-      
-      edm::Service<TFileService> fs; 
+
+      edm::Service<TFileService> fs;
       edm::EDGetTokenT<vector<reco::GenParticle> > genParticlesToken_;
       edm::InputTag genParticles_;
       edm::InputTag particles_;
-      
+
       TTree *fgenTree;
 
-      bool isPythia8gen_; 
+      bool isPythia8gen_;
 
-      ExoDiPhotons::genParticleInfo_t   fGenPhoton1Info; 
+      ExoDiPhotons::genParticleInfo_t   fGenPhoton1Info;
       ExoDiPhotons::genParticleInfo_t   fGenPhoton2Info;
-      ExoDiPhotons::diphotonInfo_t      fGenDiPhotonInfo;      
-      
+      ExoDiPhotons::diphotonInfo_t      fGenDiPhotonInfo;
+      //Working with Atom
 };
 
 
