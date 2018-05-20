@@ -1,5 +1,7 @@
 #include "multiphoton-analysis/CommonClasses/interface/nPhotonAnalyzer.h"
 
+//Editing with Atom Test
+
 using namespace std;
 using namespace edm;
 
@@ -7,22 +9,21 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
 
 {
    usesResource("TFileService");
-   
+
    fgenTree = fs->make<TTree>("fgenTree","GENDiphotonTree");
-   
+
    fgenTree->Branch("GenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
    fgenTree->Branch("GenPhoton2",  &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
    fgenTree->Branch("GenDiPhoton", &fGenDiPhotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
 
-   genParticlesToken_  = consumes<vector<reco::GenParticle>>    (ps.getParameter<InputTag>("genparticles")); 
-      
+   genParticlesToken_  = consumes<vector<reco::GenParticle>>    (ps.getParameter<InputTag>("genparticles"));
 
 }
 
 
 nPhotonAnalyzer::~nPhotonAnalyzer()
 {
- 
+
    // do anything here that needs to be done at desctruction time
    // (e.g. close files, deallocate resources etc.)
 
@@ -36,35 +37,42 @@ void
 nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
    using namespace edm;
-   using namespace std;   
-   
+   using namespace std;
+
    //---Initialize
    ExoDiPhotons::InitGenParticleInfo( fGenPhoton1Info );
    ExoDiPhotons::InitGenParticleInfo( fGenPhoton2Info );
    ExoDiPhotons::InitDiphotonInfo(    fGenDiPhotonInfo );
-   
+
    //---Handle, getByToken
    edm::Handle<vector<reco::GenParticle> > genParticles;
    iEvent.getByToken(genParticlesToken_, genParticles);
-   
+
    //---Update Information
    ExoDiPhotons::fillGenDiPhoInfo(fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
 
    //Fill
-   fgenTree->Fill(); 
-  
+   fgenTree->Fill();
+
+   //Debugging
+   // int i, s = genParticles->size();
+   // for (i=0; i < s; i++)
+   // {
+   //    cout << genParticles->at() << endl;
+   // }
+   //End Debugging
 }
 
 
 // ------------ method called once each job just before starting event loop  ------------
-void 
+void
 nPhotonAnalyzer::beginJob()
 {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-void 
-nPhotonAnalyzer::endJob() 
+void
+nPhotonAnalyzer::endJob()
 {
 }
 
