@@ -61,7 +61,8 @@ namespace ExoDiPhotons
     int grandmotherPdgId;
 
     // Additional Information (Not yet included in Branch)
-    TLorentzVector p4;
+    //TLorentzVector p4;
+    reco::LeafCandidate::LorentzVector p4;
 
   };
 
@@ -177,7 +178,7 @@ void fillGenDiPhoInfo(genParticleInfo_t& fGenPhoton1Info,
 {
       int status = ip->status();
       int PID    = ip->pdgId();
-      int p4     = ip->p4();
+      reco::LeafCandidate::LorentzVector p4     = ip->p4();
 
       //else throw cms::Exception("Should always have exactly two photons with status==3 in the diphoton sample");
       //if(ip->isHardProcess()){
@@ -223,7 +224,7 @@ void fillGenDiPhoInfo(genParticleInfo_t& fGenPhoton1Info,
       cout << "Storing DiPhotonInfo" << endl;
       // const reco::GenParticle *genPhoton1 = &(*genPhoInfoStructs.at(0));
       // const reco::GenParticle *genPhoton2 = &(*genPhoInfoStructs.at(1));
-      //ExoDiPhotons::FillDiphotonInfo
+      ExoDiPhotons::FillDiphotonInfo(diphotonInfo, fGenPhoton1Info.p4, fGenPhoton2Info.p4);
     }
 
     //Debugging

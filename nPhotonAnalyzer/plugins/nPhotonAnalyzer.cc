@@ -49,6 +49,7 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByToken(genParticlesToken_, genParticles);
 
    //---Update Information
+   //Fill fGenPhoton1Info, fGenPhoton2, fGenDiPhotonInfo
    ExoDiPhotons::fillGenDiPhoInfo(fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
 
    //Fill
