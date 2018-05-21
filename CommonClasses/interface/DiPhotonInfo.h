@@ -3,6 +3,7 @@
 
 #include "TMath.h"
 #include "TLorentzVector.h"
+#include "multiphoton-analysis/CommonClasses/interface/GenParticleInfo.h"
 
 namespace ExoDiPhotons
 {
@@ -42,7 +43,7 @@ namespace ExoDiPhotons
     diphotonInfo.isEEEB = false;
     diphotonInfo.isEEEE = false;
   }
-  
+
   // the internal function which gets called by the others
   void FillDiphotonInfo(diphotonInfo_t &diphotonInfo, reco::LeafCandidate::LorentzVector photon_vector1, reco::LeafCandidate::LorentzVector photon_vector2)
   {
@@ -94,7 +95,7 @@ namespace ExoDiPhotons
     // photon1 is leading and photon2 is sub-leading
     double photon1_eta = std::abs(photon1->superCluster()->eta());
     double photon2_eta = std::abs(photon2->superCluster()->eta());
-    
+
     diphotonInfo.isEBEB = (photon1_eta < 1.4442) && (photon2_eta < 1.4442);
     diphotonInfo.isEBEE = (photon1_eta < 1.4442) && (1.566 < photon2_eta && photon2_eta < 2.5);
     diphotonInfo.isEEEB = (1.566 < photon1_eta && photon1_eta < 2.5) && (photon2_eta < 1.4442);
@@ -106,19 +107,28 @@ namespace ExoDiPhotons
   {
     reco::LeafCandidate::LorentzVector photon_vector1 = photon1->p4();
     reco::LeafCandidate::LorentzVector photon_vector2 = photon2->p4();
-    
+
     FillDiphotonInfo(diphotonInfo,photon_vector1,photon_vector2);
   }
-  
+
   // same function, but with reco::Candidates
   void FillDiphotonInfo(diphotonInfo_t &diphotonInfo, const reco::Candidate *photon1, const reco::Candidate *photon2)
   {
     reco::LeafCandidate::LorentzVector photon_vector1 = photon1->p4();
     reco::LeafCandidate::LorentzVector photon_vector2 = photon2->p4();
-    
+
     FillDiphotonInfo(diphotonInfo,photon_vector1,photon_vector2);
   }
-  
+
+  // // same function, but for local MC signal photons
+  // void FillDiphotonInfo(diphotonInfo_t &diphotonInfo, reco::LeafCandidate::LorentzVector genPhoton1p4, reco::LeafCandidate::LorentzVector genPhoton2p4)
+  // {
+  //   reco::LeafCandidate::LorentzVector photon_vector1 = genPhoton1p4;
+  //   reco::LeafCandidate::LorentzVector photon_vector2 = genPhoton2p4;
+  //
+  //   FillDiphotonInfo(diphotonInfo,photon_vector1,photon_vector2);
+  // }
+
 }
 
 #endif
