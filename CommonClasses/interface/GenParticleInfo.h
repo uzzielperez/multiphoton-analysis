@@ -154,28 +154,18 @@ bool comparePhotonsByPt(genParticleInfo_t photon1, genParticleInfo_t photon2) {
        return(photon1.pt>=photon2.pt);
 }
 
-void fillGenDiPhoInfo(genParticleInfo_t& fGenPhoton1Info,
-                      genParticleInfo_t& fGenPhoton2Info,
-                      diphotonInfo_t &diphotonInfo,
-                      const edm::Handle<vector<reco::GenParticle> > genParticles)
+void fillGenDiPhoInfo(genParticleInfo_t& fGenPhoton1Info, genParticleInfo_t& fGenPhoton2Info,
+                      diphotonInfo_t &diphotonInfo, const edm::Handle<vector<reco::GenParticle> > genParticles)
 {
-  //---Go through Collection
    int photoncount = 0;
-  //some vectors to store objects
-   //vector<reco::GenParticle> genPho;
-   //vector<edm::Ptr<reco::GenParticle>> genPhoVec;
-   //ist<vector<reco::GenParticle>::const_iterator> igenPholist;
-
-   vector<genParticleInfo_t> genPhoInfoStructs;
-
    //Temporary storage
+   vector<genParticleInfo_t> genPhoInfoStructs;
    genParticleInfo_t genParticleInfo;
    InitGenParticleInfo(genParticleInfo);
 
    //Loop over the genParticles. Handle in plugin nPhotonAnalyzer.cc
    for(vector<reco::GenParticle>::const_iterator ip = genParticles->begin(); ip != genParticles->end(); ++ip)
-//   for(size_t i = 0; i < genParticles->size(); i++)
-{
+   {
       int status = ip->status();
       int PID    = ip->pdgId();
       reco::LeafCandidate::LorentzVector p4     = ip->p4();
@@ -193,9 +183,6 @@ void fillGenDiPhoInfo(genParticleInfo_t& fGenPhoton1Info,
         genParticleInfo.pt  = pt;
         genParticleInfo.eta = eta;
         genParticleInfo.phi = phi;
-
-
-        //cout << typeid(ip->p4()).name() << endl;
 
         //Matching (Later)
 
@@ -222,13 +209,10 @@ void fillGenDiPhoInfo(genParticleInfo_t& fGenPhoton1Info,
     //If there are two photon objects then store DiPhotonInfo
     if(genPhoInfoStructs.size()>2){
       cout << "Storing DiPhotonInfo" << endl;
-      // const reco::GenParticle *genPhoton1 = &(*genPhoInfoStructs.at(0));
-      // const reco::GenParticle *genPhoton2 = &(*genPhoInfoStructs.at(1));
       ExoDiPhotons::FillDiphotonInfo(diphotonInfo, fGenPhoton1Info.p4, fGenPhoton2Info.p4);
     }
 
     //Debugging
-
     vector<genParticleInfo_t>::const_iterator iter;
 
     cout << "Number of photons in event: " << photoncount << endl;
@@ -239,7 +223,6 @@ void fillGenDiPhoInfo(genParticleInfo_t& fGenPhoton1Info,
        jcounter = jcounter + 1;
       }//endfilling
     }//end loop
-
     //End Debugging
 
 }//end of fillGenDiPhoInfo

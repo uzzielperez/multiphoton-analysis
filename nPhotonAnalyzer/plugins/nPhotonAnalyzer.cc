@@ -1,7 +1,5 @@
 #include "multiphoton-analysis/CommonClasses/interface/nPhotonAnalyzer.h"
 
-//Editing with Atom Test
-
 using namespace std;
 using namespace edm;
 
@@ -49,19 +47,11 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByToken(genParticlesToken_, genParticles);
 
    //---Update Information
-   //Fill fGenPhoton1Info, fGenPhoton2, fGenDiPhotonInfo
    ExoDiPhotons::fillGenDiPhoInfo(fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
 
    //Fill
    fgenTree->Fill();
 
-   //Debugging
-   // int i, s = genParticles->size();
-   // for (i=0; i < s; i++)
-   // {
-   //    cout << genParticles->at() << endl;
-   // }
-   //End Debugging
 }
 
 
