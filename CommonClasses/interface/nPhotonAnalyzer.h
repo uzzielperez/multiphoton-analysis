@@ -47,7 +47,8 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       virtual void endJob() override;
 
       edm::Service<TFileService> fs;
-      edm::EDGetTokenT<vector<reco::GenParticle> > genParticlesToken_;
+      //edm::EDGetTokenT<vector<reco::GenParticle> > genParticlesToken_;
+      edm::EDGetTokenT<edm::View<reco::GenParticle> > genParticlesToken_;
       edm::InputTag genParticles_;
       edm::InputTag particles_;
 
