@@ -16,5 +16,8 @@ git clone git@github.com:uzzielperez/multiphoton-analysis
 cd multiphoton-analysis
 scram b -j 16
 
+# run locally 
+cmsRun nPhotonAnalyzer/python/ConfFile_cfg.py
+
 ```
 
