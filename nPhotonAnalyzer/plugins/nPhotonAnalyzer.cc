@@ -9,13 +9,24 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    usesResource("TFileService");
 
    isGood_                    = false;
-   isMC_                      = true;
-   isPythia8gen_              = true;
-   isSherpaDiphoton_          = true;
+   //isMC_                      = true;
+   //isPythia8gen_              = true;
+   //isSherpaDiphoton_          = false;
    nPV_                       = 0;
    SherpaGenPhoton0_iso_      = 9999.99;
    SherpaGenPhoton1_iso_      = 9999.99;
 
+   genParticlesToken_        = consumes<vector<reco::GenParticle>>      (ps.getParameter<InputTag>("genparticles"));
+   rhoToken_                 = consumes<double>                         (ps.getParameter<edm::InputTag>("rho"));
+   phoLooseIdMapToken_       = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoLooseIdMap"));
+   phoMediumIdMapToken_      = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoMediumIdMap"));
+   phoTightIdMapToken_       = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoTightIdMap"));
+   nEventsSample_            =                                          (ps.getParameter<uint32_t>("nEventsSample"));
+   genInfoToken_             = consumes<GenEventInfoProduct>            (ps.getParameter<edm::InputTag>("genInfo"));
+   genParticlesMiniAODToken_ = mayConsume<edm::View<reco::GenParticle> >(ps.getParameter<edm::InputTag>("genParticlesMiniAOD"));
+   isMC_                     =                                           ps.getParameter<bool>("isMC");
+   isPythia8gen_             =                                           ps.getParameter<bool>("isPythia8gen");
+   isSherpaDiphoton_         =                                           ps.getParameter<bool>("isSherpaDiphoton");
 
    if (isPythia8gen_){
    fgenTree = fs->make<TTree>("fgenTree","GENDiphotonTree");
@@ -38,17 +49,6 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fSherpaGenTree->Branch("nPV", &nPV_);
    }
 
-   genParticlesToken_        = consumes<vector<reco::GenParticle>>      (ps.getParameter<InputTag>("genparticles"));
-   rhoToken_                 = consumes<double>                         (ps.getParameter<edm::InputTag>("rho"));
-   //effAreaChHadrons_         =                                          (ps.getParameter<edm::FileInPath>("effAreaChHadFile")).fullPath() ;
-   //effAreaNeuHadrons_        =                                          (ps.getParameter<edm::FileInPath>("effAreaNeuHadFile")).fullPath() ;
-   //effAreaPhotons_           =                                          (ps.getParameter<edm::FileInPath>("effAreaPhoFile")).fullPath() ;
-   phoLooseIdMapToken_       = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoLooseIdMap"));
-   phoMediumIdMapToken_      = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoMediumIdMap"));
-   phoTightIdMapToken_       = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoTightIdMap"));
-   nEventsSample_            =                                          (ps.getParameter<uint32_t>("nEventsSample"));
-   genInfoToken_             = consumes<GenEventInfoProduct>            (ps.getParameter<edm::InputTag>("genInfo"));
-   genParticlesMiniAODToken_ = mayConsume<edm::View<reco::GenParticle> >(ps.getParameter<edm::InputTag>("genParticlesMiniAOD"));
 }
 
 

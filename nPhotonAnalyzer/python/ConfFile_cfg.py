@@ -4,6 +4,34 @@ from os.path import basename
 import os
 import sys
 
+#------------------------------------------
+isMC                = True
+isPythia8gen        = True
+isSherpaDiphoton    = False
+islocal             = True
+
+if islocal:
+    PATH      = '/afs/cern.ch/user/c/ciperez/CMSSW_8_0_25/src/'
+    inF       = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
+    INFILE    = PATH + inf
+    inputFile = 'file:%s' %(INFILE)
+else:
+    print "LFN"
+    #Provide Logical Filename
+    #inputFile = '/store/....'
+
+outName = 'Test%s' %(inF)
+#------------------------------------------
+print 'Configuration file Run with the following settings: '
+print 'isMC = ', isMC
+if isPythia8gen:
+    print 'Pythia GEN'
+if isSherpaDiphoton:
+    print 'Sherpa GEN'
+print 'Writing output to file ', outName
+
+#------------------------------------------
+
 options = VarParsing ('python')
 options.register('nEventsSample',
                  100,
@@ -13,7 +41,6 @@ options.register('nEventsSample',
 ## 'maxEvents' is already registered by the Framework, changing default value
 options.setDefault('maxEvents', 100)
 
-isMC = True
 if isMC:
     version = os.getenv("CMSSW_VERSION")
     if "CMSSW_8" in version:
@@ -44,7 +71,7 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
         #'file:myfile.root'
         #'file:/afs/cern.ch/user/c/ciperez/Generation/CMSSW_9_3_8/src/ADDGravToGG_NED-4_LambdaT-4000_M-500_13TeV-pythia8_cff_py_GEN.root'
-        'file:/afs/cern.ch/user/c/ciperez/CMSSW_8_0_25/src/ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
+        inputFile
     )
 )
 
@@ -57,7 +84,7 @@ print "Using global tag: " + globalTag
 process.load("Configuration.StandardSequences.GeometryDB_cff")
 
 process.TFileService = cms.Service("TFileService",
-                    fileName = cms.string("TestADDPythiaALL.root")
+                    fileName = cms.string(outName)
 )
 
 
@@ -100,7 +127,9 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         #outputFile = cms.string(outName),
         # number of events in the sample (for calculation of event weights)
         nEventsSample = cms.uint32(options.nEventsSample),
-        #isMC = cms.bool(isMC),
+        isMC = cms.bool(isMC),
+        isPythia8gen = cms.bool(isPythia8gen),
+        isSherpaDiphoton = cms.bool(isSherpaDiphoton),
         #isClosureTest = cms.bool(False),
         #isReMINIAOD = cms.bool(isReMINIAOD),
         isolationConeR = cms.double(0.3)
