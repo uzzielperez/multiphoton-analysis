@@ -15,8 +15,10 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
+//#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
 #include <vector>
 #include "TLorentzVector.h"
 #include "TH2D.h"
@@ -27,6 +29,7 @@
 #include "DataFormats/PatCandidates/interface/Photon.h"
 
 // Common Classes
+#include "diphoton-analysis/CommonClasses/interface/EventInfo.h"
 #include "multiphoton-analysis/CommonClasses/interface/GenParticleInfo.h"
 #include "multiphoton-analysis/CommonClasses/interface/DiPhotonInfo.h"
 
@@ -47,18 +50,52 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       virtual void endJob() override;
 
       edm::Service<TFileService> fs;
-      edm::EDGetTokenT<vector<reco::GenParticle> > genParticlesToken_;
+      edm::EDGetTokenT<vector<reco::GenParticle> >    genParticlesToken_;
+      edm::EDGetTokenT<edm::View<reco::GenParticle> > genParticlesMiniAODToken_;
+      edm::EDGetToken                                 photonsMiniAODToken_;
+      edm::EDGetTokenT<double>                        rhoToken_;
+      edm::EDGetTokenT<edm::ValueMap<bool> >          phoLooseIdMapToken_;
+      edm::EDGetTokenT<edm::ValueMap<bool> >          phoMediumIdMapToken_;
+      edm::EDGetTokenT<edm::ValueMap<bool> >          phoTightIdMapToken_;
+      edm::EDGetTokenT<GenEventInfoProduct>           genInfoToken_;
+
+
       edm::InputTag genParticles_;
       edm::InputTag particles_;
 
+      enum {LOOSE = 0, MEDIUM = 1, TIGHT = 2};
+      enum {FAKE = 0,  TRUE = 1};
+
+      //EffectiveAreas effAreaChHadrons_;
+      //EffectiveAreas effAreaNeuHadrons_;
+      //EffectiveAreas effAreaPhotons_;
+
       TTree *fgenTree;
+      TTree *fSherpaGenTree;
 
-      bool isPythia8gen_;
-
+      ExoDiPhotons::eventInfo_t         fEventInfo;
       ExoDiPhotons::genParticleInfo_t   fGenPhoton1Info;
       ExoDiPhotons::genParticleInfo_t   fGenPhoton2Info;
       ExoDiPhotons::diphotonInfo_t      fGenDiPhotonInfo;
-      //Working with Atom
+      ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton1Info;
+      ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton2Info;
+      ExoDiPhotons::diphotonInfo_t      fSherpaGenDiphotonInfo;
+
+      //Put flags in cfg later
+      int nPV_;
+      int rho_;
+      bool isMC_;
+      bool isGood_;
+      bool isPythia8gen_;
+      bool isSherpaDiphoton_;
+      double SherpaWeightAll_;
+      double SherpaGenPhoton0_iso_;
+      double SherpaGenPhoton1_iso_;
+      uint32_t nEventsSample_;
+
+
+
+
 };
 
 
