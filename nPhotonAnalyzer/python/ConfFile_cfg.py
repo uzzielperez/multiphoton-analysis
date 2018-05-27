@@ -4,7 +4,14 @@ from os.path import basename
 import os
 import sys
 
-isMC = True
+#Configure
+isMC    = True
+islocal = True
+
+if islocal:
+    inputFile = '/afs/cern.ch/user/c/ciperez/Generation/CMSSW_9_3_8/src/ADDGravToGG_NED-4_LambdaT-4000_M-500_13TeV-pythia8_cff_py_GEN.root'
+    inFile = 'file:'+ inputFile
+
 
 process = cms.Process("Demo")
 
@@ -16,7 +23,7 @@ process.source = cms.Source("PoolSource",
     # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
         #'file:myfile.root'
-        'file:/afs/cern.ch/user/c/ciperez/Generation/CMSSW_9_3_8/src/ADDGravToGG_NED-4_LambdaT-4000_M-500_13TeV-pythia8_cff_py_GEN.root'
+        inFile
     )
 )
 
