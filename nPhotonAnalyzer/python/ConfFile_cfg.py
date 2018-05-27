@@ -1,4 +1,10 @@
 import FWCore.ParameterSet.Config as cms
+from FWCore.ParameterSet.VarParsing import VarParsing
+from os.path import basename
+import os
+import sys
+
+isMC = True
 
 process = cms.Process("Demo")
 
@@ -21,6 +27,6 @@ process.TFileService = cms.Service("TFileService",
 
 process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         genparticles = cms.InputTag("genParticles")
-) 
+)
 
 process.p = cms.Path(process.demo)
