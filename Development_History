@@ -1,0 +1,9 @@
+* V01:5-26-18
+  WORKING BRANCHES
+  master    : Pythia8 local GEN only analyzer (working)
+  CMSSW_80X : -Include globalTags
+              -other elements from ExoDiPhotonAnalyzer (under development)
+
+  DEBUG MODE
+  StandardVerbose        : Common Classes, and Particle History
+  CMSSW80X_Verbose       : Development Mode/Compiling Version
