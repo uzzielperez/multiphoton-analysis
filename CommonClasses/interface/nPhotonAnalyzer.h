@@ -29,7 +29,7 @@
 #include "DataFormats/PatCandidates/interface/Photon.h"
 
 // Common Classes
-#include "diphoton-analysis/CommonClasses/interface/EventInfo.h"
+#include "multiphoton-analysis/CommonClasses/interface/EventInfo.h"
 #include "multiphoton-analysis/CommonClasses/interface/GenParticleInfo.h"
 #include "multiphoton-analysis/CommonClasses/interface/DiPhotonInfo.h"
 
@@ -53,7 +53,7 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       edm::EDGetTokenT<vector<reco::GenParticle> >    genParticlesToken_;
       edm::EDGetTokenT<edm::View<reco::GenParticle> > genParticlesMiniAODToken_;
       edm::EDGetToken                                 photonsMiniAODToken_;
-      edm::EDGetTokenT<double>                        rhoToken_;
+      //edm::EDGetTokenT<double>                        rhoToken_;
       edm::EDGetTokenT<edm::ValueMap<bool> >          phoLooseIdMapToken_;
       edm::EDGetTokenT<edm::ValueMap<bool> >          phoMediumIdMapToken_;
       edm::EDGetTokenT<edm::ValueMap<bool> >          phoTightIdMapToken_;
@@ -83,7 +83,7 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 
       //Put flags in cfg later
       int nPV_;
-      int rho_;
+      //int rho_;
       bool isMC_;
       bool isGood_;
       bool isPythia8gen_;
@@ -92,9 +92,7 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       double SherpaGenPhoton0_iso_;
       double SherpaGenPhoton1_iso_;
       uint32_t nEventsSample_;
-
-
-
+      TString outputFile_;
 
 };
 

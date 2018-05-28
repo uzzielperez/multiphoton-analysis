@@ -17,7 +17,7 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    SherpaGenPhoton1_iso_      = 9999.99;
 
    genParticlesToken_        = consumes<vector<reco::GenParticle>>      (ps.getParameter<InputTag>("genparticles"));
-   rhoToken_                 = consumes<double>                         (ps.getParameter<edm::InputTag>("rho"));
+   //rhoToken_                 = consumes<double>                         (ps.getParameter<edm::InputTag>("rho"));
    phoLooseIdMapToken_       = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoLooseIdMap"));
    phoMediumIdMapToken_      = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoMediumIdMap"));
    phoTightIdMapToken_       = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoTightIdMap"));
@@ -27,6 +27,7 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    isMC_                     =                                           ps.getParameter<bool>("isMC");
    isPythia8gen_             =                                           ps.getParameter<bool>("isPythia8gen");
    isSherpaDiphoton_         =                                           ps.getParameter<bool>("isSherpaDiphoton");
+   outputFile_               =                                   TString(ps.getParameter<std::string>("outputFile"));
 
    if (isPythia8gen_){
    fgenTree = fs->make<TTree>("fgenTree","GENDiphotonTree");
@@ -82,12 +83,12 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    //---Handle, getByToken
    edm::Handle<vector<reco::GenParticle> > genParticles;
    edm::Handle<GenEventInfoProduct> genInfo;
-   edm::Handle< double > rhoH;
+   //edm::Handle< double > rhoH;
    edm::Handle<edm::ValueMap<bool> > id_decisions[3];
 
    iEvent.getByToken(genParticlesToken_, genParticles);
    iEvent.getByToken(genInfoToken_,      genInfo);
-   iEvent.getByToken(rhoToken_,          rhoH);
+   //iEvent.getByToken(rhoToken_,          rhoH);
    iEvent.getByToken(phoLooseIdMapToken_, id_decisions[LOOSE]);
    iEvent.getByToken(phoMediumIdMapToken_,id_decisions[MEDIUM]);
    iEvent.getByToken(phoTightIdMapToken_ ,id_decisions[TIGHT]);
@@ -96,7 +97,7 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
 
-   rho_ = *rhoH;
+   //rho_ = *rhoH;
 
    //*Debugging!
    cout <<  "Run: "    << iEvent.id().run()

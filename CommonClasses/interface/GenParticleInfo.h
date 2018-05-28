@@ -172,7 +172,7 @@ void fillGenDiPhoInfo(genParticleInfo_t& fGenPhoton1Info, genParticleInfo_t& fGe
 
       //else throw cms::Exception("Should always have exactly two photons with status==3 in the diphoton sample");
       //if(ip->isHardProcess()){
-        if(status==1 && PID==22){
+        if((status==1 || status ==2) && PID==22){
       //cout << "Photon end state found" << endl;
         photoncount = photoncount + 1;
         double pt  = ip->pt();
@@ -219,7 +219,9 @@ void fillGenDiPhoInfo(genParticleInfo_t& fGenPhoton1Info, genParticleInfo_t& fGe
     int jcounter = 0;
     for (iter = genPhoInfoStructs.begin(); iter != genPhoInfoStructs.end(); ++iter){
       if (jcounter<2){
-          cout << "photonobjects_pt: " << (*iter).pt << endl;
+          cout << "photonobjects_pt: " << (*iter).pt
+               << "; Status: "         << (*iter).status
+               << endl;
        jcounter = jcounter + 1;
       }//endfilling
     }//end loop
