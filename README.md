@@ -20,4 +20,3 @@ scram b -j 16
 cmsRun nPhotonAnalyzer/python/ConfFile_cfg.py
 
 ```
-

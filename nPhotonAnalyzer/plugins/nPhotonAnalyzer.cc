@@ -50,6 +50,8 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fSherpaGenTree->Branch("nPV", &nPV_);
    }
 
+
+
 }
 
 
@@ -81,9 +83,9 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    ExoDiPhotons::InitDiphotonInfo(    fGenDiPhotonInfo  );
 
    //---Handle, getByToken
-   edm::Handle<vector<reco::GenParticle> > genParticles;
+   //edm::Handle<vector<reco::GenParticle> > genParticles;
+   edm::Handle<edm::View<reco::GenParticle> > genParticles;
    edm::Handle<GenEventInfoProduct> genInfo;
-   //edm::Handle< double > rhoH;
    edm::Handle<edm::ValueMap<bool> > id_decisions[3];
 
    iEvent.getByToken(genParticlesToken_, genParticles);
@@ -93,9 +95,81 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByToken(phoMediumIdMapToken_,id_decisions[MEDIUM]);
    iEvent.getByToken(phoTightIdMapToken_ ,id_decisions[TIGHT]);
 
+   //Test
+   const reco::GenParticle *genPho1 = NULL;
+   const reco::GenParticle *genPho2 = NULL;
+
+   //---Debugging Modes Flags
+   //bool finalstate  = false;
+   bool Photons     = false;
+   bool stored      = false;
+   bool hardprocess = false;
+   bool hardfinalG  = true;
+
+   for (size_t i = 0; i < genParticles->size(); ++i){
+     const auto gen = genParticles->ptrAt(i);
+     //print All Hard Interaction gen genParticles
+     //is Status 3 == Hard Interaction in Pythia6
+     //if (gen->status()==3)
+     if (hardprocess){
+     if (gen->status()>20 && gen->status()<30) cout << "Status:            "           << gen->status()
+                                                    << ";HardProcess?:    "            << gen->isHardProcess()
+                                                    << "; pdgId: "                     << gen->pdgId()
+                                                    << "; pt: "                        << gen->pt()
+                                                    << "; eta: "                       << gen->eta()
+                                                    << "; phi: "                       << gen->phi() << endl;
+     }//HardProcess
+     if (Photons){
+     if (gen->pdgId()==22){
+       cout << "Status 1 photon: status " << gen->status()
+            << "; pdgId: "                << gen->pdgId()
+            << "; pt: "                   << gen->pt()
+            << "; eta: "                  << gen->eta()
+            << "; phi: "                  << gen->phi() << endl;
+     }//pdgId photon
+     }
+
+
+     //Print all finalstate photons
+     //Is status 1 == final state in pythia? -> Anwswer: Pythia8 it's 1 or 2
+     if (hardfinalG){
+     if (gen->status()>20 && gen->status()<30){
+     if (gen->status()==1 || gen->status()==2){
+     if (gen->pdgId()==22){
+       cout << "Status:  "                << gen->status()
+            << "; pdgId: "                << gen->pdgId()
+            << "; pt: "                   << gen->pt()
+            << "; eta: "                  << gen->eta()
+            << "; phi: "                  << gen->phi() << endl;
+
+        genPho1 = &(*gen);
+        genPho2 = &(*gen);
+
+     }//photon
+     }//finalstate status 1 or 2
+     }//end status1
+     }//bool hardfinalG
+
+   }//end for loop over gen particles
+
+  if (stored){
+   cout << "GenPhoton1 Info: status " << genPho1->status()
+        << "; pdgId: "                << genPho1->pdgId()
+        << "; pt: "                   << genPho1->pt()
+        << "; eta: "                  << genPho1->eta()
+        << "; phi: "                  << genPho1->phi() << endl;
+   cout << "GenPhoton2 Info: status " << genPho2->status()
+        << "; pdgId: "                << genPho2->pdgId()
+        << "; pt: "                   << genPho2->pt()
+        << "; eta: "                  << genPho2->eta()
+        << "; phi: "                  << genPho2->phi() << endl;
+   }
+   // end test
+
    //---Update Information
-   ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
-   ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
+
+   //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
+   //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
 
    //rho_ = *rhoH;
 

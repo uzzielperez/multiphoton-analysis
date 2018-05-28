@@ -45,7 +45,6 @@ options.register('nEventsSample',
 ## 'maxEvents' is already registered by the Framework, changing default value
 options.setDefault('maxEvents', 1000)
 
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 #globalTag ='notset'
@@ -141,6 +140,7 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         #isClosureTest = cms.bool(False),
         #isReMINIAOD = cms.bool(isReMINIAOD),
         isolationConeR = cms.double(0.3)
+
 )
 
 process.p = cms.Path(process.demo)
