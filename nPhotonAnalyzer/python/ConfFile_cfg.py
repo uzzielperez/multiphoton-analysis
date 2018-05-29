@@ -45,6 +45,8 @@ options.register('nEventsSample',
 ## 'maxEvents' is already registered by the Framework, changing default value
 options.setDefault('maxEvents', 1000)
 
+process = cms.Process("Demo")
+
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
@@ -70,7 +72,7 @@ if isMC:
     JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
 
 
-process = cms.Process("Demo")
+
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 

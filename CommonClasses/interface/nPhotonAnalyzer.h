@@ -51,7 +51,8 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 
       edm::Service<TFileService> fs;
 
-      edm::EDGetTokenT<vector<reco::GenParticle> >    genParticlesToken_;
+      edm::EDGetTokenT<edm::View<reco::GenParticle> > genParticlesToken_;
+      //edm::EDGetTokenT<vector<reco::GenParticle> >    genParticlesToken_;
       edm::EDGetTokenT<edm::View<reco::GenParticle> > genParticlesMiniAODToken_;
       edm::EDGetToken                                 photonsMiniAODToken_;
       //edm::EDGetTokenT<double>                        rhoToken_;

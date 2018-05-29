@@ -9,14 +9,12 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    usesResource("TFileService");
 
    isGood_                    = false;
-   //isMC_                      = true;
-   //isPythia8gen_              = true;
-   //isSherpaDiphoton_          = false;
    nPV_                       = 0;
    SherpaGenPhoton0_iso_      = 9999.99;
    SherpaGenPhoton1_iso_      = 9999.99;
 
-   genParticlesToken_        = consumes<vector<reco::GenParticle>>      (ps.getParameter<InputTag>("genparticles"));
+   genParticlesToken_        = consumes<edm::View<reco::GenParticle> >  (ps.getParameter<InputTag>("genparticles"));
+   //genParticlesToken_        = consumes<vector<reco::GenParticle>>      (ps.getParameter<InputTag>("genparticles"));
    //rhoToken_                 = consumes<double>                         (ps.getParameter<edm::InputTag>("rho"));
    phoLooseIdMapToken_       = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoLooseIdMap"));
    phoMediumIdMapToken_      = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoMediumIdMap"));
@@ -85,100 +83,26 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    //---Handle, getByToken
    //edm::Handle<vector<reco::GenParticle> > genParticles;
    edm::Handle<edm::View<reco::GenParticle> > genParticles;
-   edm::Handle<GenEventInfoProduct> genInfo;
-   edm::Handle<edm::ValueMap<bool> > id_decisions[3];
+   edm::Handle<GenEventInfoProduct>           genInfo;
+   edm::Handle<edm::ValueMap<bool> >          id_decisions[3];
 
-   iEvent.getByToken(genParticlesToken_, genParticles);
-   iEvent.getByToken(genInfoToken_,      genInfo);
+   iEvent.getByToken(genParticlesToken_,    genParticles);
+   iEvent.getByToken(genInfoToken_,         genInfo);
    //iEvent.getByToken(rhoToken_,          rhoH);
-   iEvent.getByToken(phoLooseIdMapToken_, id_decisions[LOOSE]);
-   iEvent.getByToken(phoMediumIdMapToken_,id_decisions[MEDIUM]);
-   iEvent.getByToken(phoTightIdMapToken_ ,id_decisions[TIGHT]);
+   iEvent.getByToken(phoLooseIdMapToken_,   id_decisions[LOOSE]);
+   iEvent.getByToken(phoMediumIdMapToken_,  id_decisions[MEDIUM]);
+   iEvent.getByToken(phoTightIdMapToken_ ,  id_decisions[TIGHT]);
 
-   //Test
-   const reco::GenParticle *genPho1 = NULL;
-   const reco::GenParticle *genPho2 = NULL;
-
-   //---Debugging Modes Flags
-   //bool finalstate  = false;
-   bool Photons     = false;
-   bool stored      = false;
-   bool hardprocess = false;
-   bool hardfinalG  = true;
-
-   for (size_t i = 0; i < genParticles->size(); ++i){
-     const auto gen = genParticles->ptrAt(i);
-     //print All Hard Interaction gen genParticles
-     //is Status 3 == Hard Interaction in Pythia6
-     //if (gen->status()==3)
-     if (hardprocess){
-     if (gen->status()>20 && gen->status()<30) cout << "Status:            "           << gen->status()
-                                                    << ";HardProcess?:    "            << gen->isHardProcess()
-                                                    << "; pdgId: "                     << gen->pdgId()
-                                                    << "; pt: "                        << gen->pt()
-                                                    << "; eta: "                       << gen->eta()
-                                                    << "; phi: "                       << gen->phi() << endl;
-     }//HardProcess
-     if (Photons){
-     if (gen->pdgId()==22){
-       cout << "Status 1 photon: status " << gen->status()
-            << "; pdgId: "                << gen->pdgId()
-            << "; pt: "                   << gen->pt()
-            << "; eta: "                  << gen->eta()
-            << "; phi: "                  << gen->phi() << endl;
-     }//pdgId photon
-     }
+   //---Update
+   ExoDiPhotons::fillGenInfo(genParticles);
 
 
-     //Print all finalstate photons
-     //Is status 1 == final state in pythia? -> Anwswer: Pythia8 it's 1 or 2
-     if (hardfinalG){
-     if (gen->status()>20 && gen->status()<30){
-     if (gen->status()==1 || gen->status()==2){
-     if (gen->pdgId()==22){
-       cout << "Status:  "                << gen->status()
-            << "; pdgId: "                << gen->pdgId()
-            << "; pt: "                   << gen->pt()
-            << "; eta: "                  << gen->eta()
-            << "; phi: "                  << gen->phi() << endl;
-
-        genPho1 = &(*gen);
-        genPho2 = &(*gen);
-
-     }//photon
-     }//finalstate status 1 or 2
-     }//end status1
-     }//bool hardfinalG
-
-   }//end for loop over gen particles
-
-  if (stored){
-   cout << "GenPhoton1 Info: status " << genPho1->status()
-        << "; pdgId: "                << genPho1->pdgId()
-        << "; pt: "                   << genPho1->pt()
-        << "; eta: "                  << genPho1->eta()
-        << "; phi: "                  << genPho1->phi() << endl;
-   cout << "GenPhoton2 Info: status " << genPho2->status()
-        << "; pdgId: "                << genPho2->pdgId()
-        << "; pt: "                   << genPho2->pt()
-        << "; eta: "                  << genPho2->eta()
-        << "; phi: "                  << genPho2->phi() << endl;
-   }
-   // end test
-
-   //---Update Information
-
-   //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
-   //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
-
-   //rho_ = *rhoH;
-
-   //*Debugging!
+   //Debugging!
    cout <<  "Run: "    << iEvent.id().run()
         << ", LS: "    << iEvent.id().luminosityBlock()
         << ", Event: " << iEvent.id().event()
         << endl;
-   //Debugging!*
+   //Debugging!
 
    //Fill
    if (isPythia8gen_)         fgenTree->Fill();
