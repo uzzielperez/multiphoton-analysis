@@ -95,6 +95,8 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
    //---Update
    ExoDiPhotons::fillGenInfo(genParticles);
+   //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
+   //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
 
 
    //Debugging!

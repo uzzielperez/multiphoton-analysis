@@ -167,42 +167,25 @@ void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles){
 
 
       for (size_t i = 0; i < genParticles->size(); ++i){
-        const auto gen = genParticles->ptrAt(i);
+              const auto gen = genParticles->ptrAt(i);
 
         //print All Hard Interaction gen genParticles
         //is Status 3 == Hard Interaction in Pythia6
         //if (gen->status()==3)
         //Pythia8 status 20-30 is Hard interaction
-        if (gen->isHardProcess() && gen->pt() == 0)   interactingPartons.push_back(gen->pdgId());
+        if (gen->isHardProcess() && gen->pt() == 0){
+           interactingPartons.push_back(gen->pdgId());
+           cout << "Status: "                      << gen->status()
+                << ";HardProcess?:   "             << gen->isHardProcess()
+                << "; pdgId: "                     << gen->pdgId()
+                << "; pt: "                        << gen->pt()
+                << "; eta: "                       << gen->eta()
+                << "; phi: "                       << gen->phi() << endl;
+        }
         if (gen->isHardProcess() && gen->pdgId()==22) genPhotons.push_back(gen);
 
-        //if (gen->status()<20 && gen->status()>30) This is HardProcess
-        if () cout << "Status: "                       << gen->status()
-                                                       << ";HardProcess?:    "            << gen->isHardProcess()
-                                                       << "; pdgId: "                     << gen->pdgId()
-                                                       << "; pt: "                        << gen->pt()
-                                                       << "; eta: "                       << gen->eta()
-                                                       << "; phi: "                       << gen->phi() << endl;
-      }//end for loop over gen particles
+    }//end for loop over gen particles
 
-/*
-      cout << "GenPhoton1 Info: status " << genPho1->status()
-           << "; pdgId: "                << genPho1->pdgId()
-           << "; pt: "                   << genPho1->pt()
-           << "; eta: "                  << genPho1->eta()
-           << "; phi: "                  << genPho1->phi() << endl;
-      cout << "GenPhoton2 Info: status " << genPho2->status()
-           << "; pdgId: "                << genPho2->pdgId()
-           << "; pt: "                   << genPho2->pt()
-           << "; eta: "                  << genPho2->eta()
-           << "; phi: "                  << genPho2->phi() << endl;
-*/
-      // end test
-
-      //---Update Information
-
-      //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
-      //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
 }//end of fillGenInfo
 
 
