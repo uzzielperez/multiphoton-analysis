@@ -14,6 +14,7 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    SherpaGenPhoton1_iso_      = 9999.99;
 
    genParticlesToken_        = consumes<edm::View<reco::GenParticle> >  (ps.getParameter<InputTag>("genparticles"));
+   //genParticlesMiniAODToken_ = consumes<edm::View<reco::GenParticle> >  (ps.getParameter<InputTag>("genParticlesMiniAOD"));
    //genParticlesToken_        = consumes<vector<reco::GenParticle>>      (ps.getParameter<InputTag>("genparticles"));
    //rhoToken_                 = consumes<double>                         (ps.getParameter<edm::InputTag>("rho"));
    phoLooseIdMapToken_       = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoLooseIdMap"));
@@ -21,7 +22,7 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    phoTightIdMapToken_       = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoTightIdMap"));
    nEventsSample_            =                                          (ps.getParameter<uint32_t>("nEventsSample"));
    genInfoToken_             = consumes<GenEventInfoProduct>            (ps.getParameter<edm::InputTag>("genInfo"));
-   genParticlesMiniAODToken_ = mayConsume<edm::View<reco::GenParticle> >(ps.getParameter<edm::InputTag>("genParticlesMiniAOD"));
+  //genParticlesMiniAODToken_ = mayConsume<edm::View<reco::GenParticle> >(ps.getParameter<edm::InputTag>("genParticlesMiniAOD"));
    isMC_                     =                                           ps.getParameter<bool>("isMC");
    isPythia8gen_             =                                           ps.getParameter<bool>("isPythia8gen");
    isSherpaDiphoton_         =                                           ps.getParameter<bool>("isSherpaDiphoton");
@@ -32,7 +33,7 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fgenTree->Branch("Event",       &fEventInfo,       ExoDiPhotons::eventBranchDefString.c_str());
    fgenTree->Branch("GenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
    fgenTree->Branch("GenPhoton2",  &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fgenTree->Branch("GenDiPhoton", &fGenDiPhotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fgenTree->Branch("GenDiPhoton", &fGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
    fgenTree->Branch("isGood",      &isGood_);
    fgenTree->Branch("nPV", &nPV_);
    }
@@ -42,7 +43,7 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fSherpaGenTree->Branch("Event",             &fEventInfo,             ExoDiPhotons::eventBranchDefString.c_str());
    fSherpaGenTree->Branch("SherpaGenPhoton1",  &fSherpaGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
    fSherpaGenTree->Branch("SherpaGenPhoton2",  &fSherpaGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fSherpaGenTree->Branch("SherpaGenDiphoton", &fSherpaGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fSherpaGenTree->Branch("SherpaGendiphoton", &fSherpaGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
    fSherpaGenTree->Branch("weightAll",         &SherpaWeightAll_);
    fSherpaGenTree->Branch("isGood",            &isGood_);
    fSherpaGenTree->Branch("nPV", &nPV_);
@@ -74,11 +75,10 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    using namespace pat;
 
    //---Initialize
-   ExoDiPhotons::InitEventInfo(       fEventInfo        );
-
-   ExoDiPhotons::InitGenParticleInfo( fGenPhoton1Info   );
-   ExoDiPhotons::InitGenParticleInfo( fGenPhoton2Info   );
-   ExoDiPhotons::InitDiphotonInfo(    fGenDiPhotonInfo  );
+   ExoDiPhotons::InitEventInfo(fEventInfo);
+   ExoDiPhotons::InitGenParticleInfo(fGenPhoton1Info);
+   ExoDiPhotons::InitGenParticleInfo(fGenPhoton2Info);
+   ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo);
 
    //---Handle, getByToken
    //edm::Handle<vector<reco::GenParticle> > genParticles;
@@ -94,7 +94,8 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByToken(phoTightIdMapToken_ ,  id_decisions[TIGHT]);
 
    //---Update
-   ExoDiPhotons::fillGenInfo(genParticles);
+   ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
+   fillGenInfo(genParticles);
    //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
 
@@ -134,4 +135,47 @@ nPhotonAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
   desc.setUnknown();
   descriptions.addDefault(desc);
 }
+
+
+void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles){
+
+      // Store Information in these vectors
+      vector< edm::Ptr<const reco::GenParticle> > genPhotons;
+      vector<int> interactingPartons;
+
+      //Test
+      //const reco::GenParticle *genPho1 = NULL;
+      //const reco::GenParticle *genPho2 = NULL;
+
+      for (size_t i = 0; i < genParticles->size(); ++i){
+        const auto gen = genParticles->ptrAt(i);
+        //Pythia8 status 20-30 is Hard interaction
+        if (gen->isHardProcess() && gen->pt() == 0)    interactingPartons.push_back(gen->pdgId());
+        if (gen->isHardProcess() && gen->pdgId()==22)  genPhotons.push_back(gen);
+      }//end for loop over gen particles
+
+      sort(genPhotons.begin(), genPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
+      if(interactingPartons.size() == 2){
+        fEventInfo.interactingParton1PdgId = interactingPartons[0];
+        fEventInfo.interactingParton2PdgId = interactingPartons[1];
+      }
+      else cout << "Exactly two interacting partons not found!" << endl;
+
+      // Samples with only fakes may have no hard-process photons
+      if(genPhotons.size() < 1) return;
+      const reco::GenParticle *genPhoton1 = &(*genPhotons.at(0));
+      if (genPhoton1) ExoDiPhotons::FillGenParticleInfo(fGenPhoton1Info, genPhoton1);
+
+      // Samples with one fake may have only one hard-process photon
+      if(genPhotons.size() < 2) return;
+      // fill gen photon info
+      const reco::GenParticle *genPhoton2 = &(*genPhotons.at(1));
+      if (genPhoton2) ExoDiPhotons::FillGenParticleInfo(fGenPhoton2Info, genPhoton2);
+
+      // fill gen diphoton info
+      if (genPhoton1 && genPhoton2) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo,genPhoton1,genPhoton2);
+
+}//end of fillGenInfo
+
+
 DEFINE_FWK_MODULE(nPhotonAnalyzer);

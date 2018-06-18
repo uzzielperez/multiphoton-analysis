@@ -3,6 +3,7 @@
 ## Do not edit manually!
 dataset = 'DATASETNAME'
 nevents = NEVENTS
+#herpa_RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1
 
 # CRAB3 task names can no longer be greater than 100 characters; need to shorten task name
 taskname = dataset[1:].replace('/','__').replace('RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2','MiniAODv2').replace('TuneCUETP8M1_13TeV-madgraphMLM-pythia8','13TeV-MG-PY8')
@@ -21,14 +22,16 @@ config = Configuration()
 
 config.section_("General")
 config.General.requestName = taskname
-config.General.workArea = 'out_crab'
+config.General.workArea = 'outCRAB'
 config.General.transferLogs = False
 
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
 #config.JobType.psetName = 'diphoton-analysis/ExoDiPhotonAnalyzer/test/diphoton_cfg.py'
 #config.JobType.psetName = '/afs/cern.ch/user/c/ciperez/CMSSW_8_0_25/src/diphoton-analysis/ExoDiPhotonAnalyzer/test/diphoton_cfg.py'
-config.JobType.psetName = 'multiphoton-analysis/nPhotonAnalyzer/test/nPhoton_cfg.py'
+#config.JobType.psetName = 'multiphoton-analysis/nPhotonAnalyzer/test/nPhoton_cfg.py'
+config.JobType.psetName = '/uscms_data/d3/cuperez/CMSSW_8_0_25/src/multiphoton-analysis/nPhotonAnalyzer/test/nPhoton_cfg.py'
+#'multiphoton-analysis/nPhotonAnalyzer/test/nPhoton_cfg.py'
 config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_' + datasetID + '.root']
 
 config.section_("Data")
@@ -36,10 +39,11 @@ config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
 #config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/Run2016Data'
 #config.Data.outLFNDirBase = '/store/user/ciperez/ADDGravToGGSherpa'
-config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/ADDGravToGG'
+config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/ADDGravToGG/SherpaTest'
 
 
-#if "Run2017" in taskname:
+if "Run2017" in taskname:
+    #config.Data.splitting = 'Automatic'
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100
     config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/PromptReco/Cert_294927-306126_13TeV_PromptReco_Collisions17_JSON.txt'

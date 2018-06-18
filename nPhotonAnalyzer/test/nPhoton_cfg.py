@@ -10,6 +10,7 @@ isPythia8gen        = False
 isSherpaDiphoton    = True
 isReMINIAOD         = False
 #islocal             = True
+#new
 
 # Update with CMSSW_VERSION
 #globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
@@ -124,12 +125,22 @@ my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonI
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
+if isPythia8gen:
+	inTag = "genParticles"
+elif isSherpaDiphoton:
+    inTag = "prunedGenParticles"
+else:
+    print "cannot determine proper input type"
+
 process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
-        genparticles = cms.InputTag("genParticles"),
+        #isPythia8gen        = False
+        #Diphoton    = True
+        genparticles = cms.InputTag(inTag),
+        # genParticle tag
+        #genParticlesMiniAOD = cms.InputTag("prunedGenParticles"),
         #photonsMiniAOD = cms.InputTag("slimmedPhotons"),
         minPhotonPt = cms.double(75.),
-        # genParticle tag
-        genParticlesMiniAOD = cms.InputTag("prunedGenParticles"),
+
         # vertex tag
         #vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
         # beam spot tag

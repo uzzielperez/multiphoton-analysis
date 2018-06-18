@@ -44,7 +44,7 @@ namespace ExoDiPhotons
     // detector channel info
     double iEta; // filled
     double iPhi; // filled
-    
+
     // high pT ID
     double alphaHighPtID; // filled
     double kappaHighPtID; // filled
@@ -58,7 +58,7 @@ namespace ExoDiPhotons
     bool passEGMLooseID;
     bool passEGMMediumID;
     bool passEGMTightID;
-    
+
     // fiducial flags
     bool isEB; // filled
     bool isEE; // filled
@@ -113,7 +113,7 @@ namespace ExoDiPhotons
     photonInfo.hadTowerOverEm        = -9999.99;
     photonInfo.hadronicOverEm        = -9999.99;
 
-    // shower shape variables 
+    // shower shape variables
     photonInfo.r9               = -9999.99;
     photonInfo.r9_5x5           = -9999.99;
     photonInfo.sigmaIetaIeta    = -9999.99;
@@ -128,7 +128,7 @@ namespace ExoDiPhotons
     // detector channel info
     photonInfo.iEta =  -9999.99;
     photonInfo.iPhi =  -9999.99;
-    
+
     // high pT ID
     photonInfo.alphaHighPtID = -9999.99;
     photonInfo.kappaHighPtID = -9999.99;
@@ -141,14 +141,14 @@ namespace ExoDiPhotons
     photonInfo.passEGMLooseID  = false;
     photonInfo.passEGMMediumID = false;
     photonInfo.passEGMTightID  = false;
-    
-    // fiducial flags 
-    photonInfo.isEB        = false;        
-    photonInfo.isEE        = false;   
-    photonInfo.isEBEtaGap  = false;   
-    photonInfo.isEBPhiGap  = false;   
-    photonInfo.isEERingGap = false; 
-    photonInfo.isEEDeeGap  = false;   
+
+    // fiducial flags
+    photonInfo.isEB        = false;
+    photonInfo.isEE        = false;
+    photonInfo.isEBEtaGap  = false;
+    photonInfo.isEBPhiGap  = false;
+    photonInfo.isEERingGap = false;
+    photonInfo.isEEDeeGap  = false;
     photonInfo.isEBEEGap   = false;
 
     // electron veto and high pT ID checks
@@ -172,18 +172,18 @@ namespace ExoDiPhotons
     // mc truth info
     photonInfo.isMCTruthFake = false;
   }
-  
+
   void FillBasicPhotonInfo(photonInfo_t &photonInfo, const pat::Photon *photon)
   {
     double photon_eta = std::abs(photon->superCluster()->eta());
-    
+
     // kinematics
     photonInfo.pt          = photon->pt();
     photonInfo.eta         = photon->eta();
     photonInfo.phi         = photon->phi();
     photonInfo.scEta       = photon->superCluster()->eta();
     photonInfo.scPhi       = photon->superCluster()->phi();
-    
+
     // fiducial flags
     photonInfo.isEB        = photon_eta < 1.4442; //photon->isEB();
     photonInfo.isEE        = 1.566 < photon_eta && photon_eta < 2.5; //photon->isEE();
@@ -193,7 +193,7 @@ namespace ExoDiPhotons
     photonInfo.isEEDeeGap  = photon->isEEDeeGap();
     photonInfo.isEBEEGap   = photon->isEBEEGap();
   }
-  
+
   void FillPhotonIDInfo(photonInfo_t &photonInfo, const pat::Photon *photon, double rho, double isSat)
   {
     // isolation
@@ -220,12 +220,12 @@ namespace ExoDiPhotons
     // detector channel info
     photonInfo.iEta             = photon->iEta();
     photonInfo.iPhi             = photon->iPhi();
-    
+
     // high pT ID
     photonInfo.alphaHighPtID    = ExoDiPhotons::phoAlphaHighPtID(photon);
     photonInfo.kappaHighPtID    = ExoDiPhotons::phoKappaHighPtID(photon);
     photonInfo.phoEAHighPtID    = ExoDiPhotons::phoEAHighPtID(photon);
-    
+
     // electron veto and high pT ID checks
     photonInfo.passElectronVeto = photon->passElectronVeto();
     photonInfo.passHTowOverE    = ExoDiPhotons::passHadTowerOverEmCut(photon);
@@ -246,7 +246,7 @@ namespace ExoDiPhotons
     double chEA  = eaCH.getEffectiveArea(std::abs(photon->superCluster()->eta()));
     double nhEA  = eaNH.getEffectiveArea(std::abs(photon->superCluster()->eta()));
     double phoEA = eaPho.getEffectiveArea(std::abs(photon->superCluster()->eta()));
-    
+
     photonInfo.chEAegmID   = chEA;
     photonInfo.nhEAegmID   = nhEA;
     photonInfo.phoEAegamID = phoEA;
@@ -264,7 +264,14 @@ namespace ExoDiPhotons
   bool comparePhotonPairsByPt(const std::pair<edm::Ptr<pat::Photon>, int> photon1, const std::pair<edm::Ptr<pat::Photon>, int> photon2) {
     return(photon1.first->pt()>=photon2.first->pt());
   }
-  
+  // sort two photons by highest pt with vector of structs
+  bool comparePhotonsByPt(genParticleInfo_t photon1, genParticleInfo_t photon2) {
+         return(photon1.pt>=photon2.pt);
+  }
+
+
+
+
 } // end of namespace
 
 #endif

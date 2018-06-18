@@ -33,6 +33,7 @@
 #include "multiphoton-analysis/CommonClasses/interface/GenParticleInfo.h"
 #include "multiphoton-analysis/CommonClasses/interface/DiPhotonInfo.h"
 
+
 using namespace std;
 using namespace edm;
 
@@ -43,6 +44,7 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ~nPhotonAnalyzer();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+      void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles);
 
    private:
       virtual void beginJob() override;
@@ -77,7 +79,7 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ExoDiPhotons::eventInfo_t         fEventInfo;
       ExoDiPhotons::genParticleInfo_t   fGenPhoton1Info;
       ExoDiPhotons::genParticleInfo_t   fGenPhoton2Info;
-      ExoDiPhotons::diphotonInfo_t      fGenDiPhotonInfo;
+      ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo;
       ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton1Info;
       ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton2Info;
       ExoDiPhotons::diphotonInfo_t      fSherpaGenDiphotonInfo;

@@ -14,9 +14,41 @@ islocal             = True
 globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
 if islocal:
-    #PATH      = '/afs/cern.ch/user/c/ciperez/CMSSW_8_0_25/src/'
     PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
-    inF       = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
+    #inF      = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
+    #inF       = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
+    #inF       = 'ADDGravToGG_NED-4_MD-LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
+    #noMD
+    #inF       = 'ADDGravToGG_NED-4_LambdaT-10000_M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF       = 'ADDGravToGG_NED-4_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF       = 'ADDGravToGG_NED-4_LambdaT-5000_M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF       = 'ADDGravToGG_NED-4_LambdaT-7000_M-500-13TeV-pythia8_cff_py_GEN.root'
+
+    #wMD
+    #inF       = 'ADDGravToGG_NED-4_MD-1128_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF       = 'ADDGravToGG_NED-4_MD-1410_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF       = 'ADDGravToGG_NED-4_MD-1974_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF       = 'ADDGravToGG_NED-4_MD-2820_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
+
+    #MD Extremes Knob
+    #inF        = 'ADDGravToGG_NED-4_MD-100_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF        = 'ADDGravToGG_NED-4_MD-10000_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF        = 'ADDGravToGG_NED-4_MD-11000_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
+    # Use MD-1128 LambdaT-4000
+
+    # Cutoff Comparisons
+    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-0_M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-1_M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-2_M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-3_M-500-13TeV-pythia8_cff_py_GEN.root'
+
+    # NegInt
+    #inF         = 'ADDGravToGG_NED-4_LambdaT-4000_NegInt-M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF          = 'ADDGravToGG_NED-4_LambdaT-4000_NegInt-nomhat-M-500-13TeV-pythia8_cff_py_GEN.root'
+
+    # GG Standard Model Only
+    inF         = 'GG_M-500-1100-13TeV-pythia8_cff_py_GEN.root'
+
     INFILE    = PATH + inF
     inputFile = 'file:%s' %(INFILE)
 #else:

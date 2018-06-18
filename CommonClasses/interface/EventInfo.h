@@ -16,7 +16,7 @@
 
 namespace ExoDiPhotons
 {
-  
+
   struct eventInfo_t {
     Long64_t run;
     Long64_t LS;
@@ -52,7 +52,7 @@ namespace ExoDiPhotons
 
   // variables must be sorted in decreasing order of size
   std::string eventBranchDefString("run/L:LS:evnum:processid:bx:orbit:ptHat/F:alphaqcd:alphaqed:qscale:x1:x2:pdf1:pdf2:weight0:weight:weightPuUp:weightPu:weightPuDown:weightLumi:weightAll:interactingParton1PdgId/I:interactingParton2PdgId:pdf_id1:pdf_id2:npv_true:beamHaloIDLoose/O:beamHaloIDTight:beamHaloIDTight2015");
-  
+
   void InitEventInfo(eventInfo_t &eventInfo) {
     eventInfo.run       = (Long64_t) -99999.99;
     eventInfo.LS        = (Long64_t) -99999.99;
@@ -92,13 +92,13 @@ namespace ExoDiPhotons
     eventInfo.bx    = iEvent.bunchCrossing();
     eventInfo.orbit = iEvent.orbitNumber();
   }
-  
+
   void FillBeamHaloEventInfo(eventInfo_t &eventInfo, const reco::BeamHaloSummary* beamHaloSummary) {
     eventInfo.beamHaloIDLoose     = beamHaloSummary->CSCLooseHaloId();
     eventInfo.beamHaloIDTight     = beamHaloSummary->CSCTightHaloId();
     eventInfo.beamHaloIDTight2015 = beamHaloSummary->CSCTightHaloId2015();
   }
-  
+
   void FillGenEventInfo(eventInfo_t &eventInfo, const GenEventInfoProduct *genInfo) {
     eventInfo.ptHat     = genInfo->hasBinningValues() ? (genInfo->binningValues())[0] : 0.0 ;
     eventInfo.alphaqcd  = genInfo->alphaQCD();
