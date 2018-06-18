@@ -62,7 +62,7 @@ namespace ExoDiPhotons
 
     // Additional Information (Not yet included in Branch)
     //TLorentzVector p4;
-    reco::LeafCandidate::LorentzVector p4;
+    //reco::LeafCandidate::LorentzVector p4;
 
   };
 
@@ -149,83 +149,16 @@ namespace ExoDiPhotons
 
   }//miniAOD
 
-// sort two photons by highest pt
-bool comparePhotonsByPt(genParticleInfo_t photon1, genParticleInfo_t photon2) {
-       return(photon1.pt>=photon2.pt);
-}
+//Putting these here to avoid unecessary header PhotonInfo.h
+  // sort two photons by highest pt with vector of structs
+  bool comparePhotonsByPts(genParticleInfo_t photon1, genParticleInfo_t photon2) {
+         return(photon1.pt>=photon2.pt);
+  }
+  // sort two photons by highest pt
+  bool comparePhotonsByPt(const edm::Ptr<const reco::Candidate> photon1, const edm::Ptr<const reco::Candidate> photon2) {
+    return(photon1->pt()>=photon2->pt());
+  }
 
-void fillGenDiPhoInfo(genParticleInfo_t& fGenPhoton1Info, genParticleInfo_t& fGenPhoton2Info,
-                      diphotonInfo_t &diphotonInfo, const edm::Handle<vector<reco::GenParticle> > genParticles)
-{
-   int photoncount = 0;
-   //Temporary storage
-   vector<genParticleInfo_t> genPhoInfoStructs;
-   genParticleInfo_t genParticleInfo;
-   InitGenParticleInfo(genParticleInfo);
-
-   //Loop over the genParticles. Handle in plugin nPhotonAnalyzer.cc
-   for(vector<reco::GenParticle>::const_iterator ip = genParticles->begin(); ip != genParticles->end(); ++ip)
-   {
-      int status = ip->status();
-      int PID    = ip->pdgId();
-      reco::LeafCandidate::LorentzVector p4     = ip->p4();
-
-      //else throw cms::Exception("Should always have exactly two photons with status==3 in the diphoton sample");
-      //if(ip->isHardProcess()){
-        if(status==1 && PID==22){
-      //cout << "Photon end state found" << endl;
-        photoncount = photoncount + 1;
-        double pt  = ip->pt();
-        double eta = ip->eta();
-        double phi = ip->phi();
-
-        //Kinematics
-        genParticleInfo.pt  = pt;
-        genParticleInfo.eta = eta;
-        genParticleInfo.phi = phi;
-
-        //Matching (Later)
-
-        //genInfo
-        genParticleInfo.status = status;
-        genParticleInfo.pdgId  = PID;
-
-        //Additional Info
-        genParticleInfo.p4     = p4;
-
-        //Store infoStruct in vector
-        genPhoInfoStructs.push_back(genParticleInfo);
-
-        //}//end HardProcess Condition
-      }//end photon end state condition
-
-  }//end loop over gen particles
-
-    //Sort Photon objects by pt
-    sort(genPhoInfoStructs.begin(), genPhoInfoStructs.end(), comparePhotonsByPt);
-    fGenPhoton1Info = genPhoInfoStructs[0];
-    fGenPhoton2Info = genPhoInfoStructs[1];
-
-    //If there are two photon objects then store DiPhotonInfo
-    if(genPhoInfoStructs.size()>2){
-      cout << "Storing DiPhotonInfo" << endl;
-      ExoDiPhotons::FillDiphotonInfo(diphotonInfo, fGenPhoton1Info.p4, fGenPhoton2Info.p4);
-    }
-
-    //Debugging
-    vector<genParticleInfo_t>::const_iterator iter;
-
-    cout << "Number of photons in event: " << photoncount << endl;
-    int jcounter = 0;
-    for (iter = genPhoInfoStructs.begin(); iter != genPhoInfoStructs.end(); ++iter){
-      if (jcounter<2){
-          cout << "photonobjects_pt: " << (*iter).pt << endl;
-       jcounter = jcounter + 1;
-      }//endfilling
-    }//end loop
-    //End Debugging
-
-}//end of fillGenDiPhoInfo
 }//end of namespace
 
 

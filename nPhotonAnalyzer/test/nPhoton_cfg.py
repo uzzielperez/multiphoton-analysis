@@ -4,87 +4,66 @@ from os.path import basename
 import os
 import sys
 
-#Configure
+#------------------------------------------
 isMC                = True
-isPythia8gen        = True
-isSherpaDiphoton    = False
-islocal             = True
+isPythia8gen        = False
+isSherpaDiphoton    = True
+isReMINIAOD         = False
+#islocal             = True
+#new
 
 # Update with CMSSW_VERSION
-globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
+#globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
-if islocal:
-    PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
-    #inF      = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_MD-LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
-    #noMD
-    #inF       = 'ADDGravToGG_NED-4_LambdaT-10000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_LambdaT-5000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_LambdaT-7000_M-500-13TeV-pythia8_cff_py_GEN.root'
-
-    #wMD
-    #inF       = 'ADDGravToGG_NED-4_MD-1128_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_MD-1410_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_MD-1974_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_MD-2820_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-
-    #MD Extremes Knob
-    #inF        = 'ADDGravToGG_NED-4_MD-100_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF        = 'ADDGravToGG_NED-4_MD-10000_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF        = 'ADDGravToGG_NED-4_MD-11000_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    # Use MD-1128 LambdaT-4000
-
-    # Cutoff Comparisons
-    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-0_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-1_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-2_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-3_M-500-13TeV-pythia8_cff_py_GEN.root'
-
-    # NegInt
-    #inF         = 'ADDGravToGG_NED-4_LambdaT-4000_NegInt-M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF          = 'ADDGravToGG_NED-4_LambdaT-4000_NegInt-nomhat-M-500-13TeV-pythia8_cff_py_GEN.root'
-
-    # GG Standard Model Only
-    inF         = 'GG_M-500-1100-13TeV-pythia8_cff_py_GEN.root'
-
-    INFILE    = PATH + inF
-    inputFile = 'file:%s' %(INFILE)
-#else:
-    #print "LFN"
-    #Provide Logical Filename
-    #inputFile = '/store/....'
-
-outName = 'Test%s' %(inF)
-#------------------------------------------
-print 'Configuration file Run with the following settings: '
-print 'isMC = ', isMC
-if isPythia8gen:
-    print 'Pythia GEN'
-if isSherpaDiphoton:
-    print 'Sherpa GEN'
-print 'Writing output to file ', outName
-
-#------------------------------------------
+# if islocal:
+#     #PATH      = '/afs/cern.ch/user/c/ciperez/CMSSW_8_0_25/src/'
+#     PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
+#     inF       = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
+#     INFILE    = PATH + inF
+#     inputFile = 'file:%s' %(INFILE)
+# else:
+#     print "LFN"
+#     #Provide Logical Filename
+#     #inputFile = '/store/....'
+#
+# outName = 'Test%s' %(inF)
+# #------------------------------------------
+# print 'Configuration file Run with the following settings: '
+# print 'isMC = ', isMC
+# if isPythia8gen:
+#     print 'Pythia GEN'
+# if isSherpaDiphoton:
+#     print 'Sherpa GEN'
+# print 'Writing output to file ', outName
+#
+# #------------------------------------------
 
 options = VarParsing ('python')
+
 options.register('nEventsSample',
                  100,
                  VarParsing.multiplicity.singleton,
                  VarParsing.varType.int,
                  "Total number of events in dataset for event weight calculation.")
 ## 'maxEvents' is already registered by the Framework, changing default value
-options.setDefault('maxEvents', 1000)
+options.setDefault('maxEvents', 100)
 
-process = cms.Process("Demo")
+options.parseArguments()
 
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+outName = options.outputFile
+print "Default output name: " + outName
+if "output" in outName: # if an input file name is specified, event weights can be determined
+    outName = "out_" + basename(options.inputFiles[0])
+    print "Output root file name: " + outName
+else:
+    options.inputFiles = 'file:/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
+    outName = 'TestSummer16ADDGravToGG_NED4-4_LambdaT-4000_13TeV-pythia8.root'
+#    outName = "ExoDiphotonAnalyzer.root"
 
-#globalTag ='notset'
-#options.parseArguments()
+# to avoid processing with an incorrect globalTag
+globalTag ='notset'
 
+# override options for MC
 if isMC:
     version = os.getenv("CMSSW_VERSION")
     if "CMSSW_8" in version:
@@ -104,15 +83,22 @@ if isMC:
     JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
 
 
-
+process = cms.Process("Demo")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.suppressWarning.append('nPhotonAnalyzer')
+
+process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.options.allowUnscheduled = cms.untracked.bool(True)
+
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32( options.maxEvents ) )
 
 process.source = cms.Source("PoolSource",
+    # replace 'myfile.root' with the source file you want to use
     fileNames = cms.untracked.vstring(
         #'file:myfile.root'
-        #'file:/afs/cern.ch/user/c/ciperez/Generation/CMSSW_9_3_8/src/ADDGravToGG_NED-4_LambdaT-4000_M-500_13TeV-pythia8_cff_py_GEN.root'
-        inputFile
+        options.inputFiles
     )
 )
 
@@ -128,6 +114,7 @@ process.TFileService = cms.Service("TFileService",
                     fileName = cms.string(outName)
 )
 
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 # Setup VID for EGM ID
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
@@ -138,12 +125,22 @@ my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonI
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
+if isPythia8gen:
+	inTag = "genParticles"
+elif isSherpaDiphoton:
+    inTag = "prunedGenParticles"
+else:
+    print "cannot determine proper input type"
+
 process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
-        genparticles = cms.InputTag("genParticles"),
-        #photonsMiniAOD = cms.InputTag("slimmedPhotons"),
-        minPhotonPt = cms.double(75.),
+        #isPythia8gen        = False
+        #Diphoton    = True
+        genparticles = cms.InputTag(inTag),
         # genParticle tag
         #genParticlesMiniAOD = cms.InputTag("prunedGenParticles"),
+        #photonsMiniAOD = cms.InputTag("slimmedPhotons"),
+        minPhotonPt = cms.double(75.),
+
         # vertex tag
         #vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
         # beam spot tag
@@ -174,6 +171,7 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         #isClosureTest = cms.bool(False),
         #isReMINIAOD = cms.bool(isReMINIAOD),
         isolationConeR = cms.double(0.3)
+
 )
 
 process.p = cms.Path(process.demo)
