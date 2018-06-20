@@ -99,6 +99,4 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 
 };
 
-
-
 #endif

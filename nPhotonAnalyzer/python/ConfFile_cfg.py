@@ -45,18 +45,23 @@ if islocal:
     # NegInt
     #inF         = 'ADDGravToGG_NED-4_LambdaT-4000_NegInt-M-500-13TeV-pythia8_cff_py_GEN.root'
     #inF          = 'ADDGravToGG_NED-4_LambdaT-4000_NegInt-nomhat-M-500-13TeV-pythia8_cff_py_GEN.root'
+    inF          = 'ADDGravToGG_LT-4000_NegInt-M-500-13TeV-pythia8_cff_py_GEN.root'
 
     # GG Standard Model Only
-    inF         = 'GG_M-500-1100-13TeV-pythia8_cff_py_GEN.root'
+    #inF         = 'GG_M-500-1100-13TeV-pythia8_cff_py_GEN.root'
 
     INFILE    = PATH + inF
     inputFile = 'file:%s' %(INFILE)
-#else:
-    #print "LFN"
+    outName = 'Test%s' %(inF)
+else:
+    inputFile = '/store/mc/RunIISummer16MiniAODv2pp/ADDGravToGG_MS-4000_NED-4_KK-1_M-500To1000_13TeV-sherpa/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/5C8D5DA4-EDCF-E611-8219-A0000420FE80.root'
+    print "LFN:", inputFile
     #Provide Logical Filename
-    #inputFile = '/store/....'
+    #inputFile = '/store/....osdafutName = 'Test%s' %(inF)
+    outName = 'TestSherpaADDGravToGG_MS-4000_NED-4_KK-1_M-500To1000_13TeV-sherpa.root'
 
-outName = 'Test%s' %(inF)
+
+
 #------------------------------------------
 print 'Configuration file Run with the following settings: '
 print 'isMC = ', isMC
@@ -82,8 +87,6 @@ process = cms.Process("Demo")
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
-#globalTag ='notset'
-#options.parseArguments()
 
 if isMC:
     version = os.getenv("CMSSW_VERSION")
@@ -102,8 +105,6 @@ if isMC:
         print "Could not determine appropriate MC global tag from filename"
         sys.exit()
     JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
-
-
 
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -138,8 +139,15 @@ my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonI
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
+if isPythia8gen:
+	inTag = "genParticles"
+elif isSherpaDiphoton:
+    inTag = "prunedGenParticles"
+else:
+    print "cannot determine proper input type"
+
 process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
-        genparticles = cms.InputTag("genParticles"),
+        genparticles = cms.InputTag(inTag),
         #photonsMiniAOD = cms.InputTag("slimmedPhotons"),
         minPhotonPt = cms.double(75.),
         # genParticle tag
@@ -177,3 +185,13 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
 )
 
 process.p = cms.Path(process.demo)
+
+# analyzer to print cross section
+# process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
+# if isMC:
+#     process.p = cms.Path(process.egmPhotonIDSequence * process.demo * process.xsec)
+# else:
+#     if "Run2017" in outName:
+#         process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.demo)
+#     else:
+#         process.p = cms.Path(process.egmPhotonIDSequence * process.demo)
