@@ -10,33 +10,6 @@ isPythia8gen        = False
 isSherpaDiphoton    = True
 isReMINIAOD         = False
 #islocal             = True
-#new
-
-# Update with CMSSW_VERSION
-#globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
-
-# if islocal:
-#     #PATH      = '/afs/cern.ch/user/c/ciperez/CMSSW_8_0_25/src/'
-#     PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
-#     inF       = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
-#     INFILE    = PATH + inF
-#     inputFile = 'file:%s' %(INFILE)
-# else:
-#     print "LFN"
-#     #Provide Logical Filename
-#     #inputFile = '/store/....'
-#
-# outName = 'Test%s' %(inF)
-# #------------------------------------------
-# print 'Configuration file Run with the following settings: '
-# print 'isMC = ', isMC
-# if isPythia8gen:
-#     print 'Pythia GEN'
-# if isSherpaDiphoton:
-#     print 'Sherpa GEN'
-# print 'Writing output to file ', outName
-#
-# #------------------------------------------
 
 options = VarParsing ('python')
 

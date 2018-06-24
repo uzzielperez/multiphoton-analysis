@@ -39,7 +39,7 @@ config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
 #config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/Run2016Data'
 #config.Data.outLFNDirBase = '/store/user/ciperez/ADDGravToGGSherpa'
-config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/ADDGravToGG/SherpaTest'
+config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/ADDGravToGGSherpaTest'
 
 
 if "Run2017" in taskname:
