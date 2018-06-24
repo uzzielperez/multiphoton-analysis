@@ -45,9 +45,9 @@ if islocal:
     # NegInt
     #inF         = 'ADDGravToGG_NED-4_LambdaT-4000_NegInt-M-500-13TeV-pythia8_cff_py_GEN.root'
     #inF          = 'ADDGravToGG_NED-4_LambdaT-4000_NegInt-nomhat-M-500-13TeV-pythia8_cff_py_GEN.root'
-
+    inF         = 'ADDGravToGG_LT-4000_NegInt-M-500-13TeV-pythia8_cff_py_GEN.root'
     # GG Standard Model Only
-    inF         = 'GG_M-500-1100-13TeV-pythia8_cff_py_GEN.root'
+    #inF         = 'GG_M-500-1100-13TeV-pythia8_cff_py_GEN.root'
 
     INFILE    = PATH + inF
     inputFile = 'file:%s' %(INFILE)
