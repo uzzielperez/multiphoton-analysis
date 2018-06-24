@@ -20,5 +20,8 @@ scram b -j 16
 cmsRun nPhotonAnalyzer/python/ConfFile_cfg.py
 
 # crab submission under development
-
+cd $CMSSW_BASE
+source /cvmfs/cms.cern.ch/crab3/crab.sh
+voms-proxy-init -voms cms -rfc
+./nPhotonAnalyzer/test/submit_crab_cfg.py
 ```
