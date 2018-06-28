@@ -34,24 +34,9 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fgenTree->Branch("GenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
    fgenTree->Branch("GenPhoton2",  &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
    fgenTree->Branch("GenDiPhoton", &fGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fgenTree->Branch("weightAll",   &SherpaWeightAll_);
    fgenTree->Branch("isGood",      &isGood_);
    fgenTree->Branch("nPV", &nPV_);
-
-
-   if (isSherpaDiphoton_){
-   // fSherpaGenTree = fs->make<TTree>("fgenTree", "GENSherpaDiphotonTree");
-   // fSherpaGenTree->Branch("Event",       &fEventInfo,             ExoDiPhotons::eventBranchDefString.c_str());
-   // fSherpaGenTree->Branch("GenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   // fSherpaGenTree->Branch("GenPhoton2",  &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   // fSherpaGenTree->Branch("GenDiPhoton", &fGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
-   // fSherpaGenTree->Branch("weightAll",         &SherpaWeightAll_);
-   // fSherpaGenTree->Branch("isGood",            &isGood_);
-   // fSherpaGenTree->Branch("nPV", &nPV_);
-
-   fgenTree->Branch("weightAll", &SherpaWeightAll_);
-   }
-
-
 
 }
 
@@ -99,6 +84,7 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    fillGenInfo(genParticles);
    ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
+   SherpaWeightAll_ = fEventInfo.weightAll;
    //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
 
@@ -111,8 +97,8 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    //Debugging!
 
    //Fill
-   if (isPythia8gen_)         fgenTree->Fill();
-   if (isSherpaDiphoton_)     fSherpaGenTree->Fill();
+   fgenTree->Fill();
+
 
 }
 

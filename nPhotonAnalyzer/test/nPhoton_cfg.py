@@ -33,6 +33,19 @@ else:
     outName = 'TestSummer16ADDGravToGG_NED4-4_LambdaT-4000_13TeV-pythia8.root'
 #    outName = "ExoDiphotonAnalyzer.root"
 
+#------------------------------------------
+print 'Configuration file Run with the following settings: '
+print 'isMC = ', isMC
+if isPythia8gen:
+    print 'Pythia GEN'
+if isSherpaDiphoton:
+    print 'Sherpa GEN'
+print 'processing ', options.inputFile[0]
+print 'Writing output to file ', outName
+print 'Number of Events ', options.nEventsSample
+#------------------------------------------
+
+
 # to avoid processing with an incorrect globalTag
 globalTag ='notset'
 
