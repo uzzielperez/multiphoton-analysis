@@ -191,21 +191,21 @@ namespace ExoDiPhotons {
     if(sample.Contains("GG_M-2000To4000_Pt-70_13TeV-sherpa")) xsec = 2.315e-04;
     if(sample.Contains("GG_M-4000To8000_Pt-70_13TeV-sherpa")) xsec = 1.669e-06;
     if(sample.Contains("GG_M-8000To13000_Pt-70_13TeV-sherpa")) xsec = 5.430e-11;
-    
+
     // do not use weights for data
     if(sample.Contains("Run2015") || sample.Contains("Run2016") || sample.Contains("Run2017")) xsec = 1.0;
 
     if(xsec < 0) throw cms::Exception("Could not determine cross section from output file name");
-    
+
     std::cout << "Using cross section " << xsec << " for sample " << sample << std::endl;
-    
+
     return xsec;
   }
 
   double averageWeight(const TString& sample) {
     double average = 1.0;
-    
-    // average weight is non-zero for these samples because 
+
+    // average weight is non-zero for these samples because
     // of the njet weighting in Sherpa
     if(sample.Contains("GGJets_M-60To200_Pt-50_13TeV-sherpa")) average = 3.895719e-01;
     if(sample.Contains("GGJets_M-200To500_Pt-50_13TeV-sherpa")) average = 2.818643e-01;
@@ -358,7 +358,9 @@ namespace ExoDiPhotons {
     if(sample.Contains("GG_M-2000To4000_Pt-70_13TeV-sherpa")) average = 476.126/99999;
     if(sample.Contains("GG_M-4000To8000_Pt-70_13TeV-sherpa")) average = 3.85555/97816;
     if(sample.Contains("GG_M-8000To13000_Pt-70_13TeV-sherpa")) average = 0.00022662/99274;
-    
+
+    std::cout << "Using average " << average << " for sample " << sample << std::endl;
+
     return average;
   }
 }

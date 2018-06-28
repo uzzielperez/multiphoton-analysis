@@ -461,5 +461,5 @@ for ilist in DATASETS:
     print "DA: Wrote crab configuration file " + outputfile
 
     cmd = "crab submit -c " + outputfile
-    os.system(cmd)
+    #os.system(cmd)
     print "DA: Submitted ", ids
