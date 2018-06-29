@@ -177,7 +177,10 @@ process.demo = cms.EDAnalyzer(
     isolationConeR = cms.double(0.3)
     )
 
-process.p = cms.Path(process.demo)
+process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
+#process.p = cms.Path(process.demo)
+process.p = cms.Path(process.demo * process.xsec)
+
 # # analyzer to print cross section
 # process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
 # if isMC:

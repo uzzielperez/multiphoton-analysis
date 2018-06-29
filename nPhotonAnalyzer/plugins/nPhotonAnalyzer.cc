@@ -85,6 +85,7 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    fillGenInfo(genParticles);
    ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
    SherpaWeightAll_ = fEventInfo.weightAll;
+   cout << "SherpaWeightAll_ =" << SherpaWeightAll_ << endl;
    //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
 
