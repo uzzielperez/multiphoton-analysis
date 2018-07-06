@@ -192,5 +192,5 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         #isReMINIAOD = cms.bool(isReMINIAOD),
         isolationConeR = cms.double(0.3)
 )
-
-process.p = cms.Path(process.demo)
+process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
+process.p = cms.Path(process.demo * process.xsec)

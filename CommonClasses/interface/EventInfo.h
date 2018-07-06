@@ -136,11 +136,18 @@ namespace ExoDiPhotons
   }
 
   void FillEventWeights(eventInfo_t &eventInfo, const TString& sample, double nEventsSample) {
-    std::cout << "Number of events in Sample: " << nEventsSample << " for sample " << sample << std::endl;
     double normalizationLumi = 1000.; // pb
     eventInfo.weightLumi = crossSection(sample)*normalizationLumi/(nEventsSample*averageWeight(sample));
     eventInfo.weightAll = eventInfo.weight*eventInfo.weightLumi;
-    std::cout << "EventWeightAll: " << eventInfo.weightAll << std::endl;
+    std::cout << "WeightLumi: "                <<  eventInfo.weightLumi
+              << "; xsec: "                    << crossSection(sample)
+              << "; normalizationLumi: "       << normalizationLumi
+              << "; averageWeight: "           << averageWeight(sample)
+              << "; number of events: "        << nEventsSample
+              << "; weight: "                  << eventInfo.weight
+              << "; EventWeightAll Computed: " << eventInfo.weightAll
+              << " for sample "                << sample
+              << std::endl;
   }
 
 
