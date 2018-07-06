@@ -30,7 +30,8 @@ config.JobType.pluginName = 'Analysis'
 #config.JobType.psetName = 'diphoton-analysis/ExoDiPhotonAnalyzer/test/diphoton_cfg.py'
 #config.JobType.psetName = '/afs/cern.ch/user/c/ciperez/CMSSW_8_0_25/src/diphoton-analysis/ExoDiPhotonAnalyzer/test/diphoton_cfg.py'
 #config.JobType.psetName = 'multiphoton-analysis/nPhotonAnalyzer/test/nPhoton_cfg.py'
-config.JobType.psetName = '/uscms_data/d3/cuperez/CMSSW_8_0_25/src/multiphoton-analysis/nPhotonAnalyzer/test/nPhoton_cfg.py'
+#config.JobType.psetName = '/uscms_data/d3/cuperez/CMSSW_8_0_25/src/multiphoton-analysis/nPhotonAnalyzer/test/nPhoton_cfg.py'
+config.JobType.psetName = '/uscms_data/d3/cuperez/CMSSW_8_0_25/src/multiphoton-analysis/nPhotonAnalyzer/test/diphoton_cfg.py'
 #'multiphoton-analysis/nPhotonAnalyzer/test/nPhoton_cfg.py'
 config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_' + datasetID + '.root']
 
@@ -39,7 +40,7 @@ config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
 #config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/Run2016Data'
 #config.Data.outLFNDirBase = '/store/user/ciperez/ADDGravToGGSherpa'
-config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/ADDGravToGG/SherpaTest'
+config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/ADDGravToGGSherpaTest'
 
 
 if "Run2017" in taskname:

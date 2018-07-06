@@ -6,15 +6,16 @@ import sys
 
 #Configure
 isMC                = True
-isPythia8gen        = True
-isSherpaDiphoton    = False
-islocal             = True
+isPythia8gen        = False
+isSherpaDiphoton    = True
+islocal             = False
 
 # Update with CMSSW_VERSION
 globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
 if islocal:
-    PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
+    #PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
+    PATH      = '/uscms/home/cuperez/nobackup/'
     #inF      = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
     #inF       = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
     #inF       = 'ADDGravToGG_NED-4_MD-LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
@@ -49,14 +50,20 @@ if islocal:
     # GG Standard Model Only
     #inF         = 'GG_M-500-1100-13TeV-pythia8_cff_py_GEN.root'
 
+    # Sherpa
+    #Sherpa Samples
+    inF         = 'ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa.root'
+
     INFILE    = PATH + inF
     inputFile = 'file:%s' %(INFILE)
-#else:
-    #print "LFN"
+    outName = 'Test%s' %(inF)
+else:
+    print "Logical FileName Provided: "
+    inputFile = '/store/mc/RunIISummer16MiniAODv2/ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/6C12F491-0BB7-E611-B418-0025904FE658.root'
     #Provide Logical Filename
     #inputFile = '/store/....'
+    outName = "ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa.root"
 
-outName = 'Test%s' %(inF)
 #------------------------------------------
 print 'Configuration file Run with the following settings: '
 print 'isMC = ', isMC
@@ -64,19 +71,22 @@ if isPythia8gen:
     print 'Pythia GEN'
 if isSherpaDiphoton:
     print 'Sherpa GEN'
+print 'processing ', inputFile
 print 'Writing output to file ', outName
+
 
 #------------------------------------------
 
 options = VarParsing ('python')
 options.register('nEventsSample',
-                 100,
+                 61125, #100,
                  VarParsing.multiplicity.singleton,
                  VarParsing.varType.int,
                  "Total number of events in dataset for event weight calculation.")
 ## 'maxEvents' is already registered by the Framework, changing default value
 options.setDefault('maxEvents', 1000)
 
+print 'nEventsSample: ', options.nEventsSample
 process = cms.Process("Demo")
 
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
@@ -138,8 +148,15 @@ my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonI
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
+if isPythia8gen:
+	inTag = "genParticles"
+elif isSherpaDiphoton:
+    inTag = "prunedGenParticles"
+else:
+    print "cannot determine proper input type"
+
 process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
-        genparticles = cms.InputTag("genParticles"),
+        genparticles = cms.InputTag(inTag),
         #photonsMiniAOD = cms.InputTag("slimmedPhotons"),
         minPhotonPt = cms.double(75.),
         # genParticle tag
@@ -175,5 +192,5 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         #isReMINIAOD = cms.bool(isReMINIAOD),
         isolationConeR = cms.double(0.3)
 )
-
-process.p = cms.Path(process.demo)
+process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
+process.p = cms.Path(process.demo * process.xsec)
