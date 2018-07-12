@@ -6,16 +6,21 @@ import sys
 
 #Configure
 isMC                = True
-isPythia8gen        = False
-isSherpaDiphoton    = True
-islocal             = False
+isPythia8gen        = True
+isSherpaDiphoton    = False
+islocal             = True
 
 # Update with CMSSW_VERSION
 globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
 if islocal:
-    #PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
-    PATH      = '/uscms/home/cuperez/nobackup/'
+    PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
+    #PATH      = '/uscms/home/cuperez/nobackup/'
+
+    # Hewett Test
+    inF       = 'ADDGravToGG_NED-2_LambdaT-3572_M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF       = 'ADDGravToGG_NED-2_LambdaT-4478_M-500-13TeV-pythia8_cff_py_GEN.root'
+
     #inF      = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
     #inF       = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
     #inF       = 'ADDGravToGG_NED-4_MD-LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
@@ -46,13 +51,13 @@ if islocal:
     # NegInt
     #inF         = 'ADDGravToGG_NED-4_LambdaT-4000_NegInt-M-500-13TeV-pythia8_cff_py_GEN.root'
     #inF          = 'ADDGravToGG_NED-4_LambdaT-4000_NegInt-nomhat-M-500-13TeV-pythia8_cff_py_GEN.root'
-    inF         = 'ADDGravToGG_LT-4000_NegInt-M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF         = 'ADDGravToGG_LT-4000_NegInt-M-500-13TeV-pythia8_cff_py_GEN.root'
     # GG Standard Model Only
     #inF         = 'GG_M-500-1100-13TeV-pythia8_cff_py_GEN.root'
 
     # Sherpa
     #Sherpa Samples
-    inF         = 'ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa.root'
+    #inF         = 'ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa.root'
 
     INFILE    = PATH + inF
     inputFile = 'file:%s' %(INFILE)
