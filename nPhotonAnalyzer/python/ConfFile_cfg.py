@@ -15,6 +15,11 @@ globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
 if islocal:
     PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
+
+    # Hewett minus Test
+    inF       = 'ADDGravToGG_NED-2_LambdaT-3572_M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF       = 'ADDGravToGG_NED-2_LambdaT-4478_M-500-13TeV-pythia8_cff_py_GEN.root'
+
     #inF      = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
     #inF       = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
     #inF       = 'ADDGravToGG_NED-4_MD-LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
