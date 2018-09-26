@@ -17,8 +17,11 @@ if islocal:
     PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
     #PATH      = '/uscms/home/cuperez/nobackup/'
 
+    # RS Graviton
+    inF = 'RSGravitonToGammaGamma_kMpl02_M_750_TuneCUEP8M1_13TeV_pythia8_cfi_py_GEN.root'
+
     # Hewett Test
-    inF       = 'ADDGravToGG_NED-2_LambdaT-3572_M-500-13TeV-pythia8_cff_py_GEN.root'
+    #inF       = 'ADDGravToGG_NED-2_LambdaT-3572_M-500-13TeV-pythia8_cff_py_GEN.root'
     #inF       = 'ADDGravToGG_NED-2_LambdaT-4478_M-500-13TeV-pythia8_cff_py_GEN.root'
 
     #inF      = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
