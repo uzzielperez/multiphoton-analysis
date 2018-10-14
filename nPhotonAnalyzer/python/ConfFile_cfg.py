@@ -17,8 +17,11 @@ if islocal:
     PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
     #PATH      = '/uscms/home/cuperez/nobackup/'
 
+    # Heavy Higgs
+    inF = 'GluGluSpin0ToGammaGamma_W_5p6_M_750_TuneCUEP8M1_13TeV_pythia8_cfi_py_GEN.root'
+
     # RS Graviton
-    inF = 'RSGravitonToGammaGamma_kMpl02_M_750_TuneCUEP8M1_13TeV_pythia8_cfi_py_GEN.root'
+    #inF = 'RSGravitonToGammaGamma_kMpl02_M_750_TuneCUEP8M1_13TeV_pythia8_cfi_py_GEN.root'
 
     # Hewett Test
     #inF       = 'ADDGravToGG_NED-2_LambdaT-3572_M-500-13TeV-pythia8_cff_py_GEN.root'
@@ -62,6 +65,8 @@ if islocal:
     #Sherpa Samples
     #inF         = 'ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa.root'
 
+
+
     INFILE    = PATH + inF
     inputFile = 'file:%s' %(INFILE)
     outName = 'Test%s' %(inF)
@@ -87,7 +92,8 @@ print 'Writing output to file ', outName
 
 options = VarParsing ('python')
 options.register('nEventsSample',
-                 61125, #100,
+                 #61125, #100,
+                 1000,
                  VarParsing.multiplicity.singleton,
                  VarParsing.varType.int,
                  "Total number of events in dataset for event weight calculation.")
