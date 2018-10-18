@@ -6,16 +6,25 @@ import sys
 
 #Configure
 isMC                = True
-isPythia8gen        = False
-isSherpaDiphoton    = True
-islocal             = False
+isPythia8gen        = True
+isSherpaDiphoton    = False
+islocal             = True
 
 # Update with CMSSW_VERSION
 globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
 if islocal:
+    #PATH      = '/uscms/home/cuperez/nobackup/'
     #PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
-    PATH      = '/uscms/home/cuperez/nobackup/'
+    PATH      = '/uscms/home/cuperez/nobackup/CMSSW_9_3_8/src/'
+    
+    # Unparticles
+    inF = 'Unparticles_du106_15TeV_pythia8_py_GEN.root'  
+    #inF = 'Unparticles_du2x1_15TeV_pythia8_py_GEN.root'
+    #inF = 'Unparticles_du109_15TeV_pythia8_py_GEN.root'
+
+    #PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
+    
     #inF      = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
     #inF       = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
     #inF       = 'ADDGravToGG_NED-4_MD-LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
@@ -52,7 +61,7 @@ if islocal:
 
     # Sherpa
     #Sherpa Samples
-    inF         = 'ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa.root'
+    #inF         = 'ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa.root'
 
     INFILE    = PATH + inF
     inputFile = 'file:%s' %(INFILE)
@@ -96,21 +105,21 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 #options.parseArguments()
 
 if isMC:
-    version = os.getenv("CMSSW_VERSION")
-    if "CMSSW_8" in version:
-        if "Spring16" in outName:
-            globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
-        if "Summer16" in outName:
-            #globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
-            # the previous tag should only be used when to process
-            # samples intended to match data previous to the
-            # 03Feb2017 re-miniAOD
-            globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
-    elif "CMSSW_7" in version:
-        globalTag = '76X_mcRun2_asymptotic_v12'
-    else:
-        print "Could not determine appropriate MC global tag from filename"
-        sys.exit()
+ #    version = os.getenv("CMSSW_VERSION")
+ #    if "CMSSW_8" in version:
+ #        if "Spring16" in outName:
+ #            globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
+ #        if "Summer16" in outName:
+ #            #globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
+ #            # the previous tag should only be used when to process
+ #            # samples intended to match data previous to the
+ #            # 03Feb2017 re-miniAOD
+ #            globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
+ #    elif "CMSSW_7" in version:
+ #        globalTag = '76X_mcRun2_asymptotic_v12'
+ #    else:
+ #        print "Could not determine appropriate MC global tag from filename"
+ #        sys.exit()
     JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
 
 
