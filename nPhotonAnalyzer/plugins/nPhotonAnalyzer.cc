@@ -28,15 +28,28 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    isSherpaDiphoton_         =                                           ps.getParameter<bool>("isSherpaDiphoton");
    outputFile_               =                                   TString(ps.getParameter<std::string>("outputFile"));
 
-
+   if (isPythia8gen_){
    fgenTree = fs->make<TTree>("fgenTree","GENDiphotonTree");
    fgenTree->Branch("Event",       &fEventInfo,       ExoDiPhotons::eventBranchDefString.c_str());
    fgenTree->Branch("GenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
    fgenTree->Branch("GenPhoton2",  &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
    fgenTree->Branch("GenDiPhoton", &fGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
-   fgenTree->Branch("weightAll",   &SherpaWeightAll_);
    fgenTree->Branch("isGood",      &isGood_);
    fgenTree->Branch("nPV", &nPV_);
+   }
+
+   if (isSherpaDiphoton_){
+   fSherpaGenTree = fs->make<TTree>("fSherpaGenTree", "GENSherpaDiphotonTree");
+   fSherpaGenTree->Branch("Event",             &fEventInfo,             ExoDiPhotons::eventBranchDefString.c_str());
+   fSherpaGenTree->Branch("SherpaGenPhoton1",  &fSherpaGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
+   fSherpaGenTree->Branch("SherpaGenPhoton2",  &fSherpaGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
+   fSherpaGenTree->Branch("SherpaGendiphoton", &fSherpaGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fSherpaGenTree->Branch("weightAll",         &SherpaWeightAll_);
+   fSherpaGenTree->Branch("isGood",            &isGood_);
+   fSherpaGenTree->Branch("nPV", &nPV_);
+   }
+
+
 
 }
 
@@ -82,12 +95,7 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
    //---Update
    ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
-   ExoDiPhotons::FillGenEventInfo(fEventInfo, &(*genInfo));
    fillGenInfo(genParticles);
-   cout << "fEventInfo.weightAll: " << fEventInfo.weightAll << endl;
-   ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
-   SherpaWeightAll_ = fEventInfo.weightAll;
-   cout << "fEventInfo.weightAll updated: " << fEventInfo.weightAll << "; SherpaWeightAll_ =" << SherpaWeightAll_ << endl;
    //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
 
@@ -100,8 +108,8 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    //Debugging!
 
    //Fill
-   fgenTree->Fill();
-
+   if (isPythia8gen_)         fgenTree->Fill();
+   if (isSherpaDiphoton_)     fSherpaGenTree->Fill();
 
 }
 
@@ -140,20 +148,28 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       //const reco::GenParticle *genPho2 = NULL;
 
       for (size_t i = 0; i < genParticles->size(); ++i){
-        const auto gen = genParticles->ptrAt(i);
-        //Pythia8 status 20-30 is Hard interaction
-        if (gen->isHardProcess() && gen->pt() == 0)    interactingPartons.push_back(gen->pdgId());
-        if (gen->isHardProcess() && gen->pdgId()==22){
-          genPhotons.push_back(gen);
-          cout << "Hard Process genParticle: "
-               << "status = "  << gen->status()
-               << "; pdgId = " << gen->pdgId()
-               << "; pt = "    << gen->pt()
-               << "; eta = "   << gen->eta()
-               << "; phi = "   << gen->phi()
-               << endl;
-        }
-      }//end for loop over gen particles
+       const auto gen = genParticles->ptrAt(i);
+       //Pythia8 status 20-30 is Hard interaction
+       if (gen->isHardProcess() && gen->pt() == 0)    interactingPartons.push_back(gen->pdgId());
+       if (gen->isHardProcess() && gen->pdgId()==22){
+         genPhotons.push_back(gen);
+         cout << "Hard Process genParticle: "
+              << "status = "  << gen->status()
+              << "; pdgId = " << gen->pdgId()
+              << "; pt = "    << gen->pt()
+              << "; eta = "   << gen->eta()
+              << "; phi = "   << gen->phi()
+              << endl;
+       }
+     }//end for loop over gen particles
+
+      // ORIGINAL SHORT
+      // for (size_t i = 0; i < genParticles->size(); ++i){
+      //   const auto gen = genParticles->ptrAt(i);
+      //   //Pythia8 status 20-30 is Hard interaction
+      //   if (gen->isHardProcess() && gen->pt() == 0)    interactingPartons.push_back(gen->pdgId());
+      //   if (gen->isHardProcess() && gen->pdgId()==22)  genPhotons.push_back(gen);
+      // }//end for loop over gen particles
 
       sort(genPhotons.begin(), genPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
       if(interactingPartons.size() == 2){

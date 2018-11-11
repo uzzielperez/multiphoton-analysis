@@ -15,73 +15,10 @@ globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
 if islocal:
     PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
-    #PATH      = '/uscms/home/cuperez/nobackup/CMSSW_9_3_8/src/'
-
-
-    #inF = 'Unparticles_du106_15TeV_pythia8_py_GEN.root'
-    #inF = 'Unparticles_du2x1_15TeV_pythia8_py_GEN.root'
-    #inF = 'Unparticles_du109_15TeV_pythia8_py_GEN.root'
-
-    #inF = 'Unparticles_du2x1_TuneCUEP8M1_15TeV_pythia8_py_GEN.root'
-    #inF = 'Unparticles_du109_TuneCUEP8M1_15TeV_pythia8_py_GEN.root'
-    #inF = 'Unparticles_du106_TuneCUEP8M1_15TeV_pythia8_py_GEN.root'
-    # RS Graviton
-    #inF = 'RSGravitonToGammaGamma_kMpl02_M_750_TuneCUEP8M1_13TeV_pythia8_cfi_py_GEN.root'
-    inF = 'RSGravitonToGammaGamma_kMpl02_M_750_TuneCUEP8M1_13TeV_pythia8_cfi_py_GEN.root'
-
-    # Heavy Higgs
-    #inF = 'GluGluSpin0ToGammaGamma_W_5p6_M_750_TuneCUEP8M1_13TeV_pythia8_cfi_py_GEN.root'
-
-    # RS Graviton
-    #inF = 'RSGravitonToGammaGamma_kMpl02_M_750_TuneCUEP8M1_13TeV_pythia8_cfi_py_GEN.root'
-
-    # Hewett Test
-    #inF       = 'ADDGravToGG_NED-2_LambdaT-3572_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-2_LambdaT-4478_M-500-13TeV-pythia8_cff_py_GEN.root'
-
-    #inF      = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_MD-LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
-    #noMD
-    #inF       = 'ADDGravToGG_NED-4_LambdaT-10000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_LambdaT-5000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_LambdaT-7000_M-500-13TeV-pythia8_cff_py_GEN.root'
-
-    #wMD
-    #inF       = 'ADDGravToGG_NED-4_MD-1128_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_MD-1410_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_MD-1974_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_MD-2820_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-
-    #MD Extremes Knob
-    #inF        = 'ADDGravToGG_NED-4_MD-100_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF        = 'ADDGravToGG_NED-4_MD-10000_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF        = 'ADDGravToGG_NED-4_MD-11000_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    # Use MD-1128 LambdaT-4000
-
-    # Cutoff Comparisons
-    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-0_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-1_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-2_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-3_M-500-13TeV-pythia8_cff_py_GEN.root'
-
-    # NegInt
-    #inF         = 'ADDGravToGG_NED-4_LambdaT-4000_NegInt-M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF          = 'ADDGravToGG_NED-4_LambdaT-4000_NegInt-nomhat-M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF         = 'ADDGravToGG_LT-4000_NegInt-M-500-13TeV-pythia8_cff_py_GEN.root'
-    # GG Standard Model Only
-    #inF         = 'GG_M-500-1100-13TeV-pythia8_cff_py_GEN.root'
-
-    # Sherpa
-    #Sherpa Samples
-    #inF         = 'ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa.root'
-
-
-
-    INFILE    = PATH + inF
+    #PATH      = '/uscms/home/cuperez/nobackup/'
+    INFILE    = PATH + 'DATASETNAME'
     inputFile = 'file:%s' %(INFILE)
-    outName = 'Test%s' %(inF)
+    outName = 'Test%s' %('DATASETNAME')
 else:
     print "Logical FileName Provided: "
     inputFile = '/store/mc/RunIISummer16MiniAODv2/ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/6C12F491-0BB7-E611-B418-0025904FE658.root'
@@ -98,16 +35,11 @@ if isSherpaDiphoton:
     print 'Sherpa GEN'
 print 'processing ', inputFile
 print 'Writing output to file ', outName
-
-
 #------------------------------------------
 
 options = VarParsing ('python')
 options.register('nEventsSample',
-<<<<<<< HEAD
-=======
                  #61125, #100,
->>>>>>> 10223978eb0cff3b7e72096d1710f3e8ab010bc3
                  1000,
                  VarParsing.multiplicity.singleton,
                  VarParsing.varType.int,
@@ -125,22 +57,22 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 #options.parseArguments()
 
 if isMC:
-   version = os.getenv("CMSSW_VERSION")
-   if "CMSSW_8" in version:
-       if "Spring16" in outName:
-           globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
-       if "Summer16" in outName:
-           # globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
-           # the previous tag should only be used when to process
-           # samples intended to match data previous to the
-           # 03Feb2017 re-miniAOD
-           globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
-   elif "CMSSW_7" in version:
-       globalTag = '76X_mcRun2_asymptotic_v12'
-   else:
-       print "Could not determine appropriate MC global tag from filename"
-       sys.exit()
-   JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
+    version = os.getenv("CMSSW_VERSION")
+    if "CMSSW_8" in version:
+        if "Spring16" in outName:
+            globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
+        if "Summer16" in outName:
+            #globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
+            # the previous tag should only be used when to process
+            # samples intended to match data previous to the
+            # 03Feb2017 re-miniAOD
+            globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
+    elif "CMSSW_7" in version:
+        globalTag = '76X_mcRun2_asymptotic_v12'
+    else:
+        print "Could not determine appropriate MC global tag from filename"
+        sys.exit()
+    JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
 
 
 
@@ -209,7 +141,8 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
         phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
         # gen event info
-        genInfo = cms.InputTag("generator", "", "SIM"),
+        #genInfo = cms.InputTag("generator", "", "SIM"),
+        genInfo = cms.InputTag("generator", "", "GEN"),
         # output file name
         outputFile = cms.string(outName),
         # number of events in the sample (for calculation of event weights)
@@ -223,3 +156,4 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
 )
 process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
 process.p = cms.Path(process.demo * process.xsec)
+#process.p = cms.Path(process.demo)
