@@ -17,6 +17,7 @@ namespace ExoDiPhotons
     double deltaR;
     double cosThetaStar;
     double cosThetaStar_old;
+    double chiDiphoton;
 
     // fiducial flags
     bool isEBEB;
@@ -36,6 +37,7 @@ namespace ExoDiPhotons
     diphotonInfo.deltaR           = -99999.99;
     diphotonInfo.cosThetaStar     = -99999.99;
     diphotonInfo.cosThetaStar_old = -99999.99;
+    diphotonInfo.chiDiphoton      = -99999.99;
 
     // fiducial flags
     diphotonInfo.isEBEB = false;
@@ -73,6 +75,8 @@ namespace ExoDiPhotons
     diphotonInfo.cosThetaStar = photon1_clone.CosTheta();
     // this older implementation was provided by Yousi Ma - should check it sometime
     diphotonInfo.cosThetaStar_old = fabs(photon_vector1.P() - photon_vector2.P())/(photon_vector1+photon_vector2).P();
+    // chiDiphoton
+    diphotonInfo.chiDiphoton = exp(fabs(photon_vector1.Rapidity()-photon_vector2.Rapidity()));
   }
 
   // filling function for reco photons
