@@ -7,29 +7,50 @@ import os
 # Update with CMSSW_VERSION
 globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
+doUnpdu1p9 = False
+doADDGRW1000 = True
+
+
 DATASET = []
-DATASET.append("STest1p9Unp1000p0_M_2000_py_GEN.root")
-DATASET.append("STest1p9Unp1000p0_M_500-2000_py_GEN.root")
-DATASET.append("STest1p9Unp1250p0_M_2000_py_GEN.root")
-DATASET.append("STest1p9Unp1250p0_M_500-2000_py_GEN.root")
-DATASET.append("STest1p9Unp1500p0_M_2000_py_GEN.root")
-DATASET.append("STest1p9Unp1500p0_M_500-2000_py_GEN.root")
-DATASET.append("STest1p9Unp1750p0_M_2000_py_GEN.root")
-DATASET.append("STest1p9Unp1750p0_M_500-2000_py_GEN.root")
-DATASET.append("STest1p9Unp2000p0_M_2000_py_GEN.root")
-DATASET.append("STest1p9Unp2000p0_M_500-2000_py_GEN.root")
-DATASET.append("STest1p9Unp2500p0_M_2000_py_GEN.root")
-DATASET.append("STest1p9Unp2500p0_M_500-2000_py_GEN.root")
-DATASET.append("STest1p9Unp3000p0_M_2000_py_GEN.root")
-DATASET.append("STest1p9Unp3000p0_M_500-2000_py_GEN.root")
-DATASET.append("STest1p9Unp3500p0_M_2000_py_GEN.root")
-DATASET.append("STest1p9Unp3500p0_M_500-2000_py_GEN.root")
-DATASET.append("STest1p9Unp4000p0_M_2000_py_GEN.root")
-DATASET.append("STest1p9Unp4000p0_M_500-2000_py_GEN.root")
-DATASET.append("STest1p9Unp4500p0_M_2000_py_GEN.root")
-DATASET.append("STest1p9Unp4500p0_M_500-2000_py_GEN.root")
-DATASET.append("STest1p9Unp5500p0_M_2000_py_GEN.root")
-DATASET.append("STest1p9Unp5500p0_M_500-2000_py_GEN.root")
+if doUnpdu1p9:
+    DATASET.append("STest1p9Unp1000p0_M_2000_py_GEN.root")
+    DATASET.append("STest1p9Unp1000p0_M_500-2000_py_GEN.root")
+    DATASET.append("STest1p9Unp1250p0_M_2000_py_GEN.root")
+    DATASET.append("STest1p9Unp1250p0_M_500-2000_py_GEN.root")
+    DATASET.append("STest1p9Unp1500p0_M_2000_py_GEN.root")
+    DATASET.append("STest1p9Unp1500p0_M_500-2000_py_GEN.root")
+    DATASET.append("STest1p9Unp1750p0_M_2000_py_GEN.root")
+    DATASET.append("STest1p9Unp1750p0_M_500-2000_py_GEN.root")
+    DATASET.append("STest1p9Unp2000p0_M_2000_py_GEN.root")
+    DATASET.append("STest1p9Unp2000p0_M_500-2000_py_GEN.root")
+    DATASET.append("STest1p9Unp2500p0_M_2000_py_GEN.root")
+    DATASET.append("STest1p9Unp2500p0_M_500-2000_py_GEN.root")
+    DATASET.append("STest1p9Unp3000p0_M_2000_py_GEN.root")
+    DATASET.append("STest1p9Unp3000p0_M_500-2000_py_GEN.root")
+    DATASET.append("STest1p9Unp3500p0_M_2000_py_GEN.root")
+    DATASET.append("STest1p9Unp3500p0_M_500-2000_py_GEN.root")
+    DATASET.append("STest1p9Unp4000p0_M_2000_py_GEN.root")
+    DATASET.append("STest1p9Unp4000p0_M_500-2000_py_GEN.root")
+    DATASET.append("STest1p9Unp4500p0_M_2000_py_GEN.root")
+    DATASET.append("STest1p9Unp4500p0_M_500-2000_py_GEN.root")
+    DATASET.append("STest1p9Unp5500p0_M_2000_py_GEN.root")
+    DATASET.append("STest1p9Unp5500p0_M_500-2000_py_GEN.root")
+
+if doADDGRW1000:
+    DATASET.append("TestADD_NI-1_LambdaT-10000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
+    DATASET.append("TestADD_NI-1_LambdaT-11000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
+    DATASET.append("TestADD_NI-1_LambdaT-13000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
+    DATASET.append("TestADD_NI-1_LambdaT-4000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
+    DATASET.append("TestADD_NI-1_LambdaT-4500_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
+    DATASET.append("TestADD_NI-1_LambdaT-5000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
+    DATASET.append("TestADD_NI-1_LambdaT-5500_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
+    DATASET.append("TestADD_NI-1_LambdaT-6000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
+    DATASET.append("TestADD_NI-1_LambdaT-6500_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
+    DATASET.append("TestADD_NI-1_LambdaT-7000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
+    DATASET.append("TestADD_NI-1_LambdaT-7500_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
+    DATASET.append("TestADD_NI-1_LambdaT-8000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
+    DATASET.append("TestADD_NI-1_LambdaT-8500_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
+    DATASET.append("TestADD_NI-1_LambdaT-9000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
 
 PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
 
