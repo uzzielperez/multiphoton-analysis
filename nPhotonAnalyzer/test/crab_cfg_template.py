@@ -20,9 +20,10 @@ datasetID = datasetID[0:datasetID.find('/')]
 from WMCore.Configuration import Configuration
 config = Configuration()
 
+
 config.section_("General")
 config.General.requestName = taskname
-config.General.workArea = 'outCRAB'
+config.General.workArea = 'out_CRAB'
 config.General.transferLogs = False
 
 config.section_("JobType")
@@ -40,8 +41,8 @@ config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
 #config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/Run2016Data'
 #config.Data.outLFNDirBase = '/store/user/ciperez/ADDGravToGGSherpa'
-config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/ADDGravToGGSherpaTest'
-
+#config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/ADDGravToGGSherpaTest'
+config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/ANGGJetsRevisit'
 
 if "Run2017" in taskname:
     #config.Data.splitting = 'Automatic'

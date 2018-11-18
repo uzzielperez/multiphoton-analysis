@@ -104,10 +104,6 @@ print 'Writing output to file ', outName
 
 options = VarParsing ('python')
 options.register('nEventsSample',
-<<<<<<< HEAD
-=======
-                 #61125, #100,
->>>>>>> 10223978eb0cff3b7e72096d1710f3e8ab010bc3
                  1000,
                  VarParsing.multiplicity.singleton,
                  VarParsing.varType.int,

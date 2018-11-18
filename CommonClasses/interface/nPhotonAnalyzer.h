@@ -91,6 +91,7 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       bool isGood_;
       bool isPythia8gen_;
       bool isSherpaDiphoton_;
+      //double WeightAll_;
       double SherpaWeightAll_;
       double SherpaGenPhoton0_iso_;
       double SherpaGenPhoton1_iso_;

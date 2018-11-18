@@ -28,7 +28,6 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    isSherpaDiphoton_         =                                           ps.getParameter<bool>("isSherpaDiphoton");
    outputFile_               =                                   TString(ps.getParameter<std::string>("outputFile"));
 
-   if (isPythia8gen_){
    fgenTree = fs->make<TTree>("fgenTree","GENDiphotonTree");
    fgenTree->Branch("Event",       &fEventInfo,       ExoDiPhotons::eventBranchDefString.c_str());
    fgenTree->Branch("GenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
@@ -36,18 +35,29 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fgenTree->Branch("GenDiPhoton", &fGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
    fgenTree->Branch("isGood",      &isGood_);
    fgenTree->Branch("nPV", &nPV_);
-   }
 
-   if (isSherpaDiphoton_){
-   fSherpaGenTree = fs->make<TTree>("fSherpaGenTree", "GENSherpaDiphotonTree");
-   fSherpaGenTree->Branch("Event",             &fEventInfo,             ExoDiPhotons::eventBranchDefString.c_str());
-   fSherpaGenTree->Branch("SherpaGenPhoton1",  &fSherpaGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fSherpaGenTree->Branch("SherpaGenPhoton2",  &fSherpaGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fSherpaGenTree->Branch("SherpaGendiphoton", &fSherpaGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
-   fSherpaGenTree->Branch("weightAll",         &SherpaWeightAll_);
-   fSherpaGenTree->Branch("isGood",            &isGood_);
-   fSherpaGenTree->Branch("nPV", &nPV_);
-   }
+   if (isSherpaDiphoton_) fgenTree->Branch("weightAll",         &SherpaWeightAll_);
+
+   // if (isPythia8gen_){
+   // fgenTree = fs->make<TTree>("fgenTree","GENDiphotonTree");
+   // fgenTree->Branch("Event",       &fEventInfo,       ExoDiPhotons::eventBranchDefString.c_str());
+   // fgenTree->Branch("GenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
+   // fgenTree->Branch("GenPhoton2",  &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
+   // fgenTree->Branch("GenDiPhoton", &fGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
+   // fgenTree->Branch("isGood",      &isGood_);
+   // fgenTree->Branch("nPV", &nPV_);
+   // }
+   //
+   // if (isSherpaDiphoton_){
+   // fgenTree = fs->make<TTree>("fgenTree", "GENSherpaDiphotonTree");
+   // fgenTree->Branch("Event",             &fEventInfo,             ExoDiPhotons::eventBranchDefString.c_str());
+   // fgenTree->Branch("fGenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
+   // fgenTree->Branch("fGenPhoton2",  &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
+   // fgenTree->Branch("fGendiphoton", &fGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
+   // fgenTree->Branch("weightAll",         &SherpaWeightAll_);
+   // fgenTree->Branch("isGood",            &isGood_);
+   // fgenTree->Branch("nPV", &nPV_);
+   // }
 
 
 
@@ -96,6 +106,7 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    //---Update
    ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    fillGenInfo(genParticles);
+  if (isSherpaDiphoton_) ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
    //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
 
@@ -108,8 +119,9 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    //Debugging!
 
    //Fill
-   if (isPythia8gen_)         fgenTree->Fill();
-   if (isSherpaDiphoton_)     fSherpaGenTree->Fill();
+   // if (isPythia8gen_)         fgenTree->Fill();
+   // if (isSherpaDiphoton_)     fgenTree->Fill();
+   fgenTree->Fill();
 
 }
 

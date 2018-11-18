@@ -8,10 +8,14 @@ import os
 globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
 doUnpdu1p9 = False
-doADDGRW1000 = True
+doADDGRW1000 = False
+dotestitems = True
+
 
 
 DATASET = []
+if dotestitems:
+    DATASET.append("out_GGJets_M-6000To8000_Pt-50_13TeV-sherpa_RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2_numEvent100_1.root")
 if doUnpdu1p9:
     DATASET.append("STest1p9Unp1000p0_M_2000_py_GEN.root")
     DATASET.append("STest1p9Unp1000p0_M_500-2000_py_GEN.root")
