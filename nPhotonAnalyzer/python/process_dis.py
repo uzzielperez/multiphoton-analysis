@@ -8,10 +8,13 @@ import os
 globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
 doUnpdu1p9 = False
-doADDGRW1000 = True
-
+doADDGRW1000 = False
+doSMtest = True
 
 DATASET = []
+if doSMtest:
+    DATASET.append("TestSM_M-500-2000_py_GEN.root")
+    DATASET.append("TestSM_M-2000_py_GEN.root")
 if doUnpdu1p9:
     DATASET.append("STest1p9Unp1000p0_M_2000_py_GEN.root")
     DATASET.append("STest1p9Unp1000p0_M_500-2000_py_GEN.root")
