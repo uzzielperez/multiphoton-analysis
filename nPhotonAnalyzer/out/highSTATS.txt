@@ -1,0 +1,72 @@
+Configuration file Run with the following settings: 
+isMC =  True
+Pythia GEN
+processing  file:/uscms_data/d3/cuperez/CMSSW_9_3_8/src/tMCIPlus2_Unp-LU4500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root
+Writing output to file  TesttMCIPlus2_Unp-LU4500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root
+nEventsSample:  1000
+Using global tag: 80X_mcRun2_asymptotic_2016_miniAODv2
+05-Jan-2019 03:52:49 CST  Initiating request to open file file:/uscms_data/d3/cuperez/CMSSW_9_3_8/src/tMCIPlus2_Unp-LU4500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root
+----- Begin Fatal Exception 05-Jan-2019 03:52:49 CST-----------------------
+An exception of category 'FileOpenError' occurred while
+   [0] Constructing the EventProcessor
+   [1] Constructing input source of type PoolSource
+   [2] Calling RootFileSequenceBase::initTheFile()
+   [3] Calling StorageFactory::open()
+   [4] Calling File::sysopen()
+Exception Message:
+Failed to open the file '///uscms_data/d3/cuperez/CMSSW_9_3_8/src/tMCIPlus2_Unp-LU4500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root'
+   Additional Info:
+      [a] Input file file:/uscms_data/d3/cuperez/CMSSW_9_3_8/src/tMCIPlus2_Unp-LU4500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root could not be opened.
+      [b] open() failed with system error 'No such file or directory' (error code 2)
+----- End Fatal Exception -------------------------------------------------
+Configuration file Run with the following settings: 
+isMC =  True
+Pythia GEN
+processing  file:/uscms_data/d3/cuperez/CMSSW_9_3_8/src/tMCIPlus2_Unp-LU3500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root
+Writing output to file  TesttMCIPlus2_Unp-LU3500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root
+nEventsSample:  1000
+Using global tag: 80X_mcRun2_asymptotic_2016_miniAODv2
+05-Jan-2019 03:53:59 CST  Initiating request to open file file:/uscms_data/d3/cuperez/CMSSW_9_3_8/src/tMCIPlus2_Unp-LU3500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root
+----- Begin Fatal Exception 05-Jan-2019 03:53:59 CST-----------------------
+An exception of category 'FileOpenError' occurred while
+   [0] Constructing the EventProcessor
+   [1] Constructing input source of type PoolSource
+   [2] Calling RootFileSequenceBase::initTheFile()
+   [3] Calling StorageFactory::open()
+   [4] Calling File::sysopen()
+Exception Message:
+Failed to open the file '///uscms_data/d3/cuperez/CMSSW_9_3_8/src/tMCIPlus2_Unp-LU3500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root'
+   Additional Info:
+      [a] Input file file:/uscms_data/d3/cuperez/CMSSW_9_3_8/src/tMCIPlus2_Unp-LU3500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root could not be opened.
+      [b] open() failed with system error 'No such file or directory' (error code 2)
+----- End Fatal Exception -------------------------------------------------
+Configuration file Run with the following settings: 
+isMC =  True
+Pythia GEN
+processing  file:/uscms_data/d3/cuperez/CMSSW_9_3_8/src/tMCIPlus2_Unp-LU2500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root
+Writing output to file  TesttMCIPlus2_Unp-LU2500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root
+nEventsSample:  1000
+Using global tag: 80X_mcRun2_asymptotic_2016_miniAODv2
+05-Jan-2019 03:55:23 CST  Initiating request to open file file:/uscms_data/d3/cuperez/CMSSW_9_3_8/src/tMCIPlus2_Unp-LU2500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root
+----- Begin Fatal Exception 05-Jan-2019 03:55:23 CST-----------------------
+An exception of category 'FileOpenError' occurred while
+   [0] Constructing the EventProcessor
+   [1] Constructing input source of type PoolSource
+   [2] Calling RootFileSequenceBase::initTheFile()
+   [3] Calling StorageFactory::open()
+   [4] Calling File::sysopen()
+Exception Message:
+Failed to open the file '///uscms_data/d3/cuperez/CMSSW_9_3_8/src/tMCIPlus2_Unp-LU2500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root'
+   Additional Info:
+      [a] Input file file:/uscms_data/d3/cuperez/CMSSW_9_3_8/src/tMCIPlus2_Unp-LU2500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root could not be opened.
+      [b] open() failed with system error 'No such file or directory' (error code 2)
+----- End Fatal Exception -------------------------------------------------
+Processing  tMCIPlus2_Unp-LU4500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root
+Wrote local configuration file  cmsRun_cfg_tMCIPlus2_Unp-LU4500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root.py
+Running  tMCIPlus2_Unp-LU4500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root
+Processing  tMCIPlus2_Unp-LU3500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root
+Wrote local configuration file  cmsRun_cfg_tMCIPlus2_Unp-LU3500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root.py
+Running  tMCIPlus2_Unp-LU3500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root
+Processing  tMCIPlus2_Unp-LU2500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root
+Wrote local configuration file  cmsRun_cfg_tMCIPlus2_Unp-LU2500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root.py
+Running  tMCIPlus2_Unp-LU2500p0-du1p09_spin-t-ggON_pT125_M_2000_TuneCP2_py_GEN.root
