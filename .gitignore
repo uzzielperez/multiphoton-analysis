@@ -1,3 +1,4 @@
 *.root
 old*
 ._*
+*.pyc
