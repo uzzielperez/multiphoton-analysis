@@ -24,7 +24,8 @@ def get_number_of_events(dataset):
   if  status == 'ok':
     data = dasjson.get('data')
     for idata in data:
-      sumevents += idata.get('file')[0]['nevents']
+      #sumevents += idata.get('file')[0]['nevents']
+      sumevents += idata.get('result').get('value')
   return sumevents
 
 do2017data = False
@@ -307,7 +308,7 @@ if do2015signalint:
   DATASETS.append(['/GG_M-8000To13000_Pt-70_13TeV-sherpa/RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/MINIAODSIM'])
 
 if do2016signal:
-#  DATASETS.append(['/ADDGravToGG_MS-3000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+  DATASETS.append(['/ADDGravToGG_MS-3000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
 #  DATASETS.append(['/ADDGravToGG_MS-3000_NED-2_KK-1_M-2000To3000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
 #  DATASETS.append(['/ADDGravToGG_MS-3000_NED-2_KK-1_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
 #  DATASETS.append(['/ADDGravToGG_MS-3000_NED-2_KK-4_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
