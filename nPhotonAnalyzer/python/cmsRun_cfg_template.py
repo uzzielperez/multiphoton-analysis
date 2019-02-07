@@ -14,7 +14,8 @@ islocal             = True
 globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
 if islocal:
-    PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
+    cmssw_base = os.getenv("CMSSW_BASE")
+    PATH      = '%s/src/' %(cmssw_base)
     #PATH      = '/uscms/home/cuperez/nobackup/'
     INFILE    = PATH + 'DATASETNAME'
     inputFile = 'file:%s' %(INFILE)
@@ -45,7 +46,7 @@ options.register('nEventsSample',
                  VarParsing.varType.int,
                  "Total number of events in dataset for event weight calculation.")
 ## 'maxEvents' is already registered by the Framework, changing default value
-options.setDefault('maxEvents', 1000)
+options.setDefault('maxEvents', 10000)
 
 print 'nEventsSample: ', options.nEventsSample
 process = cms.Process("Demo")
@@ -56,25 +57,27 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 #globalTag ='notset'
 #options.parseArguments()
 
-if isMC:
-    version = os.getenv("CMSSW_VERSION")
-    if "CMSSW_8" in version:
-        if "Spring16" in outName:
-            globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
-        if "Summer16" in outName:
-            #globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
-            # the previous tag should only be used when to process
-            # samples intended to match data previous to the
-            # 03Feb2017 re-miniAOD
-            globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
-    elif "CMSSW_7" in version:
-        globalTag = '76X_mcRun2_asymptotic_v12'
-    else:
-        print "Could not determine appropriate MC global tag from filename"
-        sys.exit()
-    JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
-
-
+# if isMC:
+#     version = os.getenv("CMSSW_VERSION")
+#     if "CMSSW_10" in version:
+#         globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
+#     if "CMSSW_9" in version:
+#         globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
+#     if "CMSSW_8" in version:
+#         if "Spring16" in outName:
+#             globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
+#         if "Summer16" in outName:
+#             #globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
+#             # the previous tag should only be used when to process
+#             # samples intended to match data previous to the
+#             # 03Feb2017 re-miniAOD
+#             globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
+#     elif "CMSSW_7" in version:
+#         globalTag = '76X_mcRun2_asymptotic_v12'
+#     else:
+#         print "Could not determine appropriate MC global tag from filename"
+#         sys.exit()
+#     JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
 
 
 process.load("FWCore.MessageService.MessageLogger_cfi")

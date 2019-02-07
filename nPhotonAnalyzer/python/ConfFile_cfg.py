@@ -14,10 +14,10 @@ islocal             = True
 globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
 if islocal:
-    PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
-    #PATH      = '/uscms/home/cuperez/nobackup/CMSSW_9_3_8/src/'
+    #PATH      = '/uscms/home/cuperez/nobackup/CMSSW_8_0_25/src/'
+    PATH      = '/uscms/home/cuperez/nobackup/CMSSW_9_3_8/src/'
 
-
+    inF = "STest1p1Unp2500p0_spin-0_M_500-2000_py_GEN.root"
     #inF = 'Unparticles_du106_15TeV_pythia8_py_GEN.root'
     #inF = 'Unparticles_du2x1_15TeV_pythia8_py_GEN.root'
     #inF = 'Unparticles_du109_15TeV_pythia8_py_GEN.root'
@@ -27,7 +27,7 @@ if islocal:
     #inF = 'Unparticles_du106_TuneCUEP8M1_15TeV_pythia8_py_GEN.root'
     # RS Graviton
     #inF = 'RSGravitonToGammaGamma_kMpl02_M_750_TuneCUEP8M1_13TeV_pythia8_cfi_py_GEN.root'
-    inF = 'RSGravitonToGammaGamma_kMpl02_M_750_TuneCUEP8M1_13TeV_pythia8_cfi_py_GEN.root'
+    #inF = 'RSGravitonToGammaGamma_kMpl02_M_750_TuneCUEP8M1_13TeV_pythia8_cfi_py_GEN.root'
 
     # Heavy Higgs
     #inF = 'GluGluSpin0ToGammaGamma_W_5p6_M_750_TuneCUEP8M1_13TeV_pythia8_cfi_py_GEN.root'
