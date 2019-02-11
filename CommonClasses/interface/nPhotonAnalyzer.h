@@ -74,15 +74,15 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       //EffectiveAreas effAreaPhotons_;
 
       TTree *fgenTree;
-      TTree *fSherpaGenTree;
+      TTree *fMCGenTree;
 
       ExoDiPhotons::eventInfo_t         fEventInfo;
       ExoDiPhotons::genParticleInfo_t   fGenPhoton1Info;
       ExoDiPhotons::genParticleInfo_t   fGenPhoton2Info;
       ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo;
-      ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton1Info;
-      ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton2Info;
-      ExoDiPhotons::diphotonInfo_t      fSherpaGenDiphotonInfo;
+      ExoDiPhotons::genParticleInfo_t   fMCGenPhoton1Info;
+      ExoDiPhotons::genParticleInfo_t   fMCGenPhoton2Info;
+      ExoDiPhotons::diphotonInfo_t      fMCGenDiphotonInfo;
 
       //Put flags in cfg later
       int nPV_;
@@ -90,10 +90,10 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       bool isMC_;
       bool isGood_;
       bool isPythia8gen_;
-      bool isSherpaDiphoton_;
-      double SherpaWeightAll_;
-      double SherpaGenPhoton0_iso_;
-      double SherpaGenPhoton1_iso_;
+      bool isMCDiphoton_;
+      double WeightAll_;
+      double MCGenPhoton0_iso_;
+      double MCGenPhoton1_iso_;
       uint32_t nEventsSample_;
       TString outputFile_;
 

@@ -6,7 +6,7 @@ import os
 import sys
 
 isPythia8gen        = False
-isSherpaDiphoton    = True
+isMCDiphoton    = True
 
 options = VarParsing ('python')
 
@@ -176,7 +176,7 @@ process.demo = cms.EDAnalyzer(
     nEventsSample = cms.uint32(options.nEventsSample),
     isMC = cms.bool(isMC),
     isPythia8gen = cms.bool(isPythia8gen),
-    isSherpaDiphoton = cms.bool(isSherpaDiphoton),
+    isMCDiphoton = cms.bool(isMCDiphoton),
     isClosureTest = cms.bool(False),
     isReMINIAOD = cms.bool(isReMINIAOD),
     isolationConeR = cms.double(0.3)
