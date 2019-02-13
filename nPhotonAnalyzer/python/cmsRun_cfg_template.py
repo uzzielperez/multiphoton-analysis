@@ -11,7 +11,7 @@ isSherpaDiphoton    = False
 islocal             = True
 
 # Update with CMSSW_VERSION
-globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
+#globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
 
 if islocal:
     cmssw_base = os.getenv("CMSSW_BASE")
@@ -54,9 +54,32 @@ process = cms.Process("Demo")
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
-#globalTag ='notset'
+globalTag = 'notset'
 #options.parseArguments()
-
+if isMC:
+    version = os.getenv("CMSSW_VERSION")
+    major_version = version.split('_')[1] # version number formattted as CMSSW_X_Y_Z
+    if major_version == "10":
+        globalTag = '102X_upgrade2018_realistic_v12'
+        jetLabel = "slimmedJets"
+    elif major_version == "9":
+        globalTag = '94X_mc2017_realistic_v17'
+        jetLabel = "slimmedJets"
+    elif major_version == "8":
+        if "Spring16" in outName:
+            globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
+        if "Summer16" in outName:
+            #globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
+            # the previous tag should only be used when to process
+            # samples intended to match data previous to the
+            # 03Feb2017 re-miniAOD
+            globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
+    elif major_version == "7":
+        globalTag = '76X_mcRun2_asymptotic_v12'
+    else:
+        print "Could not determine appropriate MC global tag from filename"
+        sys.exit()
+    JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
 # if isMC:
 #     version = os.getenv("CMSSW_VERSION")
 #     if "CMSSW_10" in version:
