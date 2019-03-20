@@ -5,8 +5,8 @@ from os.path import basename
 import os
 import sys
 
-isPythia8gen        = False
-isSherpaDiphoton    = True
+islocal  = False
+isDAS   = True   # Calculate weights from Xsec
 
 options = VarParsing ('python')
 
@@ -55,12 +55,30 @@ if "Run2016" in outName:
     else:
         globalTag = '80X_dataRun2_2016SeptRepro_v4'
 if "Run2017" in outName:
-    globalTag = '92X_dataRun2_Prompt_v8'
+    if "31Mar2018" in outName:
+        isReMINIAOD = True
+        globalTag = '94X_dataRun2_v6'
+        jetLabel = "updatedPatJetsUpdatedJEC"
+    else:
+        globalTag = '92X_dataRun2_Prompt_v8'
+        jetLabel = "updatedPatJetsUpdatedJEC"
+if "Run2018" in outName:
     jetLabel = "updatedPatJetsUpdatedJEC"
+    if "17Sep2018" in outName:
+        globalTag = '102X_dataRun2_Sep2018Rereco_v1'
+    else:
+        globalTag = '101X_dataRun2_Prompt_v11'
 # override options for MC
 if isMC:
     version = os.getenv("CMSSW_VERSION")
-    if "CMSSW_8" in version:
+    major_version = version.split('_')[1] # version number formattted as CMSSW_X_Y_Z
+    if major_version == "10":
+        globalTag = '102X_upgrade2018_realistic_v12'
+        jetLabel = "slimmedJets"
+    elif major_version == "9":
+        globalTag = '94X_mc2017_realistic_v17'
+        jetLabel = "slimmedJets"
+    elif major_version == "8":
         if "Spring16" in outName:
             globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
         if "Summer16" in outName:
@@ -69,13 +87,12 @@ if isMC:
             # samples intended to match data previous to the
             # 03Feb2017 re-miniAOD
             globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
-    elif "CMSSW_7" in version:
+    elif major_version == "7":
         globalTag = '76X_mcRun2_asymptotic_v12'
     else:
         print "Could not determine appropriate MC global tag from filename"
         sys.exit()
     JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
-
 
 process = cms.Process("Demo")
 
@@ -170,8 +187,8 @@ process.demo = cms.EDAnalyzer(
     # number of events in the sample (for calculation of event weights)
     nEventsSample = cms.uint32(options.nEventsSample),
     isMC = cms.bool(isMC),
-    isPythia8gen = cms.bool(isPythia8gen),
-    isSherpaDiphoton = cms.bool(isSherpaDiphoton),
+    islocal = cms.bool(islocal),
+    isDAS = cms.bool(isDAS),
     isClosureTest = cms.bool(False),
     isReMINIAOD = cms.bool(isReMINIAOD),
     isolationConeR = cms.double(0.3)
