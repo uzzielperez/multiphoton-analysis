@@ -43,7 +43,6 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fTree->Branch("GenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
    fTree->Branch("GenPhoton2",  &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
    fTree->Branch("Gendiphoton", &fGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
-   fTree->Branch("weightAll",         &WeightAll_);
    fTree->Branch("isGood",            &isGood_);
    fTree->Branch("nPV", &nPV_);
    }
@@ -91,6 +90,7 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    //---Update
    ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    fillGenInfo(genParticles);
+   if (isDAS_) ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
    //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
 
