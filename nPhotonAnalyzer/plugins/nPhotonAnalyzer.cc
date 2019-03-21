@@ -89,8 +89,9 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
    //---Update
    ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
-   fillGenInfo(genParticles);
+   ExoDiPhotons::FillGenEventInfo(fEventInfo, &(*genInfo));
    if (isDAS_) ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
+   fillGenInfo(genParticles);
    //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
 
@@ -104,7 +105,7 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
    //Fill
    if (islocal_)         fgenTree->Fill();
-   if (isDAS_)                fTree->Fill();
+   if (isDAS_)              fTree->Fill();
 
 }
 
