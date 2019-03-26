@@ -21,8 +21,21 @@ doFinMCIStudy = False
 doMCIminStudy = False
 do20kMCIStudy = False
 doMCIcheck = False
-doMCIspin0 = True
+doMCIspin0 = False
+doMCIspin0_minRequest = False
+doMCISM_minRequest = True
 DATASET = []
+
+if doMCISM_minRequest:
+    DATASET.append("SM_pT70_M-500-2000_py_GEN.root")
+    DATASET.append("SM_pT70_M-2000_py_GEN.root")
+if doMCIspin0_minRequest:
+    DATASET.append("UnparToGG_Spin0_du1p1_LambdaU4000p0_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
+    DATASET.append("UnparToGG_Spin0_du1p1_LambdaU4000p0_pT70_M500-2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
+    DATASET.append("UnparToGG_Spin0_du1p1_LambdaU9500p0_pT70_M500-2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
+    DATASET.append("UnparToGG_Spin0_du1p1_LambdaU8000p0_pT70_M500-2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
+    DATASET.append("UnparToGG_Spin0_du1p1_LambdaU9500p0_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
+    DATASET.append("UnparToGG_Spin0_du1p1_LambdaU8000p0_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
 
 if doMCIspin0:
     # DATASET.append("UnparToGG_Spin0_du1p9_LambdaU3000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
