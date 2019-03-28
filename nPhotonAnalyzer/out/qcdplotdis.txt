@@ -1,2 +1,0 @@
-Testqcd_gg2qqbar_TuneCP2_py_GEN.root
-Testqcd_qqbar2gg_TuneCP2_py_GEN.root
