@@ -4,9 +4,9 @@ import subprocess
 import json
 import os
 
-# Update with CMSSW_VERSION
-globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
-
+doGGPythiatrimmed = True 
+doGGPythia82018 = False
+doGGPythia82017 = False
 doUnpdu1p9 = False
 doADDGRW1000 = False
 doSMtest = False
@@ -23,8 +23,29 @@ do20kMCIStudy = False
 doMCIcheck = False
 doMCIspin0 = False
 doMCIspin0_minRequest = False
-doMCISM_minRequest = True
+doMCISM_minRequest = False
 DATASET = []
+
+if doGGPythiatrimmed:
+    DATASET.append("GG_M-500To1000_Pt70_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
+    DATASET.append("GG_M-1000To2000_Pt70_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
+    DATASET.append("GG_M-2000To4000_Pt70_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
+    DATASET.append("GG_M-4000To13000_Pt70_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
+
+if doGGPythia82017:
+    DATASET.append("GG_M-500To1000_Pt50_TuneCP2_13TeV-pythia8_cfi_2017_py_GEN.root")
+    # DATASET.append("GG_M-1000To2000_Pt50_TuneCP2_13TeV-pythia8_cfi_2017_py_GEN.root")
+    # DATASET.append("GG_M-2000To4000_Pt50_TuneCP2_13TeV-pythia8_cfi_2017_py_GEN.root")
+    # DATASET.append("GG_M-4000To6000_Pt50_TuneCP2_13TeV-pythia8_cfi_2017_py_GEN.root")
+    # DATASET.append("GG_M-6000To8000_Pt50_TuneCP2_13TeV-pythia8_cfi_2017_py_GEN.root")
+    # DATASET.append("GG_M-8000To13000_Pt50_TuneCP2_13TeV-pythia8_cfi_2017_py_GEN.root")
+if doGGPythia82018:
+    DATASET.append("GG_M-1000To2000_Pt50_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
+    DATASET.append("GG_M-2000To4000_Pt50_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
+    DATASET.append("GG_M-4000To6000_Pt50_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
+    DATASET.append("GG_M-6000To8000_Pt50_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
+    DATASET.append("GG_M-500To1000_Pt50_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
+    DATASET.append("GG_M-8000To13000_Pt50_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
 
 if doMCISM_minRequest:
     DATASET.append("SM_pT70_M-500-2000_py_GEN.root")
