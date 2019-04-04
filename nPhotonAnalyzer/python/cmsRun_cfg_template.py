@@ -5,13 +5,9 @@ import os
 import sys
 
 #Configure
-isMC                = True
-isPythia8gen        = True
-isSherpaDiphoton    = False
-islocal             = True
-
-# Update with CMSSW_VERSION
-#globalTag           = '80X_mcRun2_asymptotic_2016_miniAODv2'
+isMC           = True
+islocal        = True
+isDAS          = False
 
 if islocal:
     cmssw_base = os.getenv("CMSSW_BASE")
@@ -19,7 +15,7 @@ if islocal:
     #PATH      = '/uscms/home/cuperez/nobackup/'
     INFILE    = PATH + 'DATASETNAME'
     inputFile = 'file:%s' %(INFILE)
-    outName = 'Test%s' %('DATASETNAME')
+    outName = '%s' %('DATASETNAME')
 else:
     print "Logical FileName Provided: "
     inputFile = '/store/mc/RunIISummer16MiniAODv2/ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/6C12F491-0BB7-E611-B418-0025904FE658.root'
@@ -30,10 +26,10 @@ else:
 #------------------------------------------
 print 'Configuration file Run with the following settings: '
 print 'isMC = ', isMC
-if isPythia8gen:
+if islocal:
     print 'Pythia GEN'
-if isSherpaDiphoton:
-    print 'Sherpa GEN'
+if isDAS:
+    print 'DAS GEN'
 print 'processing ', inputFile
 print 'Writing output to file ', outName
 #------------------------------------------
@@ -80,28 +76,6 @@ if isMC:
         print "Could not determine appropriate MC global tag from filename"
         sys.exit()
     JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
-# if isMC:
-#     version = os.getenv("CMSSW_VERSION")
-#     if "CMSSW_10" in version:
-#         globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
-#     if "CMSSW_9" in version:
-#         globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
-#     if "CMSSW_8" in version:
-#         if "Spring16" in outName:
-#             globalTag = '80X_mcRun2_asymptotic_2016_miniAODv2'
-#         if "Summer16" in outName:
-#             #globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v6'
-#             # the previous tag should only be used when to process
-#             # samples intended to match data previous to the
-#             # 03Feb2017 re-miniAOD
-#             globalTag = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
-#     elif "CMSSW_7" in version:
-#         globalTag = '76X_mcRun2_asymptotic_v12'
-#     else:
-#         print "Could not determine appropriate MC global tag from filename"
-#         sys.exit()
-#     JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
-
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
@@ -135,9 +109,9 @@ my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonI
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
-if isPythia8gen:
+if islocal:
 	inTag = "genParticles"
-elif isSherpaDiphoton:
+elif isDAS:
     inTag = "prunedGenParticles"
 else:
     print "cannot determine proper input type"
@@ -174,8 +148,8 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         # number of events in the sample (for calculation of event weights)
         nEventsSample = cms.uint32(options.nEventsSample),
         isMC = cms.bool(isMC),
-        isPythia8gen = cms.bool(isPythia8gen),
-        isSherpaDiphoton = cms.bool(isSherpaDiphoton),
+        islocal = cms.bool(islocal),
+        isDAS = cms.bool(isDAS),
         #isClosureTest = cms.bool(False),
         #isReMINIAOD = cms.bool(isReMINIAOD),
         isolationConeR = cms.double(0.3)
