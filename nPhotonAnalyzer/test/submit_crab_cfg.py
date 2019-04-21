@@ -6,8 +6,15 @@ the event weight can be computed."""
 import subprocess
 import json
 import os
+import argparse
 diphoton_analysis = __import__("diphoton-analysis.CommonClasses.das_utils")
 
+# Command line options
+parser = argparse.ArgumentParser(description="Crab submission and DAS queries")
+parser.add_argument("-q", "--queryevts", action="store_true", help="Query DAS for number of events")
+args = parser.parse_args()
+
+dosubmit = True 
 
 do2017signal = True
 do2017data = False
@@ -152,19 +159,19 @@ if do2017signal:
 #  DATASETS.append(['/RSGravitonToGammaGamma_kMpl001_M_3500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
 #  DATASETS.append(['/RSGravitonToGammaGamma_kMpl001_M_5000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
 #  DATASETS.append(['/RSGravitonToGammaGamma_kMpl001_M_750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
-#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_1250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
-#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_1500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
-#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_2500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
-#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_3000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
-#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_4250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
-#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_4500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
-#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_4750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
-#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_5000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
-#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_5750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
-#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_6000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
-#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_6500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
-#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_7000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
-#  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_1250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_1500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_2500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_3000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_4250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_4500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_4750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_5000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_5750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_6000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_6500_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_7000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+  DATASETS.append(['/RSGravitonToGammaGamma_kMpl01_M_750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
 #  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_1000_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
 #  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_1250_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
 #  DATASETS.append(['/RSGravitonToGammaGamma_kMpl02_M_1750_TuneCP2_13TeV_pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
@@ -599,25 +606,30 @@ if do2016signalint:
 for ilist in DATASETS:
   nevents = 0
   print ""
+ 
   for ids in ilist:
     nevents += diphoton_analysis.CommonClasses.das_utils.get_number_of_events(ids)
     print "running nevents is " + str(nevents)
+  
+  if args.queryevts:
+	dosubmit = False
 
-  for ids in ilist:
-    cmssw_base = os.getenv("CMSSW_BASE")
-    datasetID = ids.replace('/', '', 1).replace('/', '_', 1)
-    datasetID = datasetID[0:datasetID.find('/')]
-    inputfile = cmssw_base + "/src/multiphoton-analysis/nPhotonAnalyzer/test/crab_cfg_template.py"
-    outputfile = "crab_cfg_" + datasetID + ".py"
+  if dosubmit:
+  	for ids in ilist:
+  	  cmssw_base = os.getenv("CMSSW_BASE")
+  	  datasetID = ids.replace('/', '', 1).replace('/', '_', 1)
+  	  datasetID = datasetID[0:datasetID.find('/')]
+  	  inputfile = cmssw_base + "/src/multiphoton-analysis/nPhotonAnalyzer/test/crab_cfg_template.py"
+  	  outputfile = "crab_cfg_" + datasetID + ".py"
 
-    s = open(inputfile).read()
-    s = s.replace('DATASETNAME', ids)
-    s = s.replace('NEVENTS', str(nevents))
-    f = open(outputfile, 'w')
-    f.write(s)
-    f.close()
-    print "DA: Wrote crab configuration file " + outputfile
+  	  s = open(inputfile).read()
+   	  s = s.replace('DATASETNAME', ids)
+  	  s = s.replace('NEVENTS', str(nevents))
+	  f = open(outputfile, 'w')
+   	  f.write(s)
+  	  f.close()
+    	  print "DA: Wrote crab configuration file " + outputfile
 
-    cmd = "crab submit -c " + outputfile
-    os.system(cmd)
-    print "DA: Submitted ", ids
+          cmd = "crab submit -c " + outputfile
+    	  os.system(cmd)
+    	  print "DA: Submitted ", ids
