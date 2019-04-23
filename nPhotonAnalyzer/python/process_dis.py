@@ -4,7 +4,8 @@ import subprocess
 import json
 import os
 
-doGGPythiatrimmed = True 
+doAAAsherpa_local = True
+doGGPythiatrimmed = False
 doGGPythia82018 = False
 doGGPythia82017 = False
 doUnpdu1p9 = False
@@ -26,6 +27,8 @@ doMCIspin0_minRequest = False
 doMCISM_minRequest = False
 DATASET = []
 
+if doAAAsherpa_local:
+    DATASET.append("sherpa_AAA_2j_13TeV_MASTER_cff_py_GEN.root")
 if doGGPythiatrimmed:
     DATASET.append("GG_M-500To1000_Pt70_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
     DATASET.append("GG_M-1000To2000_Pt70_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")

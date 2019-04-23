@@ -8,7 +8,8 @@ import json
 import os
 diphoton_analysis = __import__("diphoton-analysis.CommonClasses.das_utils")
 
-do2017signal = True
+doAAAmg5 = True
+do2017signal = False
 do2017data = False
 do2016data = False
 do2016mc = False

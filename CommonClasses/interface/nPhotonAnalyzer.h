@@ -32,7 +32,7 @@
 #include "multiphoton-analysis/CommonClasses/interface/EventInfo.h"
 #include "multiphoton-analysis/CommonClasses/interface/GenParticleInfo.h"
 #include "multiphoton-analysis/CommonClasses/interface/DiPhotonInfo.h"
-
+#include "multiphoton-analysis/CommonClasses/interface/TriPhotonInfo.h"
 
 using namespace std;
 using namespace edm;
@@ -79,8 +79,9 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ExoDiPhotons::eventInfo_t         fEventInfo;
       ExoDiPhotons::genParticleInfo_t   fGenPhoton1Info;
       ExoDiPhotons::genParticleInfo_t   fGenPhoton2Info;
+      ExoDiPhotons::genParticleInfo_t   fGenPhoton3Info;
       ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo;
-      ExoDiPhotons::triphotonInfo_t      fGenTriphotonInfo;
+      ExoDiPhotons::triphotonInfo_t     fGenTriphotonInfo;
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton1Info;
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton2Info;
       // ExoDiPhotons::diphotonInfo_t      fSherpaGenDiphotonInfo;
