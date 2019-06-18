@@ -93,6 +93,7 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       bool isGood_;
       bool islocal_;
       bool isDAS_;
+      double xsec_; // For local generation
       double WeightAll_;
       double GenPhoton0_iso_;
       double GenPhoton1_iso_;

@@ -37,6 +37,8 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fgenTree->Branch("GenTriPhoton", &fGenTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
    fgenTree->Branch("isGood",      &isGood_);
    fgenTree->Branch("nPV", &nPV_);
+
+   xsec_ = ps.getParameter<double>("xsec");
    }
 
    if (isDAS_){
@@ -97,10 +99,10 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    ExoDiPhotons::FillGenEventInfo(fEventInfo, &(*genInfo));
    if (isDAS_) ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
+   if (islocal_) ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
    fillGenInfo(genParticles);
    //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
-
 
    //Debugging!
    cout <<  "Run: "    << iEvent.id().run()
@@ -178,11 +180,11 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
         fEventInfo.interactingParton1PdgId = interactingPartons[0];
         fEventInfo.interactingParton2PdgId = interactingPartons[1];
       }
-      else if(interactingPartons.size() == 3){
-        fEventInfo.interactingParton1PdgId = interactingPartons[0];
-        fEventInfo.interactingParton2PdgId = interactingPartons[1];
-        fEventInfo.interactingParton2PdgId = interactingPartons[2];
-      }
+//      else if(interactingPartons.size() == 3){
+//        fEventInfo.interactingParton1PdgId = interactingPartons[0];
+//        fEventInfo.interactingParton2PdgId = interactingPartons[1];
+//        fEventInfo.interactingParton2PdgId = interactingPartons[2];
+//      }
       else cout << "Exactly two interacting partons not found!" << endl;
 
       // Samples with only fakes may have no hard-process photons

@@ -6,9 +6,17 @@ the event weight can be computed."""
 import subprocess
 import json
 import os
-diphoton_analysis = __import__("diphoton-analysis.CommonClasses.das_utils")
+import argparse
+multiphoton_analysis = __import__("multiphoton-analysis.CommonClasses.das_utils")
 
-doAAAmg5 = True
+# Command line options
+parser = argparse.ArgumentParser(description="Crab submission and DAS queries")
+parser.add_argument("-q", "--queryevts", action="store_true", help="Query DAS for number of events")
+args = parser.parse_args()
+
+dosubmit = True
+
+dotriphotonbaseline = True
 do2017signal = False
 do2017data = False
 do2016data = False
@@ -29,6 +37,10 @@ DATASETS = [[]]
 # datasets with extensions should be added following this example:
 #   datasets.append(["/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM",
 #                   "/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2_ext1-v1/MINIAODSIM"])
+if dotriphotonbaseline:
+    DATASETS.append(['/GGGJets_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM'])
+    DATASETS.append(['/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8/PhaseISpring17MiniAOD-FlatPU28to62HcalNZS_90X_upgrade2017_realistic_v20-v1/MINIAODSIM'])
+    DATASETS.append(['/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/MINIAODSIM'])
 
 if do2017signal:
 # DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-10000_M-1000To2000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
@@ -540,11 +552,11 @@ if do2016signal:
  #   DATASETS.append(['/ADDGravToGG_MS-6000_NED-2_KK-4_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-6000_NED-2_KK-4_M-4000To6000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #  DATASETS.append(['/ADDGravToGG_MS-6000_NED-2_KK-4_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-   DATASETS.append(['/ADDGravToGG_MS-6000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-   DATASETS.append(['/ADDGravToGG_MS-6000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-   DATASETS.append(['/ADDGravToGG_MS-6000_NED-4_KK-1_M-200To500_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-   DATASETS.append(['/ADDGravToGG_MS-6000_NED-4_KK-1_M-4000To6000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-   DATASETS.append(['/ADDGravToGG_MS-6000_NED-4_KK-1_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+   # DATASETS.append(['/ADDGravToGG_MS-6000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+   # DATASETS.append(['/ADDGravToGG_MS-6000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+   # DATASETS.append(['/ADDGravToGG_MS-6000_NED-4_KK-1_M-200To500_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+   # DATASETS.append(['/ADDGravToGG_MS-6000_NED-4_KK-1_M-4000To6000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+   # DATASETS.append(['/ADDGravToGG_MS-6000_NED-4_KK-1_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-7000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-7000_NED-2_KK-1_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-7000_NED-2_KK-1_M-4000To7000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
@@ -557,10 +569,10 @@ if do2016signal:
  #   DATASETS.append(['/ADDGravToGG_MS-8000_NED-2_KK-1_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-8000_NED-2_KK-1_M-4000To8000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-8000_NED-2_KK-1_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-   DATASETS.append(['/ADDGravToGG_MS-8000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-   DATASETS.append(['/ADDGravToGG_MS-8000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-   DATASETS.append(['/ADDGravToGG_MS-8000_NED-4_KK-1_M-4000To8000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-   DATASETS.append(['/ADDGravToGG_MS-8000_NED-4_KK-1_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+   # DATASETS.append(['/ADDGravToGG_MS-8000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+   # DATASETS.append(['/ADDGravToGG_MS-8000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+   # DATASETS.append(['/ADDGravToGG_MS-8000_NED-4_KK-1_M-4000To8000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+   # DATASETS.append(['/ADDGravToGG_MS-8000_NED-4_KK-1_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-9000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-9000_NED-2_KK-1_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-9000_NED-2_KK-1_M-4000To9000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM'])
@@ -573,10 +585,10 @@ if do2016signal:
  #   DATASETS.append(['/ADDGravToGG_MS-10000_NED-2_KK-1_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-10000_NED-2_KK-1_M-4000To10000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-10000_NED-2_KK-1_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM'])
-   DATASETS.append(['/ADDGravToGG_MS-10000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-   DATASETS.append(['/ADDGravToGG_MS-10000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-   DATASETS.append(['/ADDGravToGG_MS-10000_NED-4_KK-1_M-4000To10000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
-   DATASETS.append(['/ADDGravToGG_MS-10000_NED-4_KK-1_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+   # DATASETS.append(['/ADDGravToGG_MS-10000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+   # DATASETS.append(['/ADDGravToGG_MS-10000_NED-4_KK-1_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+   # DATASETS.append(['/ADDGravToGG_MS-10000_NED-4_KK-1_M-4000To10000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
+   # DATASETS.append(['/ADDGravToGG_MS-10000_NED-4_KK-1_M-500To1000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-11000_NED-2_KK-1_M-1000To2000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-11000_NED-2_KK-1_M-2000To4000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM'])
  #   DATASETS.append(['/ADDGravToGG_MS-11000_NED-2_KK-1_M-4000To11000_13TeV-sherpa/RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/MINIAODSIM'])
@@ -599,24 +611,28 @@ for ilist in DATASETS:
   nevents = 0
   print ""
   for ids in ilist:
-    nevents += diphoton_analysis.CommonClasses.das_utils.get_number_of_events(ids)
+    nevents += multiphoton_analysis.CommonClasses.das_utils.get_number_of_events(ids)
     print "running nevents is " + str(nevents)
 
-  for ids in ilist:
-    cmssw_base = os.getenv("CMSSW_BASE")
-    datasetID = ids.replace('/', '', 1).replace('/', '_', 1)
-    datasetID = datasetID[0:datasetID.find('/')]
-    inputfile = cmssw_base + "/src/multiphoton-analysis/nPhotonAnalyzer/test/crab_cfg_template.py"
-    outputfile = "crab_cfg_" + datasetID + ".py"
+  if args.queryevts:
+      dosubmit = False
 
-    s = open(inputfile).read()
-    s = s.replace('DATASETNAME', ids)
-    s = s.replace('NEVENTS', str(nevents))
-    f = open(outputfile, 'w')
-    f.write(s)
-    f.close()
-    print "DA: Wrote crab configuration file " + outputfile
+  if dosubmit:
+      for ids in ilist:
+          cmssw_base = os.getenv("CMSSW_BASE")
+          datasetID = ids.replace('/', '', 1).replace('/', '_', 1)
+          datasetID = datasetID[0:datasetID.find('/')]
+          inputfile = cmssw_base + "/src/multiphoton-analysis/nPhotonAnalyzer/test/crab_cfg_template.py"
+          outputfile = "crab_cfg_" + datasetID + ".py"
 
-    cmd = "crab submit -c " + outputfile
-    os.system(cmd)
-    print "DA: Submitted ", ids
+          s = open(inputfile).read()
+          s = s.replace('DATASETNAME', ids)
+          s = s.replace('NEVENTS', str(nevents))
+          f = open(outputfile, 'w')
+          f.write(s)
+          f.close()
+          print "DA: Wrote crab configuration file " + outputfile
+
+          cmd = "crab submit -c " + outputfile
+          os.system(cmd)
+          print "DA: Submitted ", ids

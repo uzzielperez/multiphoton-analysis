@@ -3,362 +3,41 @@
 import subprocess
 import json
 import os
+import re
 
-doAAAsherpa_local = True
-doGGPythiatrimmed = False
-doGGPythia82018 = False
-doGGPythia82017 = False
-doUnpdu1p9 = False
-doADDGRW1000 = False
-doSMtest = False
-doUNPdu1p1spinTest = False
-doUNPdu1p9spinTest = False
-doUNPdu1p8spinTest = False
 
-doMCIStudy = False
-doMCPlusStudy = False
-doQCDStudy = False
-doFinMCIStudy = False
-doMCIminStudy = False
-do20kMCIStudy = False
-doMCIcheck = False
-doMCIspin0 = False
-doMCIspin0_minRequest = False
-doMCISM_minRequest = False
+
+doAAAsherpa = True
+
 DATASET = []
 
-if doAAAsherpa_local:
-    DATASET.append("sherpa_AAA_2j_13TeV_MASTER_cff_py_GEN.root")
-if doGGPythiatrimmed:
-    DATASET.append("GG_M-500To1000_Pt70_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
-    DATASET.append("GG_M-1000To2000_Pt70_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
-    DATASET.append("GG_M-2000To4000_Pt70_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
-    DATASET.append("GG_M-4000To13000_Pt70_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
+xsecdict = {}
+nevtsdict = {}
 
-if doGGPythia82017:
-    DATASET.append("GG_M-500To1000_Pt50_TuneCP2_13TeV-pythia8_cfi_2017_py_GEN.root")
-    # DATASET.append("GG_M-1000To2000_Pt50_TuneCP2_13TeV-pythia8_cfi_2017_py_GEN.root")
-    # DATASET.append("GG_M-2000To4000_Pt50_TuneCP2_13TeV-pythia8_cfi_2017_py_GEN.root")
-    # DATASET.append("GG_M-4000To6000_Pt50_TuneCP2_13TeV-pythia8_cfi_2017_py_GEN.root")
-    # DATASET.append("GG_M-6000To8000_Pt50_TuneCP2_13TeV-pythia8_cfi_2017_py_GEN.root")
-    # DATASET.append("GG_M-8000To13000_Pt50_TuneCP2_13TeV-pythia8_cfi_2017_py_GEN.root")
-if doGGPythia82018:
-    DATASET.append("GG_M-1000To2000_Pt50_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
-    DATASET.append("GG_M-2000To4000_Pt50_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
-    DATASET.append("GG_M-4000To6000_Pt50_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
-    DATASET.append("GG_M-6000To8000_Pt50_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
-    DATASET.append("GG_M-500To1000_Pt50_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
-    DATASET.append("GG_M-8000To13000_Pt50_TuneCP2_13TeV-pythia8_cfi_py_GEN.root")
+if doAAAsherpa:
+    DATASET.append("sherpa_AAA_0j_pT20_13TeV_MASTER_cff_py_GEN.root")
+    # DATASET.append("sherpa_AAA_1j_pT20_13TeV_MASTER_cff_py_GEN.root")
 
-if doMCISM_minRequest:
-    DATASET.append("SM_pT70_M-500-2000_py_GEN.root")
-    DATASET.append("SM_pT70_M-2000_py_GEN.root")
-if doMCIspin0_minRequest:
-    DATASET.append("UnparToGG_Spin0_du1p1_LambdaU4000p0_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin0_du1p1_LambdaU4000p0_pT70_M500-2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin0_du1p1_LambdaU9500p0_pT70_M500-2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin0_du1p1_LambdaU8000p0_pT70_M500-2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin0_du1p1_LambdaU9500p0_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin0_du1p1_LambdaU8000p0_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
+    # Cross-section hardcoded in pb
+    xsecdict_temp = {
+        "AAA_0j_pT20_13TeV" : 2.535e-02, #25.3500,    #  2.535e-02 +- 3.505e-04 pb
+        "AAA_1j_pT20_13TeV" : 4.482e-02, #44.824, # 4.482e-02 +- 6.330e-04 pb
+    }
+    xsecdict.update(xsecdict_temp)
 
-if doMCIspin0:
-    # DATASET.append("UnparToGG_Spin0_du1p9_LambdaU3000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin0_du1p9_LambdaU2000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin0_du1p9_LambdaU4000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin0_du1p9_LambdaU2500p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin0_du1p1_LambdaU2500p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin0_du1p1_LambdaU2750p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin0_du1p1_LambdaU3000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin0_du1p5_LambdaU1500p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin0_du1p5_LambdaU2500p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin0_du1p1_LambdaU2000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin0_du1p5_LambdaU3500p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin0_du1p5_LambdaU2000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin0_du1p1_LambdaU7000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin0_du1p1_LambdaU6000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin0_du1p1_LambdaU5000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin0_du1p1_LambdaU4000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin0_du1p1_LambdaU8000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin0_du1p1_LambdaU9000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-
-if doMCIcheck:
-    DATASET.append("UnparToGG_Spin2_du1p9_LambdaU2000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin2_du1p9_LambdaU2500p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin2_du1p9_LambdaU3000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin2_du1p9_LambdaU4000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin2_du1p5_LambdaU2000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin2_du1p5_LambdaU2500p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin2_du1p5_LambdaU4000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin2_du1p1_LambdaU2500p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin2_du1p1_LambdaU2000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin2_du1p1_LambdaU4000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-if do20kMCIStudy:
-    #DATASET.append("TestSM_pT70_M-2000_py_GEN.root")
-    DATASET.append("UnparToGG_Spin2_du1p9_LambdaU2000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin2_du1p9_LambdaU3000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-#    DATASET.append("UnparToGG_Spin2_du1p9_LambdaU3500p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-#    DATASET.append("UnparToGG_Spin2_du1p9_LambdaU5500p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-#    DATASET.append("UnparToGG_Spin2_du1p5_LambdaU3000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-#    DATASET.append("UnparToGG_Spin2_du1p5_LambdaU5000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-if doMCIminStudy:
-    DATASET.append("TestSM_pT70_M-2000_py_GEN.root")
-    #DATASET.append("TestSM_pT70_M-2500_py_GEN.root")
-    #DATASET.append("TestSM_pT70_M-1500_py_GEN.root")
-    DATASET.append("UnparToGG_Spin2_du1p9_LambdaU2000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    DATASET.append("UnparToGG_Spin2_du1p9_LambdaU3000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    #DATASET.append("UnparToGG_Spin2_du1p9_LambdaU6000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    #DATASET.append("UnparToGG_Spin2_du1p9_LambdaU1000p0_mgg2000_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    #DATASET.append("UnparToGG_Spin2_du1p9_LambdaU2500p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    #DATASET.append("UnparToGG_Spin2_du1p9_LambdaU3500p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    #DATASET.append("UnparToGG_Spin2_du1p9_LambdaU2750p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    #DATASET.append("UnparToGG_Spin2_du1p9_LambdaU3000p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    #DATASET.append("UnparToGG_Spin2_du1p9_LambdaU3250p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p5_LambdaU3000p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p1_LambdaU2500p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p1_LambdaU3000p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p1_LambdaU5500p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p5_LambdaU1000p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p5_LambdaU2500p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p5_LambdaU5000p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p9_LambdaU2000p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p1_LambdaU2750p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p5_LambdaU2000p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p1_LambdaU2875p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p5_LambdaU1750p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p5_LambdaU2250p0_mgg500_pT70_M2000_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p9_LambdaU2500p0_mgg1500_pT70_M1500_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p5_LambdaU2250p0_mgg2500_pT70_M2500_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p1_LambdaU2875p0_mgg2500_pT70_M2500_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p1_LambdaU2875p0_mgg1500_pT70_M1500_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p5_LambdaU2250p0_mgg1500_pT70_M1500_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-    # DATASET.append("UnparToGG_Spin2_du1p9_LambdaU2500p0_mgg2500_pT70_M2500_TuneCP2_13TeV_pythia8_cfi_py_GEN.root")
-
-if doFinMCIStudy:
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p1_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p1_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p1_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p1_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p5_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p5_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p5_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p5_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p6_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p6_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p6_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p6_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p8_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p8_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p8_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU1000p0_du1p8_spin-2_M_500-2000_py_GEN.root")
-
-    DATASET.append("FinMCIUnp_LU3000p0_du1p1_spin-0_M_2000_py_GEN.root")
-    DATASET.append("FinMCIUnp_LU3000p0_du1p1_spin-0_M_500-2000_py_GEN.root")
-    DATASET.append("FinMCIUnp_LU3000p0_du1p1_spin-2_M_2000_py_GEN.root")
-    DATASET.append("FinMCIUnp_LU3000p0_du1p1_spin-2_M_500-2000_py_GEN.root")
-    DATASET.append("FinMCIUnp_LU3000p0_du1p5_spin-0_M_2000_py_GEN.root")
-    DATASET.append("FinMCIUnp_LU3000p0_du1p5_spin-0_M_500-2000_py_GEN.root")
-    DATASET.append("FinMCIUnp_LU3000p0_du1p5_spin-2_M_2000_py_GEN.root")
-    DATASET.append("FinMCIUnp_LU3000p0_du1p5_spin-2_M_500-2000_py_GEN.root")
-    DATASET.append("FinMCIUnp_LU3000p0_du1p6_spin-0_M_2000_py_GEN.root")
-    DATASET.append("FinMCIUnp_LU3000p0_du1p6_spin-0_M_500-2000_py_GEN.root")
-    DATASET.append("FinMCIUnp_LU3000p0_du1p6_spin-2_M_2000_py_GEN.root")
-    DATASET.append("FinMCIUnp_LU3000p0_du1p6_spin-2_M_500-2000_py_GEN.root")
-    DATASET.append("FinMCIUnp_LU3000p0_du1p8_spin-0_M_2000_py_GEN.root")
-    DATASET.append("FinMCIUnp_LU3000p0_du1p8_spin-0_M_500-2000_py_GEN.root")
-    DATASET.append("FinMCIUnp_LU3000p0_du1p8_spin-2_M_2000_py_GEN.root")
-    DATASET.append("FinMCIUnp_LU3000p0_du1p8_spin-2_M_500-2000_py_GEN.root")
-
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p1_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p1_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p1_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p1_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p5_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p5_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p5_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p5_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p6_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p6_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p6_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p6_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p8_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p8_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p8_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU5000p0_du1p8_spin-2_M_500-2000_py_GEN.root")
-
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p1_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p1_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p1_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p1_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p5_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p5_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p5_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p5_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p6_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p6_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p6_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p6_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p8_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p8_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p8_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("FinMCIUnp_LU2000p0_du1p8_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("FinMCISM_M_2000_py_GEN.root")
-    # DATASET.append("FinMCISM_M_500-2000_py_GEN.root")
-if doQCDStudy:
-    DATASET.append("qcd_gg2qqbar_TuneCP2_py_GEN.root")
-    DATASET.append("qcd_qqbar2gg_TuneCP2_py_GEN.root")
-if doMCPlusStudy:
-    DATASET.append("tMCIPlus2_Unp-LU2750p0-du1p9_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    DATASET.append("tMCIPlus2_Unp-LU2500p0-du1p9_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    DATASET.append("tMCIPlus2_Unp-LU3250p0-du1p9_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    DATASET.append("tMCIPlus2_Unp-LU3000p0-du1p9_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    DATASET.append("tMCIPlus2_Unp-LU3175p0-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU3150p0-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU3175p0-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU3100p0-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU3200p0-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    # DATASET.append("tMCIPlus2_Unp-LU3250p0-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    # DATASET.append("tMCIPlus2_Unp-LU3000p0-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    # DATASET.append("tMCIPlus2_Unp-LU2750p0-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU5000p0-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU6000p0-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU7000p0-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU3500p0-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU4500p0-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU2500p0-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU3000p0-du1p5_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU4000p0-du1p5_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU5000p0-du1p5_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU4000-du1p5_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU4500p0-du1p9_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU4500p0-du1p8_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU5500p0-du1p9_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU3500p0-du1p9_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU4000-du1p6_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU4000-du1p7_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU4000-du1p8_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("tMCIPlus2_Unp-LU4250-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    # DATASET.append("tMCIPlus2_Unp-LU3000-du1p4_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    # DATASET.append("tMCIPlus2_Unp-LU3750-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    # DATASET.append("tMCIPlus2_Unp-LU3500-du1p4_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    # DATASET.append("tMCIPlus2_Unp-LU3000-du1p1_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("MCIPlus2_Unp-LU4500-du1p9_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("MCIPlus2_Unp-LU4000-du1p9_spin-2-ggON_pT125_M_1500_TuneCP2_py_GEN.root")
-    #DATASET.append("MCIPlus2_Unp-LU4000-du1p9_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("MCIPlus2_Unp-LU2500-du1p9_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    #DATASET.append("MCIPlus2_Unp-LU4500-du1p9_spin-2-ggON_pT125_M_1500_TuneCP2_py_GEN.root")
-    #DATASET.append("MCIPlus2_Unp-LU4750-du1p01_spin-2-ggON_pT125_M_1500_TuneCP2_py_GEN.root")
-    #DATASET.append("MCIPlus2_Unp-LU5000-du1p01_spin-2-ggON_pT125_M_1500_TuneCP2_py_GEN.root")
-    # DATASET.append("MCIPlus_SM_pT125_M_2000_TuneCP2_py_GEN.root")
-    # DATASET.append("MCIPlus_SM_pT125_M_1500_TuneCP2_py_GEN.root")
-    #DATASET.append("MCIPlus2_Unp-LU4500-du1p01_spin-2-ggON_pT125_M_1000_TuneCP2_py_GEN.root")
-    #DATASET.append("MCIPlus2_Unp-LU4500-du1p01_spin-2-ggON_pT125_M_1500_TuneCP2_py_GEN.root")
-    # DATASET.append("MCIPlus2_Unp-LU500-du1p8_spin-2-ggON_pT125_M_1500_TuneCP2_py_GEN.root")
-    # DATASET.append("MCIPlus2_Unp-LU500-du1p8_spin-2-ggON_pT125_M_1000_TuneCP2_py_GEN.root")
-    # DATASET.append("MCIPlus0_Unp-LU500-du1p8_spin-0-ggffON_pT125_M_1500_TuneCP2_py_GEN.root")
-    # DATASET.append("MCIPlus0_Unp-LU500-du1p8_spin-0-ggffON_pT125_M_1000_TuneCP2_py_GEN.root")
-    # DATASET.append("MCIPlus_SM_pT125_M_1000_TuneCP2_py_GEN.root")
-if doMCIStudy:
-
-    # DATASET.append("MCI_SM_pT125_M_2000_TuneCP2_py_GEN.root")
-    # DATASET.append("MCI_SM_pT125_M_500-2000_TuneCP2_py_GEN.root")
-    # DATASET.append("MCI_Unp-LU500-du1p8_spin-0-ggffON_pT125_M_2000_TuneCP2_py_GEN.root")
-    # DATASET.append("MCI_Unp-LU500-du1p8_spin-0-ggffON_pT125_M_500-2000_TuneCP2_py_GEN.root")
-    # DATASET.append("MCI_Unp-LU500-du1p8_spin-2-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    # DATASET.append("MCI_Unp-LU500-du1p8_spin-2-ggON_pT125_M_500-2000_TuneCP2_py_GEN.root")
-    # DATASET.append("MCI_Unp-LU500-du1p8_spin-2-ggffON_pT125_M_2000_TuneCP2_py_GEN.root")
-    # DATASET.append("MCI_Unp-LU500-du1p8_spin-2-ggffON_pT125_M_500-2000_TuneCP2_py_GEN.root")
-    # DATASET.append("MCI_Unp-LU500-du1p8_spin-2_pT125_M_2000_TuneCP2_py_GEN.root")
-    # DATASET.append("MCI_Unp-LU500-du1p8_spin-2_pT125_M_500-2000_TuneCP2_py_GEN.root")
-    DATASET.append("MCI_Unp-LU500-du1p8_spin-0-ggON_pT125_M_2000_TuneCP2_py_GEN.root")
-    DATASET.append("MCI_Unp-LU500-du1p8_spin-0-ggON_pT125_M_500-2000_TuneCP2_py_GEN.root")
-    DATASET.append("MCI_Unp-LU500-du1p8_spin-0_pT125_M_2000_TuneCP2_py_GEN.root")
-    DATASET.append("MCI_Unp-LU500-du1p8_spin-0_pT125_M_500-2000_TuneCP2_py_GEN.root")
-
-if doUNPdu1p8spinTest:
-
-    # DATASET.append("STest1p8Unp1500p0_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("STest1p8Unp1500p0_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("STest1p8Unp2500p0_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("STest1p8Unp2500p0_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("STest1p8Unp4000p0_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("STest1p8Unp4000p0_spin-2_M_500-2000_py_GEN.root")
-    DATASET.append("STest1p8Unp1500p0_spin-0_M_2000_py_GEN.root")
-    DATASET.append("STest1p8Unp1500p0_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("STest1p8Unp2500p0_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("STest1p8Unp2500p0_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("STest1p8Unp4000p0_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("STest1p8Unp4000p0_spin-0_M_500-2000_py_GEN.root")
-if doUNPdu1p9spinTest:
-    DATASET.append("STest1p9Unp1500p0_spin-0_M_2000_py_GEN.root")
-    DATASET.append("STest1p9Unp1500p0_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("STest1p9Unp2500p0_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("STest1p9Unp2500p0_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("STest1p9Unp4000p0_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("STest1p9Unp4000p0_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("STest1p9Unp1500p0_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("STest1p9Unp1500p0_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("STest1p9Unp2500p0_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("STest1p9Unp2500p0_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("STest1p9Unp4000p0_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("STest1p9Unp4000p0_spin-2_M_500-2000_py_GEN.root")
-if doUNPdu1p1spinTest:
-    # DATASET.append("STest1p1Unp1500p0_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("STest1p1Unp1500p0_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("STest1p1Unp1500p0_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("STest1p1Unp1500p0_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("STest1p1Unp2500p0_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("STest1p1Unp2500p0_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("STest1p1Unp2500p0_spin-2_M_2000_py_GEN.root")
-    # DATASET.append("STest1p1Unp2500p0_spin-2_M_500-2000_py_GEN.root")
-    # DATASET.append("STest1p1Unp4000p0_spin-0_M_2000_py_GEN.root")
-    # DATASET.append("STest1p1Unp4000p0_spin-0_M_500-2000_py_GEN.root")
-    # DATASET.append("STest1p1Unp4000p0_spin-2_M_2000_py_GEN.root")
-    DATASET.append("STest1p1Unp4000p0_spin-2_M_500-2000_py_GEN.root")
-if doSMtest:
-    DATASET.append("TestSM_M-500-2000_py_GEN.root")
-    DATASET.append("TestSM_M-2000_py_GEN.root")
-if doUnpdu1p9:
-    DATASET.append("STest1p9Unp1000p0_M_2000_py_GEN.root")
-    DATASET.append("STest1p9Unp1000p0_M_500-2000_py_GEN.root")
-    DATASET.append("STest1p9Unp1250p0_M_2000_py_GEN.root")
-    DATASET.append("STest1p9Unp1250p0_M_500-2000_py_GEN.root")
-    DATASET.append("STest1p9Unp1500p0_M_2000_py_GEN.root")
-    DATASET.append("STest1p9Unp1500p0_M_500-2000_py_GEN.root")
-    DATASET.append("STest1p9Unp1750p0_M_2000_py_GEN.root")
-    DATASET.append("STest1p9Unp1750p0_M_500-2000_py_GEN.root")
-    DATASET.append("STest1p9Unp2000p0_M_2000_py_GEN.root")
-    DATASET.append("STest1p9Unp2000p0_M_500-2000_py_GEN.root")
-    DATASET.append("STest1p9Unp2500p0_M_2000_py_GEN.root")
-    DATASET.append("STest1p9Unp2500p0_M_500-2000_py_GEN.root")
-    DATASET.append("STest1p9Unp3000p0_M_2000_py_GEN.root")
-    DATASET.append("STest1p9Unp3000p0_M_500-2000_py_GEN.root")
-    DATASET.append("STest1p9Unp3500p0_M_2000_py_GEN.root")
-    DATASET.append("STest1p9Unp3500p0_M_500-2000_py_GEN.root")
-    DATASET.append("STest1p9Unp4000p0_M_2000_py_GEN.root")
-    DATASET.append("STest1p9Unp4000p0_M_500-2000_py_GEN.root")
-    DATASET.append("STest1p9Unp4500p0_M_2000_py_GEN.root")
-    DATASET.append("STest1p9Unp4500p0_M_500-2000_py_GEN.root")
-    DATASET.append("STest1p9Unp5500p0_M_2000_py_GEN.root")
-    DATASET.append("STest1p9Unp5500p0_M_500-2000_py_GEN.root")
-
-if doADDGRW1000:
-    DATASET.append("TestADD_NI-1_LambdaT-10000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
-    DATASET.append("TestADD_NI-1_LambdaT-11000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
-    DATASET.append("TestADD_NI-1_LambdaT-13000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
-    DATASET.append("TestADD_NI-1_LambdaT-4000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
-    DATASET.append("TestADD_NI-1_LambdaT-4500_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
-    DATASET.append("TestADD_NI-1_LambdaT-5000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
-    DATASET.append("TestADD_NI-1_LambdaT-5500_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
-    DATASET.append("TestADD_NI-1_LambdaT-6000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
-    DATASET.append("TestADD_NI-1_LambdaT-6500_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
-    DATASET.append("TestADD_NI-1_LambdaT-7000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
-    DATASET.append("TestADD_NI-1_LambdaT-7500_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
-    DATASET.append("TestADD_NI-1_LambdaT-8000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
-    DATASET.append("TestADD_NI-1_LambdaT-8500_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
-    DATASET.append("TestADD_NI-1_LambdaT-9000_M-1000_TuneCUEP8M1_13TeV_py_GEN.root")
-
+    nevtsdict_temp = {
+        "AAA_0j_pT20_13TeV" : 5000,
+        "AAA_1j_pT20_13TeV" : 5000,
+    }
+    xsecdict.update(xsecdict_temp)
+    nevtsdict.update(nevtsdict_temp)
+    keypattern = "sherpa_([^(]*)_MASTER_cff_py_GEN.root"
 
 for dset in DATASET:
+
+    matchkey = re.findall(keypattern, dset)
+    key = matchkey[0]
+    xsec, nevts = xsecdict[key], nevtsdict[key]
 
     print 'Processing ', dset
     cmssw_base = os.getenv("CMSSW_BASE")
@@ -367,6 +46,8 @@ for dset in DATASET:
 
     s = open(templatefile).read()
     s = s.replace('DATASETNAME', dset)
+    s = s.replace('CROSSSECTION', str(xsec))
+    s = s.replace('NEVTS', str(nevts))
     f = open(ConfigFile, 'w')
     f.write(s)
     f.close()
