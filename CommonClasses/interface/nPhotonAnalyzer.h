@@ -45,6 +45,13 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
       void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles);
+      void photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
+                        const edm::Handle<EcalRecHitCollection>& recHitsEB,
+                        const edm::Handle<EcalRecHitCollection>& recHitsEE,
+			                  const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+			                  ExoDiPhotons::photonInfo_t& photon1Info,
+                        ExoDiPhotons::photonInfo_t& photon2Info,
+                        ExoDiPhotons::diphotonInfo_t& diphotonInfo);
 
    private:
       virtual void beginJob() override;
@@ -82,9 +89,17 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ExoDiPhotons::genParticleInfo_t   fGenPhoton3Info;
       ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo;
       ExoDiPhotons::triphotonInfo_t     fGenTriphotonInfo;
+      ExoDiPhotons::photonInfo_t        fPhoton1Info; // leading
+      ExoDiPhotons::photonInfo_t        fPhoton2Info; // subleading
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton1Info;
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton2Info;
       // ExoDiPhotons::diphotonInfo_t      fSherpaGenDiphotonInfo;
+
+      // NOT SURE IF THIS GOES HERE
+      // pointer to photon in collection that passes high pt ID
+      std::vector<edm::Ptr<pat::Photon>> goodPhotons;
+      std::vector<edm::Ptr<pat::Photon>> selectedPhotons[2][2]; // combinations of real and fake
+      std::vector<std::pair<edm::Ptr<pat::Photon>, int> > realAndFakePhotons;
 
       //Put flags in cfg later
       int nPV_;
@@ -93,6 +108,7 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       bool isGood_;
       bool islocal_;
       bool isDAS_;
+      bool isSat;
       double xsec_; // For local generation
       double WeightAll_;
       double GenPhoton0_iso_;

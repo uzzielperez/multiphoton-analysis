@@ -153,6 +153,40 @@ updateJetCollection(
    jetCorrections = ('AK4PFchs', JEC, 'None')  # Do not forget 'L2L3Residual' on data!
 )
 
+#####VID framework####################
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+dataFormat = DataFormat.MiniAOD
+switchOnVIDElectronIdProducer(process, dataFormat)
+switchOnVIDPhotonIdProducer(process, dataFormat)
+# define which IDs we want to produce
+my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff',
+'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronHLTPreselecition_Summer16_V1_cff',
+'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV70_cff',
+'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff',
+'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_HZZ_V1_cff']
+#add them to the VID producer
+for idmod in my_id_modules:
+    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+
+my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring16_V2p2_cff',
+                    'RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Spring16_nonTrig_V1_cff']
+
+process.load("RecoEgamma.ElectronIdentification.ElectronIDValueMapProducer_cfi")
+process.electronIDValueMapProducer.srcMiniAOD = cms.InputTag('slimmedElectrons')
+process.electronMVAValueMapProducer.srcMiniAOD = cms.InputTag('slimmedElectrons')
+process.photonIDValueMapProducer.srcMiniAOD = cms.InputTag('slimmedPhotons')
+process.photonMVAValueMapProducer.srcMiniAOD = cms.InputTag('slimmedPhotons')
+#process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
+#                                   src = cms.InputTag("slimmedMuons"),
+#                                   preselection = cms.string("track.isNonnull"),
+#                                   passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
+#                                   fractionOfSharedSegments = cms.double(0.499))
+#add them to the VID producer
+for idmod in my_phoid_modules:
+    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+
+######## VID framework end#####################
+
 # main analyzer and inputs
 process.demo = cms.EDAnalyzer(
     'nPhotonAnalyzer',
