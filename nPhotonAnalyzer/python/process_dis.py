@@ -15,20 +15,22 @@ xsecdict = {}
 nevtsdict = {}
 
 if doAAAsherpa:
-    DATASET.append("sherpa_AAA_0j_pT20_13TeV_MASTER_cff_py_GEN.root")
-    # DATASET.append("sherpa_AAA_1j_pT20_13TeV_MASTER_cff_py_GEN.root")
-
+    #DATASET.append("sherpa_AAA_0j_pT20_13TeV_MASTER_cff_py_GEN.root")
+    #DATASET.append("sherpa_AAA_1j_pT20_13TeV_MASTER_cff_py_GEN.root")
+    DATASET.append("sherpa_AAA_2j_pT20_13TeV_MASTER_cff_py_GEN.root")
     # Cross-section hardcoded in pb
     xsecdict_temp = {
         "AAA_0j_pT20_13TeV" : 2.535e-02, #25.3500,    #  2.535e-02 +- 3.505e-04 pb
-        "AAA_1j_pT20_13TeV" : 4.482e-02, #44.824, # 4.482e-02 +- 6.330e-04 pb
+        "AAA_1j_pT20_13TeV" : 4.446e-02, #44.824, # 0.0446084 pb +- ( 0.000445437
+	"AAA_2j_pT20_13TeV" : 5.722e-02, # +- 5.721e-04 pb
     }
     xsecdict.update(xsecdict_temp)
 
     nevtsdict_temp = {
         "AAA_0j_pT20_13TeV" : 5000,
-        "AAA_1j_pT20_13TeV" : 5000,
-    }
+        "AAA_1j_pT20_13TeV" : 10000,
+  	"AAA_2j_pT20_13TeV" : 10000, 
+     }
     xsecdict.update(xsecdict_temp)
     nevtsdict.update(nevtsdict_temp)
     keypattern = "sherpa_([^(]*)_MASTER_cff_py_GEN.root"

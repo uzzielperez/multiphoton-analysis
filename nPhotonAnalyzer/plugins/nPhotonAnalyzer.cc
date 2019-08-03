@@ -31,27 +31,30 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
 
    if (islocal_){
    fgenTree = fs->make<TTree>("fgenTree","GENDiphotonTree");
-   fgenTree->Branch("Event",       &fEventInfo,       ExoDiPhotons::eventBranchDefString.c_str());
-   fgenTree->Branch("GenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fgenTree->Branch("GenPhoton2",  &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fgenTree->Branch("GenPhoton3",  &fGenPhoton3Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fgenTree->Branch("GenDiPhoton", &fGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fgenTree->Branch("Event",        &fEventInfo,        ExoDiPhotons::eventBranchDefString.c_str());
+   fgenTree->Branch("GenPhoton1",   &fGenPhoton1Info,   ExoDiPhotons::genParticleBranchDefString.c_str());
+   fgenTree->Branch("GenPhoton2",   &fGenPhoton2Info,   ExoDiPhotons::genParticleBranchDefString.c_str());
+   fgenTree->Branch("GenPhoton3",   &fGenPhoton3Info,   ExoDiPhotons::genParticleBranchDefString.c_str());
+   fgenTree->Branch("GenDiPhoton",  &fGenDiphotonInfo,  ExoDiPhotons::diphotonBranchDefString.c_str());
    fgenTree->Branch("GenTriPhoton", &fGenTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
-   fgenTree->Branch("Photon1",     &fPhoton1Info,     ExoDiPhotons::photonBranchDefString.c_str());
-   fgenTree->Branch("Photon2",     &fPhoton2Info,     ExoDiPhotons::photonBranchDefString.c_str());
-   fgenTree->Branch("isGood",      &isGood_);
-   fgenTree->Branch("nPV", &nPV_);
+   fgenTree->Branch("Photon1",      &fPhoton1Info,      ExoDiPhotons::photonBranchDefString.c_str());
+   fgenTree->Branch("Photon2",      &fPhoton2Info,      ExoDiPhotons::photonBranchDefString.c_str());
+   fgenTree->Branch("Photon3",      &fPhoton3Info,      ExoDiPhotons::photonBranchDefString.c_str());
+   fgenTree->Branch("DiPhoton",     &fDiphotonInfo,  ExoDiPhotons::diphotonBranchDefString.c_str());
+   fgenTree->Branch("TriPhoton",    &fTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
+   fgenTree->Branch("isGood",       &isGood_);
+   fgenTree->Branch("nPV",          &nPV_);
 
    xsec_ = ps.getParameter<double>("xsec");
    }
 
    if (isDAS_){
    fTree = fs->make<TTree>("fTree", "DiphotonTree");
-   fTree->Branch("Event",       &fEventInfo,       ExoDiPhotons::eventBranchDefString.c_str());
-   fTree->Branch("GenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fTree->Branch("GenPhoton2",  &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fTree->Branch("GenPhoton3",  &fGenPhoton3Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fTree->Branch("Gendiphoton", &fGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fTree->Branch("Event",        &fEventInfo,       ExoDiPhotons::eventBranchDefString.c_str());
+   fTree->Branch("GenPhoton1",   &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
+   fTree->Branch("GenPhoton2",   &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
+   fTree->Branch("GenPhoton3",   &fGenPhoton3Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
+   fTree->Branch("Gendiphoton",  &fGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
    fTree->Branch("GenTriPhoton", &fGenTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
    fTree->Branch("isGood",            &isGood_);
    fTree->Branch("nPV", &nPV_);
@@ -227,20 +230,17 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> > 
       std::vector<edm::Ptr<pat::Photon>> selectedPhotons[2][2]; // combinations of real and fake for both leading candidates
       std::vector<std::pair<edm::Ptr<pat::Photon>, int> > realAndFakePhotons;
 
-      //for (edm::View<pat::Photon>::const_iterator pho = photons->begin(); pho != photons->end(); ++pho) {
+
      for (size_t i = 0; i < photons->size(); ++i) {
        const auto pho = photons->ptrAt(i);
 
        // print photon info
        //cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
-
-       // check if photon is saturated
        isSat = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
 
        bool passID = ExoDiPhotons::passHighPtID(&(*pho), rho_, isSat);
        bool denominatorObject = ExoDiPhotons::passDenominatorCut(&(*pho), rho_, isSat);
 
-       // fill photons that pass high pt ID
        if(passID) {
          goodPhotons.push_back(pho);
          realAndFakePhotons.push_back(std::pair<edm::Ptr<pat::Photon>, int>(pho, TRUE));
@@ -250,7 +250,6 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> > 
        }
      } // end of photon loop
 
-     // sort vector of photons by pt
      sort(goodPhotons.begin(),goodPhotons.end(),ExoDiPhotons::comparePhotonsByPt);
      sort(realAndFakePhotons.begin(), realAndFakePhotons.end(), ExoDiPhotons::comparePhotonPairsByPt);
 
@@ -305,7 +304,6 @@ void ExoDiPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>&
   // std::cout << "Photon 1 pt = " << photons[0]->pt() << "; eta = " << photons[0]->eta() << "; phi = " << photons[0]->phi() << std::endl;
   // std::cout << "Photon 2 pt = " << photons[1]->pt() << "; eta = " << photons[1]->eta() << "; phi = " << photons[1]->phi() << std::endl;
 
-  // Photon 1
   photon1Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[0]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
   std::cout << "Photon 1 isSat: " << photon1Info.isSaturated << std::endl;
   ExoDiPhotons::FillBasicPhotonInfo(photon1Info, &(*photons[0]));
@@ -315,7 +313,6 @@ void ExoDiPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>&
   photon1Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[0]];
   photon1Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[0]];
 
-  // Photon 2
   photon2Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[1]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
   std::cout << "Photon 2 isSat: " << photon2Info.isSaturated << std::endl;
   ExoDiPhotons::FillBasicPhotonInfo(photon2Info, &(*photons[1]));
