@@ -35,12 +35,16 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fgenTree->Branch("GenPhoton1",   &fGenPhoton1Info,   ExoDiPhotons::genParticleBranchDefString.c_str());
    fgenTree->Branch("GenPhoton2",   &fGenPhoton2Info,   ExoDiPhotons::genParticleBranchDefString.c_str());
    fgenTree->Branch("GenPhoton3",   &fGenPhoton3Info,   ExoDiPhotons::genParticleBranchDefString.c_str());
-   fgenTree->Branch("GenDiPhoton",  &fGenDiphotonInfo,  ExoDiPhotons::diphotonBranchDefString.c_str());
+   fgenTree->Branch("GenDiPhoton12", &fGenDiphotonInfo12, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fgenTree->Branch("GenDiPhoton13", &fGenDiphotonInfo13, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fgenTree->Branch("GenDiPhoton23", &fGenDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
    fgenTree->Branch("GenTriPhoton", &fGenTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
    fgenTree->Branch("Photon1",      &fPhoton1Info,      ExoDiPhotons::photonBranchDefString.c_str());
    fgenTree->Branch("Photon2",      &fPhoton2Info,      ExoDiPhotons::photonBranchDefString.c_str());
    fgenTree->Branch("Photon3",      &fPhoton3Info,      ExoDiPhotons::photonBranchDefString.c_str());
-   fgenTree->Branch("DiPhoton",     &fDiphotonInfo,  ExoDiPhotons::diphotonBranchDefString.c_str());
+   fgenTree->Branch("DiPhoton12",   &fDiphotonInfo12, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fgenTree->Branch("DiPhoton13",   &fDiphotonInfo13, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fgenTree->Branch("DiPhoton23",   &fDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
    fgenTree->Branch("TriPhoton",    &fTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
    fgenTree->Branch("isGood",       &isGood_);
    fgenTree->Branch("nPV",          &nPV_);
@@ -86,10 +90,18 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    ExoDiPhotons::InitGenParticleInfo(fGenPhoton1Info);
    ExoDiPhotons::InitGenParticleInfo(fGenPhoton2Info);
    ExoDiPhotons::InitGenParticleInfo(fGenPhoton3Info);
-   ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo);
+   ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo12);
+   ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo13);
+   ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo23);
    ExoDiPhotons::InitTriphotonInfo(fGenTriphotonInfo);
-   ExoDiPhotons::InitPhotonInfo(fPhoton1Info);
-   ExoDiPhotons::InitPhotonInfo(fPhoton2Info);
+   ExoDiPhotons::InitParticleInfo(fPhoton1Info);
+   ExoDiPhotons::InitParticleInfo(fPhoton2Info);
+   ExoDiPhotons::InitParticleInfo(fPhoton3Info);
+   ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo12);
+   ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo13);
+   ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo23);
+   ExoDiPhotons::InitTriphotonInfo(fTriphotonInfo);
+
 
    //---Handle, getByToken
    //edm::Handle<vector<reco::GenParticle> > genParticles;
@@ -111,10 +123,10 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    ExoDiPhotons::FillGenEventInfo(fEventInfo, &(*genInfo));
    if (isDAS_) ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
    if (islocal_) ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
+   // Fills photon 1,2,3, diphoton combinations and triphoton info
    fillGenInfo(genParticles);
    fillPhotonInfo(photons);
-   //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
-   //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
+
 
    //Debugging!
    cout <<  "Run: "    << iEvent.id().run()
@@ -159,14 +171,10 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       vector< edm::Ptr<const reco::GenParticle> > genPhotons;
       vector<int> interactingPartons;
 
-      //Test
-      //const reco::GenParticle *genPho1 = NULL;
-      //const reco::GenParticle *genPho2 = NULL;
-
       for (size_t i = 0; i < genParticles->size(); ++i){
        const auto gen = genParticles->ptrAt(i);
        //Pythia8 status 20-30 is Hard interaction
-       if (gen->isHardProcess() && gen->pt() == 0)    interactingPartons.push_back(gen->pdgId());
+       if (gen->isHardProcess() && gen->pt() == 0) interactingPartons.push_back(gen->pdgId());
        if (gen->isHardProcess() && gen->pdgId()==22){
          genPhotons.push_back(gen);
          cout << "Hard Process genParticle: "
@@ -178,14 +186,6 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
               << endl;
        }
      }//end for loop over gen particles
-
-      // ORIGINAL SHORT
-      // for (size_t i = 0; i < genParticles->size(); ++i){
-      //   const auto gen = genParticles->ptrAt(i);
-      //   //Pythia8 status 20-30 is Hard interaction
-      //   if (gen->isHardProcess() && gen->pt() == 0)    interactingPartons.push_back(gen->pdgId());
-      //   if (gen->isHardProcess() && gen->pdgId()==22)  genPhotons.push_back(gen);
-      // }//end for loop over gen particles
 
       sort(genPhotons.begin(), genPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
       if(interactingPartons.size() == 2){
@@ -199,28 +199,29 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
 //      }
       else cout << "Exactly two interacting partons not found!" << endl;
 
+      //---- Photon Information
       // Samples with only fakes may have no hard-process photons
+      // Samples with one fake may have only one hard-process photon in diphoton pair
+      // Samples with fakes may have only one hard-process photon in the triphoton system
+
       if(genPhotons.size() < 1) return;
       const reco::GenParticle *genPhoton1 = &(*genPhotons.at(0));
       if (genPhoton1) ExoDiPhotons::FillGenParticleInfo(fGenPhoton1Info, genPhoton1);
 
-      // Samples with one fake may have only one hard-process photon in diphoton pair
       if(genPhotons.size() < 2) return;
-      // fill gen photon info
       const reco::GenParticle *genPhoton2 = &(*genPhotons.at(1));
       if (genPhoton2) ExoDiPhotons::FillGenParticleInfo(fGenPhoton2Info, genPhoton2);
 
-      // fill gen diphoton info
-      if (genPhoton1 && genPhoton2) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo,genPhoton1,genPhoton2);
-
-      // Add a third photon
-      // Samples with fakes may have only one hard-process photon in the triphoton system
       if(genPhotons.size() < 3) return;
       const reco::GenParticle *genPhoton3 = &(*genPhotons.at(2));
       if (genPhoton3) ExoDiPhotons::FillGenParticleInfo(fGenPhoton3Info, genPhoton3);
+
+      //---- Diphoton/Triphoton Information
+      if (genPhoton1 && genPhoton2) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo12,genPhoton1,genPhoton2);
+      if (genPhoton1 && genPhoton3) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo13,genPhoton1,genPhoton3);
+      if (genPhoton2 && genPhoton3) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo23,genPhoton2,genPhoton3);
       if (genPhoton1 && genPhoton2 && genPhoton3) ExoDiPhotons::FillTriphotonInfo(fGenTriphotonInfo,genPhoton1,genPhoton2,genPhoton3);
 
-      // fill gen triphoton info
 }//end of fillGenInfo
 
 void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> > photons){
@@ -299,7 +300,10 @@ void ExoDiPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>&
 						                           const edm::Handle<EcalRecHitCollection>& recHitsEB,
                                        const edm::Handle<EcalRecHitCollection>& recHitsEE,
 						                           const edm::Handle<edm::ValueMap<bool> >* id_decisions,
-						                           ExoDiPhotons::photonInfo_t& photon1Info, ExoDiPhotons::photonInfo_t& photon2Info, ExoDiPhotons::diphotonInfo_t& diphotonInfo)
+						                           ExoDiPhotons::photonInfo_t& photon1Info,
+                                       ExoDiPhotons::photonInfo_t& photon2Info,
+                                       ExoDiPhotons::photonInfo_t& photon3Info,
+                                       ExoDiPhotons::diphotonInfo_t& diphotonInfo)
 {
   // std::cout << "Photon 1 pt = " << photons[0]->pt() << "; eta = " << photons[0]->eta() << "; phi = " << photons[0]->phi() << std::endl;
   // std::cout << "Photon 2 pt = " << photons[1]->pt() << "; eta = " << photons[1]->eta() << "; phi = " << photons[1]->phi() << std::endl;
@@ -321,6 +325,15 @@ void ExoDiPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>&
   photon2Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[1]];
   photon2Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[1]];
   photon2Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[1]];
+
+  photon3Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[2]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+  std::cout << "Photon 3 isSat: " << photon3Info.isSaturated << std::endl;
+  ExoDiPhotons::FillBasicPhotonInfo(photon3Info, &(*photons[2]));
+  ExoDiPhotons::FillPhotonIDInfo(photon3Info, &(*photons[2]), rho_, photon3Info.isSaturated);
+  ExoDiPhotons::FillPhotonEGMidInfo(photon3Info, &(*photons[2]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
+  photon3Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[2]];
+  photon3Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[2]];
+  photon3Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[2]];
 
   // Diphoton
   ExoDiPhotons::FillDiphotonInfo(diphotonInfo,&(*photons[0]),&(*photons[1]));
