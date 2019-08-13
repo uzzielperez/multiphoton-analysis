@@ -80,7 +80,9 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ExoDiPhotons::genParticleInfo_t   fGenPhoton1Info;
       ExoDiPhotons::genParticleInfo_t   fGenPhoton2Info;
       ExoDiPhotons::genParticleInfo_t   fGenPhoton3Info;
-      ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo;
+      ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo12;
+      ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo13;
+      ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo23;
       ExoDiPhotons::triphotonInfo_t     fGenTriphotonInfo;
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton1Info;
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton2Info;

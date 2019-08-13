@@ -16,7 +16,7 @@ nevtsdict = {}
 
 if doAAAsherpa:
     DATASET.append("sherpa_AAA_0j_pT20_13TeV_MASTER_cff_py_GEN.root")
-    # DATASET.append("sherpa_AAA_1j_pT20_13TeV_MASTER_cff_py_GEN.root")
+    #DATASET.append("sherpa_AAA_1j_pT20_13TeV_MASTER_cff_py_GEN.root")
 
     # Cross-section hardcoded in pb
     xsecdict_temp = {
@@ -41,7 +41,7 @@ for dset in DATASET:
 
     print 'Processing ', dset
     cmssw_base = os.getenv("CMSSW_BASE")
-    templatefile = cmssw_base + "/src/multiphoton-analysis/nPhotonAnalyzer/python/cmsRun_cfg_template.py"
+    templatefile = cmssw_base + "/src/Triphoton/multiphoton-analysis/nPhotonAnalyzer/python/cmsRun_cfg_template.py"
     ConfigFile = "cmsRun_cfg_" + dset + ".py"
 
     s = open(templatefile).read()
