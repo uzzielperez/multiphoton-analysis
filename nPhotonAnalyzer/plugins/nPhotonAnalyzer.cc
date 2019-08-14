@@ -192,11 +192,7 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
         fEventInfo.interactingParton1PdgId = interactingPartons[0];
         fEventInfo.interactingParton2PdgId = interactingPartons[1];
       }
-//      else if(interactingPartons.size() == 3){
-//        fEventInfo.interactingParton1PdgId = interactingPartons[0];
-//        fEventInfo.interactingParton2PdgId = interactingPartons[1];
-//        fEventInfo.interactingParton2PdgId = interactingPartons[2];
-//      }
+
       else cout << "Exactly two interacting partons not found!" << endl;
 
       //---- Photon Information
@@ -255,47 +251,51 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> > 
      sort(realAndFakePhotons.begin(), realAndFakePhotons.end(), ExoDiPhotons::comparePhotonPairsByPt);
 
      // sort events by whether the leading two photons are true or fake
-     if(realAndFakePhotons.size()>=2)
-     {
-       // "first" is the photon candidate, "second" is "TRUE" or "FAKE"
-      int photon1TrueOrFake = realAndFakePhotons.at(0).second;
-      int photon2TrueOrFake = realAndFakePhotons.at(1).second;
-      selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].push_back(realAndFakePhotons.at(0).first);
-      selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].push_back(realAndFakePhotons.at(1).first);
-      photonFiller(selectedPhotons[photon1TrueOrFake][photon2TrueOrFake],
-      recHitsEB, recHitsEE, &id_decisions[0],
-      fTrueOrFakePhoton1Info[photon1TrueOrFake][photon2TrueOrFake],
-      fTrueOrFakePhoton2Info[photon1TrueOrFake][photon2TrueOrFake],
-      fTrueOrFakeDiphotonInfo[photon1TrueOrFake][photon2TrueOrFake]);
-      if(photon1TrueOrFake==TRUE && photon2TrueOrFake==TRUE) isTT_ = true;
-      else if(photon1TrueOrFake==TRUE && photon2TrueOrFake==FAKE) isTF_ = true;
-      else if(photon1TrueOrFake==FAKE && photon2TrueOrFake==TRUE) isFT_ = true;
-      else if(photon1TrueOrFake==FAKE && photon2TrueOrFake==FAKE) isFF_ = true;
-      else throw cms::Exception("If there are two photons, there should only be four true/fake combinations!");
-      if (isMC_ && isClosureTest_)
-      {
-        mcTruthFiller(&(*selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].at(0)), fTrueOrFakePhoton1Info[photon1TrueOrFake][photon2TrueOrFake], genParticles);
-        mcTruthFiller(&(*selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].at(1)), fTrueOrFakePhoton2Info[photon1TrueOrFake][photon2TrueOrFake], genParticles);
-      }
-    }
+    //  if(realAndFakePhotons.size()>=2)
+    //  {
+    //    // "first" is the photon candidate, "second" is "TRUE" or "FAKE"
+    //   int photon1TrueOrFake = realAndFakePhotons.at(0).second;
+    //   int photon2TrueOrFake = realAndFakePhotons.at(1).second;
+    //   selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].push_back(realAndFakePhotons.at(0).first);
+    //   selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].push_back(realAndFakePhotons.at(1).first);
+    //   photonFiller(selectedPhotons[photon1TrueOrFake][photon2TrueOrFake],
+    //   recHitsEB, recHitsEE, &id_decisions[0],
+    //   fTrueOrFakePhoton1Info[photon1TrueOrFake][photon2TrueOrFake],
+    //   fTrueOrFakePhoton2Info[photon1TrueOrFake][photon2TrueOrFake],
+    //   fTrueOrFakeDiphotonInfo[photon1TrueOrFake][photon2TrueOrFake]);
+    //   if(photon1TrueOrFake==TRUE && photon2TrueOrFake==TRUE) isTT_ = true;
+    //   else if(photon1TrueOrFake==TRUE && photon2TrueOrFake==FAKE) isTF_ = true;
+    //   else if(photon1TrueOrFake==FAKE && photon2TrueOrFake==TRUE) isFT_ = true;
+    //   else if(photon1TrueOrFake==FAKE && photon2TrueOrFake==FAKE) isFF_ = true;
+    //   else throw cms::Exception("If there are two photons, there should only be four true/fake combinations!");
+    //   if (isMC_ && isClosureTest_)
+    //   {
+    //     mcTruthFiller(&(*selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].at(0)), fTrueOrFakePhoton1Info[photon1TrueOrFake][photon2TrueOrFake], genParticles);
+    //     mcTruthFiller(&(*selectedPhotons[photon1TrueOrFake][photon2TrueOrFake].at(1)), fTrueOrFakePhoton2Info[photon1TrueOrFake][photon2TrueOrFake], genParticles);
+    //   }
+    // }
 
-    if (goodPhotons.size() >= 2)
+    //if (goodPhotons.size() >= 2)
+    if (goodPhotons.size() >= 3)
     {
       isGood_ = true;
-      photonFiller(goodPhotons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fDiphotonInfo);
+      //photonFiller(goodPhotons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fDiphotonInfo);
+      photonFiller(goodPhotons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info,
+                   fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
       if (isMC_) {
         fillGenInfo(genParticles, goodPhotons);
-      if (isClosureTest_)
-      {
-	      mcTruthFiller(&(*goodPhotons[0]), fPhoton1Info, genParticles);
-	      cout << "fPhoton1Info.isMCTruthFake: " << fPhoton1Info.isMCTruthFake << endl;
-	      mcTruthFiller(&(*goodPhotons[1]), fPhoton2Info, genParticles);
-	      cout << "fPhoton2Info.isMCTruthFake: " << fPhoton2Info.isMCTruthFake << endl;
-      }
+      // if (isClosureTest_)
+      // {
+	    //   mcTruthFiller(&(*goodPhotons[0]), fPhoton1Info, genParticles);
+	    //   cout << "fPhoton1Info.isMCTruthFake: " << fPhoton1Info.isMCTruthFake << endl;
+	    //   mcTruthFiller(&(*goodPhotons[1]), fPhoton2Info, genParticles);
+	    //   cout << "fPhoton2Info.isMCTruthFake: " << fPhoton2Info.isMCTruthFake << endl;
+      // }
       }
     }
 }//end of fillPhotonInfo
 
+// Triphoton version
 void ExoDiPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
 						                           const edm::Handle<EcalRecHitCollection>& recHitsEB,
                                        const edm::Handle<EcalRecHitCollection>& recHitsEE,
@@ -303,10 +303,15 @@ void ExoDiPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>&
 						                           ExoDiPhotons::photonInfo_t& photon1Info,
                                        ExoDiPhotons::photonInfo_t& photon2Info,
                                        ExoDiPhotons::photonInfo_t& photon3Info,
-                                       ExoDiPhotons::diphotonInfo_t& diphotonInfo)
+                                       ExoDiPhotons::diphotonInfo_t& diphotonInfo12,
+                                       ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
+                                       ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
+                                       ExoDiPhotons::diphotonInfo_t& triphotonInfo,
+                                     )
 {
   // std::cout << "Photon 1 pt = " << photons[0]->pt() << "; eta = " << photons[0]->eta() << "; phi = " << photons[0]->phi() << std::endl;
   // std::cout << "Photon 2 pt = " << photons[1]->pt() << "; eta = " << photons[1]->eta() << "; phi = " << photons[1]->phi() << std::endl;
+  // std::cout << "Photon 3 pt = " << photons[2]->pt() << "; eta = " << photons[2]->eta() << "; phi = " << photons[2]->phi() << std::endl;
 
   photon1Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[0]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
   std::cout << "Photon 1 isSat: " << photon1Info.isSaturated << std::endl;
@@ -336,11 +341,51 @@ void ExoDiPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>&
   photon3Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[2]];
 
   // Diphoton
-  ExoDiPhotons::FillDiphotonInfo(diphotonInfo,&(*photons[0]),&(*photons[1]));
+  ExoDiPhotons::FillDiphotonInfo(diphotonInfo12,&(*photons[0]),&(*photons[1]));
+  ExoDiPhotons::FillDiphotonInfo(diphotonInfo13,&(*photons[0]),&(*photons[2]));
+  ExoDiPhotons::FillDiphotonInfo(diphotonInfo23,&(*photons[1]),&(*photons[2]));
 
-  // To-do: Implement for Triphotons
+  // Triphoton
+  ExoDiPhotons::FillTriphotonInfo(triphotonInfo,&(*photons[0]),&(*photons[1]),&(*photons[2]));
 
 } // end photonFiller
+
+// // Diphoton Version
+// void ExoDiPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
+// 						                           const edm::Handle<EcalRecHitCollection>& recHitsEB,
+//                                        const edm::Handle<EcalRecHitCollection>& recHitsEE,
+// 						                           const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+// 						                           ExoDiPhotons::photonInfo_t& photon1Info,
+//                                        ExoDiPhotons::photonInfo_t& photon2Info,
+//                                        ExoDiPhotons::diphotonInfo_t& diphotonInfo)
+// {
+//   // std::cout << "Photon 1 pt = " << photons[0]->pt() << "; eta = " << photons[0]->eta() << "; phi = " << photons[0]->phi() << std::endl;
+//   // std::cout << "Photon 2 pt = " << photons[1]->pt() << "; eta = " << photons[1]->eta() << "; phi = " << photons[1]->phi() << std::endl;
+//
+//   photon1Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[0]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+//   std::cout << "Photon 1 isSat: " << photon1Info.isSaturated << std::endl;
+//   ExoDiPhotons::FillBasicPhotonInfo(photon1Info, &(*photons[0]));
+//   ExoDiPhotons::FillPhotonIDInfo(photon1Info, &(*photons[0]), rho_, photon1Info.isSaturated);
+//   ExoDiPhotons::FillPhotonEGMidInfo(photon1Info, &(*photons[0]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
+//   photon1Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[0]];
+//   photon1Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[0]];
+//   photon1Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[0]];
+//
+//   photon2Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[1]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+//   std::cout << "Photon 2 isSat: " << photon2Info.isSaturated << std::endl;
+//   ExoDiPhotons::FillBasicPhotonInfo(photon2Info, &(*photons[1]));
+//   ExoDiPhotons::FillPhotonIDInfo(photon2Info, &(*photons[1]), rho_, photon2Info.isSaturated);
+//   ExoDiPhotons::FillPhotonEGMidInfo(photon2Info, &(*photons[1]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
+//   photon2Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[1]];
+//   photon2Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[1]];
+//   photon2Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[1]];
+//
+//   // Diphoton
+//   ExoDiPhotons::FillDiphotonInfo(diphotonInfo,&(*photons[0]),&(*photons[1]));
+//
+//   // To-do: Implement for Triphotons
+//
+// } // end photonFiller
 
 // Implement Photon selection
 
