@@ -11,11 +11,11 @@ isDAS          = False
 
 if islocal:
     cmssw_base = os.getenv("CMSSW_BASE")
-    PATH      = '%s/src/' %(cmssw_base)
+    PATH      = '%s/src/Triphoton/' %(cmssw_base)
     #PATH      = '/uscms/home/cuperez/nobackup/'
     INFILE    = PATH + 'DATASETNAME'
     inputFile = 'file:%s' %(INFILE)
-    outName = '%s' %('DATASETNAME')
+    outName = 'out%s' %('DATASETNAME')
 else:
     print "Logical FileName Provided: "
     inputFile = '/store/mc/RunIISummer16MiniAODv2/ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/6C12F491-0BB7-E611-B418-0025904FE658.root'
