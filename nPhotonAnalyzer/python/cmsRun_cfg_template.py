@@ -37,7 +37,7 @@ print 'Writing output to file ', outName
 options = VarParsing ('python')
 options.register('nEventsSample',
                  #61125, #100,
-                 1000,
+                 NEVTS,
                  VarParsing.multiplicity.singleton,
                  VarParsing.varType.int,
                  "Total number of events in dataset for event weight calculation.")
@@ -152,7 +152,9 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         isDAS = cms.bool(isDAS),
         #isClosureTest = cms.bool(False),
         #isReMINIAOD = cms.bool(isReMINIAOD),
-        isolationConeR = cms.double(0.3)
+        isolationConeR = cms.double(0.3),
+        xsec = cms.double(CROSSSECTION)
+
 )
 process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
 process.p = cms.Path(process.demo * process.xsec)

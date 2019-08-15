@@ -119,8 +119,7 @@ namespace ExoDiPhotons
     eventInfo.processid = genInfo->signalProcessID();
     eventInfo.weight0   = (genInfo->weights().size() > 0 ) ? genInfo->weights()[0] : 1.0;
     eventInfo.weight    = genInfo->weight();
-
-
+    std::cout << "eventweight: "                << eventInfo.weight << std::endl;
   }
 
   void FillPileupInfo(eventInfo_t &eventInfo, const std::vector< PileupSummaryInfo > * puSummary) {
@@ -139,18 +138,32 @@ namespace ExoDiPhotons
     double normalizationLumi = 1000.; // pb
     eventInfo.weightLumi = crossSection(sample)*normalizationLumi/(nEventsSample*averageWeight(sample));
     eventInfo.weightAll = eventInfo.weight*eventInfo.weightLumi;
-    std::cout << "WeightLumi: "                <<  eventInfo.weightLumi
-              << "; xsec: "                    << crossSection(sample)
-              << "; normalizationLumi: "       << normalizationLumi
-              << "; averageWeight: "           << averageWeight(sample)
-              << "; number of events: "        << nEventsSample
-              << "; weight: "                  << eventInfo.weight
-              << "; EventWeightAll Computed: " << eventInfo.weightAll
-              << " for sample "                << sample
-              << std::endl;
+    // std::cout << "WeightLumi: "                <<  eventInfo.weightLumi
+    //           << "; xsec: "                    << crossSection(sample)
+    //           << "; normalizationLumi: "       << normalizationLumi
+    //           << "; averageWeight: "           << averageWeight(sample)
+    //           << "; number of events: "        << nEventsSample
+    //           << "; weight: "                  << eventInfo.weight
+    //           << "; EventWeightAll Computed: " << eventInfo.weightAll
+    //           << " for sample "                << sample
+    //           << std::endl;
   }
 
-
+// For locally generated datasets the cross-sections are not hard-coded
+  void FillEventWeights(eventInfo_t &eventInfo, double xsec, double nEventsSample) {
+    double normalizationLumi = 1000.; // pb
+    double averageWeight = 1.00;
+    eventInfo.weightLumi = xsec*normalizationLumi/(nEventsSample*averageWeight);
+    eventInfo.weightAll = eventInfo.weight*eventInfo.weightLumi;
+//    std::cout << "WeightLumi: "                << eventInfo.weightLumi
+//              << "; xsec: "                    << xsec
+//              << "; normalizationLumi: "       << normalizationLumi
+//              << "; averageWeight: "           << averageWeight
+//              << "; number of events: "        << nEventsSample
+//              << "; weight: "                  << eventInfo.weight
+//              << "; EventWeightAll Computed: " << eventInfo.weightAll
+//              << std::endl;
+  }
 } // end of namespace
 
 #endif
