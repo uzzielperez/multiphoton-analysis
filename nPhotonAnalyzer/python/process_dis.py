@@ -41,7 +41,7 @@ for dset in DATASET:
 
     print 'Processing ', dset
     cmssw_base = os.getenv("CMSSW_BASE")
-    templatefile = cmssw_base + "/src/Triphoton/multiphoton-analysis/nPhotonAnalyzer/python/cmsRun_cfg_template.py"
+    templatefile = cmssw_base + "/src/multiphoton-analysis/nPhotonAnalyzer/python/cmsRun_cfg_template.py"
     ConfigFile = "cmsRun_cfg_" + dset + ".py"
 
     s = open(templatefile).read()

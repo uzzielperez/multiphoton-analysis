@@ -11,7 +11,7 @@ isDAS          = False
 
 if islocal:
     cmssw_base = os.getenv("CMSSW_BASE")
-    PATH      = '%s/src/Triphoton/' %(cmssw_base)
+    PATH      = '%s/src/' %(cmssw_base)
     #PATH      = '/uscms/home/cuperez/nobackup/'
     INFILE    = PATH + 'DATASETNAME'
     inputFile = 'file:%s' %(INFILE)

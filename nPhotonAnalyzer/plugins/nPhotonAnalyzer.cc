@@ -108,11 +108,11 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    edm::Handle<edm::View<reco::GenParticle> > genParticles;
    edm::Handle<GenEventInfoProduct>           genInfo;
    edm::Handle<edm::ValueMap<bool> >          id_decisions[3];
-   edm::Handle<edm::View<pat::Photon> >       photons;
+   // edm::Handle<edm::View<pat::Photon> >       photons;
 
    iEvent.getByToken(genParticlesToken_,    genParticles);
    iEvent.getByToken(genInfoToken_,         genInfo);
-   iEvent.getByToken(photonsMiniAODToken_,  photons);
+   // iEvent.getByToken(photonsMiniAODToken_,  photons);
    //iEvent.getByToken(rhoToken_,          rhoH);
    iEvent.getByToken(phoLooseIdMapToken_,   id_decisions[LOOSE]);
    iEvent.getByToken(phoMediumIdMapToken_,  id_decisions[MEDIUM]);
