@@ -33,7 +33,8 @@
 #include "multiphoton-analysis/CommonClasses/interface/GenParticleInfo.h"
 #include "multiphoton-analysis/CommonClasses/interface/DiPhotonInfo.h"
 #include "multiphoton-analysis/CommonClasses/interface/TriPhotonInfo.h"
-
+#include "multiphoton-analysis/CommonClasses/interface/PhotonInfo.h"
+// #include "multiphoton-analysis/CommonClasses/interface/PhotonID.h"
 using namespace std;
 using namespace edm;
 
@@ -57,11 +58,20 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       //edm::EDGetTokenT<vector<reco::GenParticle> >    genParticlesToken_;
       edm::EDGetTokenT<edm::View<reco::GenParticle> > genParticlesMiniAODToken_;
       edm::EDGetToken                                 photonsMiniAODToken_;
-      //edm::EDGetTokenT<double>                        rhoToken_;
+      edm::EDGetTokenT<double>                        rhoToken_;
       edm::EDGetTokenT<edm::ValueMap<bool> >          phoLooseIdMapToken_;
       edm::EDGetTokenT<edm::ValueMap<bool> >          phoMediumIdMapToken_;
       edm::EDGetTokenT<edm::ValueMap<bool> >          phoTightIdMapToken_;
       edm::EDGetTokenT<GenEventInfoProduct>           genInfoToken_;
+      edm::EDGetToken                                 beamHaloSummaryToken_;
+      edm::EDGetToken                                 filterDecisionToken_;
+      edm::EDGetToken                                 triggerDecisionToken_;
+      edm::EDGetToken                                 prescalesToken_;
+      edm::EDGetTokenT<reco::VertexCollection>        verticesToken_;
+      edm::EDGetTokenT<std::vector<PileupSummaryInfo> > pileupToken_;
+      edm::EDGetTokenT<reco::BeamSpot>                beamSpotToken_;
+
+
 
       edm::InputTag genParticles_;
       edm::InputTag particles_;
@@ -84,6 +94,9 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo13;
       ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo23;
       ExoDiPhotons::triphotonInfo_t     fGenTriphotonInfo;
+      ExoDiPhotons::photonInfo_t        fPhoton1Info;
+      ExoDiPhotons::photonInfo_t        fPhoton2Info;
+      ExoDiPhotons::photonInfo_t        fPhoton3Info;
       // ExoDiPhotons::photonInfo_t        fPhoton1Info;
       // ExoDiPhotons::photonInfo_t        fPhoton2Info;
       // ExoDiPhotons::photonInfo_t        fPhoton3Info;
@@ -109,8 +122,13 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       double GenPhoton0_iso_;
       double GenPhoton1_iso_;
       double GenPhoton2_iso_;
+      double isolationConeR_;
+      double rho_;
       uint32_t nEventsSample_;
       TString outputFile_;
+      // EffectiveAreas effAreaChHadrons_;
+      // EffectiveAreas effAreaNeuHadrons_;
+      // EffectiveAreas effAreaPhotons_;
 
 };
 
