@@ -11,6 +11,7 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    nPV_                       = 0;
    GenPhoton0_iso_      = 9999.99;
    GenPhoton1_iso_      = 9999.99;
+   // bool isSat           = false;
 
    genParticlesToken_        = consumes<edm::View<reco::GenParticle> >  (ps.getParameter<InputTag>("genparticles"));
    //genParticlesMiniAODToken_ = consumes<edm::View<reco::GenParticle> >  (ps.getParameter<InputTag>("genParticlesMiniAOD"));
@@ -27,7 +28,11 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    // effAreaChHadrons_         =                                          (ps.getParameter<edm::FileInPath>("effAreaChHadFile")).fullPath());
    // effAreaNeuHadrons_        =                                          (ps.getParameter<edm::FileInPath>("effAreaNeuHadFile")).fullPath();
    // effAreaPhotons_           =                                          (ps.getParameter<edm::FileInPath>("effAreaPhoFile")).fullPath();
-   isolationConeR_           =                                          (ps.getParameter<double>("isolationConeR"));
+   recHitsEBTag_             = ps.getUntrackedParameter<edm::InputTag>("RecHitsEBTag",edm::InputTag("reducedEgamma:reducedEBRecHits"));
+   recHitsEETag_             = ps.getUntrackedParameter<edm::InputTag>("RecHitsEETag",edm::InputTag("reducedEgamma:reducedEERecHits"));
+   recHitsEBToken            = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEBTag_);
+   recHitsEEToken            = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEETag_);
+   isolationConeR_           =                                           ps.getParameter<double>("isolationConeR");
    isMC_                     =                                           ps.getParameter<bool>("isMC");
    islocal_                  =                                           ps.getParameter<bool>("islocal");
    isDAS_                    =                                           ps.getParameter<bool>("isDAS");
@@ -43,9 +48,9 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fgenTree->Branch("GenDiPhoton13", &fGenDiphotonInfo13, ExoDiPhotons::diphotonBranchDefString.c_str());
    fgenTree->Branch("GenDiPhoton23", &fGenDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
    fgenTree->Branch("GenTriPhoton",  &fGenTriphotonInfo,  ExoDiPhotons::triphotonBranchDefString.c_str());
-   // fgenTree->Branch("Photon1",      &fPhoton1Info,      ExoDiPhotons::photonBranchDefString.c_str());
-   // fgenTree->Branch("Photon2",      &fPhoton2Info,      ExoDiPhotons::photonBranchDefString.c_str());
-   // fgenTree->Branch("Photon3",      &fPhoton3Info,      ExoDiPhotons::photonBranchDefString.c_str());
+   fTree->Branch("Photon1",      &fPhoton1Info,      ExoDiPhotons::photonBranchDefString.c_str());
+   fTree->Branch("Photon2",      &fPhoton2Info,      ExoDiPhotons::photonBranchDefString.c_str());
+   fTree->Branch("Photon3",      &fPhoton3Info,      ExoDiPhotons::photonBranchDefString.c_str());
    // fgenTree->Branch("DiPhoton12",   &fDiphotonInfo12, ExoDiPhotons::diphotonBranchDefString.c_str());
    // fgenTree->Branch("DiPhoton13",   &fDiphotonInfo13, ExoDiPhotons::diphotonBranchDefString.c_str());
    // fgenTree->Branch("DiPhoton23",   &fDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
@@ -114,15 +119,23 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    edm::Handle<edm::View<reco::GenParticle> > genParticles;
    edm::Handle<GenEventInfoProduct>           genInfo;
    edm::Handle<edm::ValueMap<bool> >          id_decisions[3];
-   // edm::Handle<edm::View<pat::Photon> >       photons;
+   edm::Handle<edm::View<pat::Photon> >       photons;
+   edm::Handle<EcalRecHitCollection>          recHitsEB;
+   edm::Handle<EcalRecHitCollection>          recHitsEE;
+   edm::ESHandle<CaloTopology> caloTopology;
 
    iEvent.getByToken(genParticlesToken_,    genParticles);
    iEvent.getByToken(genInfoToken_,         genInfo);
-   // iEvent.getByToken(photonsMiniAODToken_,  photons);
+   iEvent.getByToken(photonsMiniAODToken_,  photons);
    //iEvent.getByToken(rhoToken_,          rhoH);
    iEvent.getByToken(phoLooseIdMapToken_,   id_decisions[LOOSE]);
    iEvent.getByToken(phoMediumIdMapToken_,  id_decisions[MEDIUM]);
    iEvent.getByToken(phoTightIdMapToken_ ,  id_decisions[TIGHT]);
+   iEvent.getByToken(recHitsEBToken,recHitsEB);
+   iEvent.getByToken(recHitsEEToken,recHitsEE);
+   iSetup.get<CaloTopologyRecord>().get(caloTopology);
+   subDetTopologyEB_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalBarrel);
+   subDetTopologyEE_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalEndcap);
 
    //---Update
    ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
@@ -130,9 +143,11 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    if (isDAS_) ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
    if (islocal_) ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
    fillGenInfo(genParticles);
-   // fillPhotonInfo(photons);
+   fillPhotonInfo(photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info);
    //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
+
+
 
    //Debugging!
    cout <<  "Run: "    << iEvent.id().run()
@@ -144,6 +159,16 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    //Fill
    if (islocal_)         fgenTree->Fill();
    if (isDAS_)              fTree->Fill();
+
+   #ifdef THIS_IS_AN_EVENT_EXAMPLE
+      Handle<ExampleData> pIn;
+      iEvent.getByLabel("example",pIn);
+   #endif
+
+   #ifdef THIS_IS_AN_EVENTSETUP_EXAMPLE
+      ESHandle<SetupData> pSetup;
+      iSetup.get<SetupRecord>().get(pSetup);
+   #endif
 
 }
 
@@ -226,6 +251,33 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
 
       // fill gen triphoton info
 }//end of fillGenInfo
+
+void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> > photons,
+                                     const edm::Handle<EcalRecHitCollection>& recHitsEB,
+                                     const edm::Handle<EcalRecHitCollection>& recHitsEE,
+			                               const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+			                               ExoDiPhotons::photonInfo_t& photon1Info,
+                                     ExoDiPhotons::photonInfo_t& photon2Info,
+                                     ExoDiPhotons::photonInfo_t& photon3Info){
+
+      // bool isSat = false;
+
+      // Store Information in these vectors
+      std::vector<edm::Ptr<pat::Photon>> goodPhotons;
+      std::vector<edm::Ptr<pat::Photon>> selectedPhotons[2][2]; // combinations of real and fake for both leading candidates
+      std::vector<std::pair<edm::Ptr<pat::Photon>, int> > realAndFakePhotons;
+
+      for (size_t i = 0; i < photons->size(); ++i){
+        const auto pho = photons->ptrAt(i);
+        // print photon info
+        //cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
+        // bool isSat = false;
+        bool isSat = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+
+        //To-do: Apply high pT, VID (loose, medium, tight) here with flags
+      }
+
+}//end of fillPhotonInfo
 
 
 DEFINE_FWK_MODULE(nPhotonAnalyzer);
