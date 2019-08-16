@@ -275,9 +275,57 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> > 
         bool isSat = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
 
         //To-do: Apply high pT, VID (loose, medium, tight) here with flags
+        bool pass_HighPtID = ExoDiPhotons::passHighPtID(&(*pho), rho_, isSat);
+
+        if(pass_HighPtID){
+          goodPhotons.push_back(pho);
+          realAndFakePhotons.push_back(std::pair<edm::Ptr<pat::Photon>, int>(pho, TRUE));
+        }
+      }// end of photon loop
+
+      sort(goodPhotons.begin(),goodPhotons.end(),ExoDiPhotons::comparePhotonsByPt);
+      sort(realAndFakePhotons.begin(), realAndFakePhotons.end(), ExoDiPhotons::comparePhotonPairsByPt);
+
+      if (goodPhotons.size() >= 2){
+        isGood_ = true;
+        //photonFiller(goodPhotons, recHitsEB, recHitsEE, )
+        photonFiller(goodPhotons, recHitsEB, recHitsEE, &id_decisions[0], photon1Info, photon2Info, photon3Info);
+        // To-do: isMC genparticle fill
+        // To-do: isClosureTest_
       }
 
 }//end of fillPhotonInfo
+
+void nPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
+      				                         const edm::Handle<EcalRecHitCollection>& recHitsEB,
+                                       const edm::Handle<EcalRecHitCollection>& recHitsEE,
+      				                         const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+      				                         ExoDiPhotons::photonInfo_t& photon1Info,
+                                       ExoDiPhotons::photonInfo_t& photon2Info,
+                                       ExoDiPhotons::photonInfo_t& photon3Info){
+
+            // std::cout << "Photon 1 pt = " << photons[0]->pt() << "; eta = " << photons[0]->eta() << "; phi = " << photons[0]->phi() << std::endl;
+            // std::cout << "Photon 2 pt = " << photons[1]->pt() << "; eta = " << photons[1]->eta() << "; phi = " << photons[1]->phi() << std::endl;
+            // fill photon saturation
+            photon1Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[0]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+            std::cout << "Photon 1 isSat: " << photon1Info.isSaturated << std::endl;
+            ExoDiPhotons::FillBasicPhotonInfo(photon1Info, &(*photons[0]));
+            // ExoDiPhotons::FillPhotonIDInfo(photon1Info, &(*photons[0]), rho_, photon1Info.isSaturated);
+            //To-do FillPhotonEGMidInfo
+
+            photon2Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[1]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+            std::cout << "Photon 2 isSat: " << photon2Info.isSaturated << std::endl;
+            ExoDiPhotons::FillBasicPhotonInfo(photon2Info, &(*photons[1]));
+            // ExoDiPhotons::FillPhotonIDInfo(photon2Info, &(*photons[1]), rho_, photon2Info.isSaturated);
+
+            photon3Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[2]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+            std::cout << "Photon 3 isSat: " << photon3Info.isSaturated << std::endl;
+            ExoDiPhotons::FillBasicPhotonInfo(photon3Info, &(*photons[2]));
+            // ExoDiPhotons::FillPhotonIDInfo(photon3Info, &(*photons[2]), rho_, photon3Info.isSaturated);
+
+}//end photonFiller
+
+
 
 
 DEFINE_FWK_MODULE(nPhotonAnalyzer);

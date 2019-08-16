@@ -63,6 +63,13 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
                           ExoDiPhotons::photonInfo_t& photon1Info,
                           ExoDiPhotons::photonInfo_t& photon2Info,
                           ExoDiPhotons::photonInfo_t& photon3Info);
+      void photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
+                        const edm::Handle<EcalRecHitCollection>& recHitsEB,
+                        const edm::Handle<EcalRecHitCollection>& recHitsEE,
+                    		const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+                        ExoDiPhotons::photonInfo_t& photon1Info,
+                        ExoDiPhotons::photonInfo_t& photon2Info,
+                        ExoDiPhotons::photonInfo_t& photon3Info);
 
 
    private:

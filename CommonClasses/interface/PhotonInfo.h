@@ -241,29 +241,31 @@ namespace ExoDiPhotons
   //   photonInfo.isDenominatorObj   = ExoDiPhotons::passDenominatorCut(photon,rho,isSat);
   // }
 
-  // void FillPhotonEGMidInfo(photonInfo_t &photonInfo, const pat::Photon *photon, double rho, EffectiveAreas eaCH, EffectiveAreas eaNH, EffectiveAreas eaPho)
-  // {
-  //   double chEA  = eaCH.getEffectiveArea(std::abs(photon->superCluster()->eta()));
-  //   double nhEA  = eaNH.getEffectiveArea(std::abs(photon->superCluster()->eta()));
-  //   double phoEA = eaPho.getEffectiveArea(std::abs(photon->superCluster()->eta()));
-  //
-  //   photonInfo.chEAegmID   = chEA;
-  //   photonInfo.nhEAegmID   = nhEA;
-  //   photonInfo.phoEAegamID = phoEA;
-  //
-  //   photonInfo.rhoCorChargedHadIso03 = std::max((double)0.0, (double)photon->chargedHadronIso()-rho*chEA);
-  //   photonInfo.rhoCorNeutralHadIso03 = std::max((double)0.0, (double)photon->neutralHadronIso()-rho*nhEA);
-  //   photonInfo.rhoCorPhotonIso03     = std::max((double)0.0, (double)photon->photonIso()       -rho*phoEA);
-  // }
+  void FillPhotonEGMidInfo(photonInfo_t &photonInfo, const pat::Photon *photon, double rho, EffectiveAreas eaCH, EffectiveAreas eaNH, EffectiveAreas eaPho)
+  {
+    double chEA  = eaCH.getEffectiveArea(std::abs(photon->superCluster()->eta()));
+    double nhEA  = eaNH.getEffectiveArea(std::abs(photon->superCluster()->eta()));
+    double phoEA = eaPho.getEffectiveArea(std::abs(photon->superCluster()->eta()));
 
+    photonInfo.chEAegmID   = chEA;
+    photonInfo.nhEAegmID   = nhEA;
+    photonInfo.phoEAegamID = phoEA;
+
+    photonInfo.rhoCorChargedHadIso03 = std::max((double)0.0, (double)photon->chargedHadronIso()-rho*chEA);
+    photonInfo.rhoCorNeutralHadIso03 = std::max((double)0.0, (double)photon->neutralHadronIso()-rho*nhEA);
+    photonInfo.rhoCorPhotonIso03     = std::max((double)0.0, (double)photon->photonIso()       -rho*phoEA);
+  }
+
+  // Similar sort functions found in GenParticleInfo.h
+  
   // sort two photons by highest pt
   // bool comparePhotonsByPt(const edm::Ptr<const reco::Candidate> photon1, const edm::Ptr<const reco::Candidate> photon2) {
   //   return(photon1->pt()>=photon2->pt());
   // }
   // // alternate version for considering true and fake photons simultaneously
-  // bool comparePhotonPairsByPt(const std::pair<edm::Ptr<pat::Photon>, int> photon1, const std::pair<edm::Ptr<pat::Photon>, int> photon2) {
-  //   return(photon1.first->pt()>=photon2.first->pt());
-  // }
+  bool comparePhotonPairsByPt(const std::pair<edm::Ptr<pat::Photon>, int> photon1, const std::pair<edm::Ptr<pat::Photon>, int> photon2) {
+    return(photon1.first->pt()>=photon2.first->pt());
+  }
   // // sort two photons by highest pt with vector of structs
   // bool comparePhotonsByPt(genParticleInfo_t photon1, genParticleInfo_t photon2) {
   //        return(photon1.pt>=photon2.pt);
