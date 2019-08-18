@@ -102,7 +102,6 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    // ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo23);
    // ExoDiPhotons::InitTriphotonInfo(fTriphotonInfo);
 
-
    //---Handle, getByToken
    //edm::Handle<vector<reco::GenParticle> > genParticles;
    edm::Handle<edm::View<reco::GenParticle> > genParticles;
