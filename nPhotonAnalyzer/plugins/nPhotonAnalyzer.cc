@@ -16,15 +16,15 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    genParticlesToken_        = consumes<edm::View<reco::GenParticle> >  (ps.getParameter<InputTag>("genparticles"));
    //genParticlesMiniAODToken_ = consumes<edm::View<reco::GenParticle> >  (ps.getParameter<InputTag>("genParticlesMiniAOD"));
    //genParticlesToken_        = consumes<vector<reco::GenParticle>>      (ps.getParameter<InputTag>("genparticles"));
-   rhoToken_                 = consumes<double>                         (ps.getParameter<edm::InputTag>("rho"));
+   // rhoToken_                 = consumes<double>                         (ps.getParameter<edm::InputTag>("rho"));
    phoLooseIdMapToken_       = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoLooseIdMap"));
    phoMediumIdMapToken_      = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoMediumIdMap"));
    phoTightIdMapToken_       = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoTightIdMap"));
    nEventsSample_            =                                          (ps.getParameter<uint32_t>("nEventsSample"));
    genInfoToken_             = consumes<GenEventInfoProduct>            (ps.getParameter<edm::InputTag>("genInfo"));
    //genParticlesMiniAODToken_ = mayConsume<edm::View<reco::GenParticle> >(ps.getParameter<edm::InputTag>("genParticlesMiniAOD"));
-   verticesToken_            = consumes<reco::VertexCollection>         (ps.getParameter<edm::InputTag>("vertices"));
-   beamSpotToken_            = consumes<reco::BeamSpot>                 (ps.getParameter<edm::InputTag>("beamSpot"));
+   // verticesToken_            = consumes<reco::VertexCollection>         (ps.getParameter<edm::InputTag>("vertices"));
+   // beamSpotToken_            = consumes<reco::BeamSpot>                 (ps.getParameter<edm::InputTag>("beamSpot"));
    // effAreaChHadrons_         =                                          (ps.getParameter<edm::FileInPath>("effAreaChHadFile")).fullPath());
    // effAreaNeuHadrons_        =                                          (ps.getParameter<edm::FileInPath>("effAreaNeuHadFile")).fullPath();
    // effAreaPhotons_           =                                          (ps.getParameter<edm::FileInPath>("effAreaPhoFile")).fullPath();
@@ -120,6 +120,7 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    edm::Handle<GenEventInfoProduct>           genInfo;
    edm::Handle<edm::ValueMap<bool> >          id_decisions[3];
    edm::Handle<edm::View<pat::Photon> >       photons;
+   // edm::Handle< double >                      rhoH;
    edm::Handle<EcalRecHitCollection>          recHitsEB;
    edm::Handle<EcalRecHitCollection>          recHitsEE;
    edm::ESHandle<CaloTopology> caloTopology;
@@ -127,7 +128,7 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByToken(genParticlesToken_,    genParticles);
    iEvent.getByToken(genInfoToken_,         genInfo);
    iEvent.getByToken(photonsMiniAODToken_,  photons);
-   //iEvent.getByToken(rhoToken_,          rhoH);
+   // iEvent.getByToken(rhoToken_,             rhoH);
    iEvent.getByToken(phoLooseIdMapToken_,   id_decisions[LOOSE]);
    iEvent.getByToken(phoMediumIdMapToken_,  id_decisions[MEDIUM]);
    iEvent.getByToken(phoTightIdMapToken_ ,  id_decisions[TIGHT]);
@@ -137,15 +138,17 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    subDetTopologyEB_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalBarrel);
    subDetTopologyEE_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalEndcap);
 
+   // rho_ = *rhoH;
    //---Update
    ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    ExoDiPhotons::FillGenEventInfo(fEventInfo, &(*genInfo));
    if (isDAS_) ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
    if (islocal_) ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
    fillGenInfo(genParticles);
-   fillPhotonInfo(photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info);
+   // fillPhotonInfo(photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info);
    //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
+
 
 
 
@@ -252,78 +255,78 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       // fill gen triphoton info
 }//end of fillGenInfo
 
-void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> > photons,
-                                     const edm::Handle<EcalRecHitCollection>& recHitsEB,
-                                     const edm::Handle<EcalRecHitCollection>& recHitsEE,
-			                               const edm::Handle<edm::ValueMap<bool> >* id_decisions,
-			                               ExoDiPhotons::photonInfo_t& photon1Info,
-                                     ExoDiPhotons::photonInfo_t& photon2Info,
-                                     ExoDiPhotons::photonInfo_t& photon3Info){
-
-      // bool isSat = false;
-
-      // Store Information in these vectors
-      std::vector<edm::Ptr<pat::Photon>> goodPhotons;
-      std::vector<edm::Ptr<pat::Photon>> selectedPhotons[2][2]; // combinations of real and fake for both leading candidates
-      std::vector<std::pair<edm::Ptr<pat::Photon>, int> > realAndFakePhotons;
-
-      for (size_t i = 0; i < photons->size(); ++i){
-        const auto pho = photons->ptrAt(i);
-        // print photon info
-        //cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
-        // bool isSat = false;
-        bool isSat = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-
-        //To-do: Apply high pT, VID (loose, medium, tight) here with flags
-        bool pass_HighPtID = ExoDiPhotons::passHighPtID(&(*pho), rho_, isSat);
-
-        if(pass_HighPtID){
-          goodPhotons.push_back(pho);
-          realAndFakePhotons.push_back(std::pair<edm::Ptr<pat::Photon>, int>(pho, TRUE));
-        }
-      }// end of photon loop
-
-      sort(goodPhotons.begin(),goodPhotons.end(),ExoDiPhotons::comparePhotonsByPt);
-      sort(realAndFakePhotons.begin(), realAndFakePhotons.end(), ExoDiPhotons::comparePhotonPairsByPt);
-
-      if (goodPhotons.size() >= 2){
-        isGood_ = true;
-        //photonFiller(goodPhotons, recHitsEB, recHitsEE, )
-        photonFiller(goodPhotons, recHitsEB, recHitsEE, &id_decisions[0], photon1Info, photon2Info, photon3Info);
-        // To-do: isMC genparticle fill
-        // To-do: isClosureTest_
-      }
-
-}//end of fillPhotonInfo
-
-void nPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
-      				                         const edm::Handle<EcalRecHitCollection>& recHitsEB,
-                                       const edm::Handle<EcalRecHitCollection>& recHitsEE,
-      				                         const edm::Handle<edm::ValueMap<bool> >* id_decisions,
-      				                         ExoDiPhotons::photonInfo_t& photon1Info,
-                                       ExoDiPhotons::photonInfo_t& photon2Info,
-                                       ExoDiPhotons::photonInfo_t& photon3Info){
-
-            // std::cout << "Photon 1 pt = " << photons[0]->pt() << "; eta = " << photons[0]->eta() << "; phi = " << photons[0]->phi() << std::endl;
-            // std::cout << "Photon 2 pt = " << photons[1]->pt() << "; eta = " << photons[1]->eta() << "; phi = " << photons[1]->phi() << std::endl;
-            // fill photon saturation
-            photon1Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[0]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-            std::cout << "Photon 1 isSat: " << photon1Info.isSaturated << std::endl;
-            ExoDiPhotons::FillBasicPhotonInfo(photon1Info, &(*photons[0]));
-            // ExoDiPhotons::FillPhotonIDInfo(photon1Info, &(*photons[0]), rho_, photon1Info.isSaturated);
-            //To-do FillPhotonEGMidInfo
-
-            photon2Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[1]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-            std::cout << "Photon 2 isSat: " << photon2Info.isSaturated << std::endl;
-            ExoDiPhotons::FillBasicPhotonInfo(photon2Info, &(*photons[1]));
-            // ExoDiPhotons::FillPhotonIDInfo(photon2Info, &(*photons[1]), rho_, photon2Info.isSaturated);
-
-            photon3Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[2]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-            std::cout << "Photon 3 isSat: " << photon3Info.isSaturated << std::endl;
-            ExoDiPhotons::FillBasicPhotonInfo(photon3Info, &(*photons[2]));
-            // ExoDiPhotons::FillPhotonIDInfo(photon3Info, &(*photons[2]), rho_, photon3Info.isSaturated);
-
-}//end photonFiller
+// void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> > photons,
+//                                      const edm::Handle<EcalRecHitCollection>& recHitsEB,
+//                                      const edm::Handle<EcalRecHitCollection>& recHitsEE,
+// 			                               const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+// 			                               ExoDiPhotons::photonInfo_t& photon1Info,
+//                                      ExoDiPhotons::photonInfo_t& photon2Info,
+//                                      ExoDiPhotons::photonInfo_t& photon3Info){
+//
+//       bool isSat = false;
+//
+//       // Store Information in these vectors
+//       std::vector<edm::Ptr<pat::Photon>> goodPhotons;
+//       std::vector<edm::Ptr<pat::Photon>> selectedPhotons[2][2]; // combinations of real and fake for both leading candidates
+//       std::vector<std::pair<edm::Ptr<pat::Photon>, int> > realAndFakePhotons;
+//
+//       for (size_t i = 0; i < photons->size(); ++i){
+//         const auto pho = photons->ptrAt(i);
+//         // print photon info
+//         //cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
+//         // bool isSat = false;
+//         bool isSat = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+//
+//         //To-do: Apply high pT, VID (loose, medium, tight) here with flags
+//         bool pass_HighPtID = ExoDiPhotons::passHighPtID(&(*pho), rho_, isSat);
+//
+//         if(pass_HighPtID){
+//           goodPhotons.push_back(pho);
+//           realAndFakePhotons.push_back(std::pair<edm::Ptr<pat::Photon>, int>(pho, TRUE));
+//         }
+//       }// end of photon loop
+//
+//       sort(goodPhotons.begin(),goodPhotons.end(),ExoDiPhotons::comparePhotonsByPt);
+//       sort(realAndFakePhotons.begin(), realAndFakePhotons.end(), ExoDiPhotons::comparePhotonPairsByPt);
+//
+//       if (goodPhotons.size() >= 2){
+//         isGood_ = true;
+//         //photonFiller(goodPhotons, recHitsEB, recHitsEE, )
+//         photonFiller(goodPhotons, recHitsEB, recHitsEE, &id_decisions[0], photon1Info, photon2Info, photon3Info);
+//         // To-do: isMC genparticle fill
+//         // To-do: isClosureTest_
+//       }
+//
+// }//end of fillPhotonInfo
+//
+// void nPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
+//       				                         const edm::Handle<EcalRecHitCollection>& recHitsEB,
+//                                        const edm::Handle<EcalRecHitCollection>& recHitsEE,
+//       				                         const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+//       				                         ExoDiPhotons::photonInfo_t& photon1Info,
+//                                        ExoDiPhotons::photonInfo_t& photon2Info,
+//                                        ExoDiPhotons::photonInfo_t& photon3Info){
+//
+//             // std::cout << "Photon 1 pt = " << photons[0]->pt() << "; eta = " << photons[0]->eta() << "; phi = " << photons[0]->phi() << std::endl;
+//             // std::cout << "Photon 2 pt = " << photons[1]->pt() << "; eta = " << photons[1]->eta() << "; phi = " << photons[1]->phi() << std::endl;
+//             // fill photon saturation
+//             photon1Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[0]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+//             std::cout << "Photon 1 isSat: " << photon1Info.isSaturated << std::endl;
+//             ExoDiPhotons::FillBasicPhotonInfo(photon1Info, &(*photons[0]));
+//             // ExoDiPhotons::FillPhotonIDInfo(photon1Info, &(*photons[0]), rho_, photon1Info.isSaturated);
+//             //To-do FillPhotonEGMidInfo
+//
+//             photon2Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[1]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+//             std::cout << "Photon 2 isSat: " << photon2Info.isSaturated << std::endl;
+//             ExoDiPhotons::FillBasicPhotonInfo(photon2Info, &(*photons[1]));
+//             // ExoDiPhotons::FillPhotonIDInfo(photon2Info, &(*photons[1]), rho_, photon2Info.isSaturated);
+//
+//             photon3Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[2]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+//             std::cout << "Photon 3 isSat: " << photon3Info.isSaturated << std::endl;
+//             ExoDiPhotons::FillBasicPhotonInfo(photon3Info, &(*photons[2]));
+//             // ExoDiPhotons::FillPhotonIDInfo(photon3Info, &(*photons[2]), rho_, photon3Info.isSaturated);
+//
+// }//end photonFiller
 
 
 
