@@ -30,9 +30,13 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    if (islocal_){
    fgenTree = fs->make<TTree>("fgenTree","GENDiphotonTree");
    fgenTree->Branch("Event",       &fEventInfo,       ExoDiPhotons::eventBranchDefString.c_str());
-   fgenTree->Branch("GenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fgenTree->Branch("GenPhoton2",  &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fgenTree->Branch("GenDiPhoton", &fGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fgenTree->Branch("GenPhoton1",    &fGenPhoton1Info,    ExoDiPhotons::genParticleBranchDefString.c_str());
+   fgenTree->Branch("GenPhoton2",    &fGenPhoton2Info,    ExoDiPhotons::genParticleBranchDefString.c_str());
+   fgenTree->Branch("GenPhoton3",    &fGenPhoton3Info,    ExoDiPhotons::genParticleBranchDefString.c_str());
+   fgenTree->Branch("GenDiPhoton12", &fGenDiphotonInfo12, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fgenTree->Branch("GenDiPhoton13", &fGenDiphotonInfo13, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fgenTree->Branch("GenDiPhoton23", &fGenDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fgenTree->Branch("GenTriPhoton",  &fGenTriphotonInfo,  ExoDiPhotons::triphotonBranchDefString.c_str());
    fgenTree->Branch("isGood",      &isGood_);
    fgenTree->Branch("nPV", &nPV_);
    }
@@ -42,7 +46,7 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fTree->Branch("Event",       &fEventInfo,       ExoDiPhotons::eventBranchDefString.c_str());
    fTree->Branch("GenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
    fTree->Branch("GenPhoton2",  &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fTree->Branch("Gendiphoton", &fGenDiphotonInfo, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fTree->Branch("Gendiphoton", &fGenDiphotonInfo12, ExoDiPhotons::diphotonBranchDefString.c_str());
    fTree->Branch("isGood",            &isGood_);
    fTree->Branch("nPV", &nPV_);
    }
@@ -72,8 +76,11 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    ExoDiPhotons::InitEventInfo(fEventInfo);
    ExoDiPhotons::InitGenParticleInfo(fGenPhoton1Info);
    ExoDiPhotons::InitGenParticleInfo(fGenPhoton2Info);
-   ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo);
-
+   ExoDiPhotons::InitGenParticleInfo(fGenPhoton3Info);
+   ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo12);
+   ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo13);
+   ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo23);
+   ExoDiPhotons::InitTriphotonInfo(fGenTriphotonInfo);
    //---Handle, getByToken
    //edm::Handle<vector<reco::GenParticle> > genParticles;
    edm::Handle<edm::View<reco::GenParticle> > genParticles;
@@ -139,10 +146,6 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       vector< edm::Ptr<const reco::GenParticle> > genPhotons;
       vector<int> interactingPartons;
 
-      //Test
-      //const reco::GenParticle *genPho1 = NULL;
-      //const reco::GenParticle *genPho2 = NULL;
-
       for (size_t i = 0; i < genParticles->size(); ++i){
        const auto gen = genParticles->ptrAt(i);
        //Pythia8 status 20-30 is Hard interaction
@@ -159,14 +162,6 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
        }
      }//end for loop over gen particles
 
-      // ORIGINAL SHORT
-      // for (size_t i = 0; i < genParticles->size(); ++i){
-      //   const auto gen = genParticles->ptrAt(i);
-      //   //Pythia8 status 20-30 is Hard interaction
-      //   if (gen->isHardProcess() && gen->pt() == 0)    interactingPartons.push_back(gen->pdgId());
-      //   if (gen->isHardProcess() && gen->pdgId()==22)  genPhotons.push_back(gen);
-      // }//end for loop over gen particles
-
       sort(genPhotons.begin(), genPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
       if(interactingPartons.size() == 2){
         fEventInfo.interactingParton1PdgId = interactingPartons[0];
@@ -174,19 +169,28 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       }
       else cout << "Exactly two interacting partons not found!" << endl;
 
+      //---- Photon Information
       // Samples with only fakes may have no hard-process photons
+      // Samples with one fake may have only one hard-process photon in diphoton pair
+      // Samples with fakes may have only one hard-process photon in the triphoton system
+
       if(genPhotons.size() < 1) return;
       const reco::GenParticle *genPhoton1 = &(*genPhotons.at(0));
       if (genPhoton1) ExoDiPhotons::FillGenParticleInfo(fGenPhoton1Info, genPhoton1);
 
-      // Samples with one fake may have only one hard-process photon
       if(genPhotons.size() < 2) return;
-      // fill gen photon info
       const reco::GenParticle *genPhoton2 = &(*genPhotons.at(1));
       if (genPhoton2) ExoDiPhotons::FillGenParticleInfo(fGenPhoton2Info, genPhoton2);
 
-      // fill gen diphoton info
-      if (genPhoton1 && genPhoton2) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo,genPhoton1,genPhoton2);
+      if(genPhotons.size() < 3) return;
+      const reco::GenParticle *genPhoton3 = &(*genPhotons.at(2));
+      if (genPhoton3) ExoDiPhotons::FillGenParticleInfo(fGenPhoton3Info, genPhoton3);
+
+      //---- Diphoton/Triphoton Information
+      if (genPhoton1 && genPhoton2) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo12,genPhoton1,genPhoton2);
+      if (genPhoton1 && genPhoton3) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo13,genPhoton1,genPhoton3);
+      if (genPhoton2 && genPhoton3) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo23,genPhoton2,genPhoton3);
+      if (genPhoton1 && genPhoton2 && genPhoton3) ExoDiPhotons::FillTriphotonInfo(fGenTriphotonInfo,genPhoton1,genPhoton2,genPhoton3);
 
 }//end of fillGenInfo
 
