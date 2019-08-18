@@ -56,20 +56,20 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
       void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles);
       // void fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> > photons);
-      void fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> > photons,
-                          const edm::Handle<EcalRecHitCollection>& recHitsEB,
-                          const edm::Handle<EcalRecHitCollection>& recHitsEE,
-			                    const edm::Handle<edm::ValueMap<bool> >* id_decisions,
-                          ExoDiPhotons::photonInfo_t& photon1Info,
-                          ExoDiPhotons::photonInfo_t& photon2Info,
-                          ExoDiPhotons::photonInfo_t& photon3Info);
-      void photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
-                        const edm::Handle<EcalRecHitCollection>& recHitsEB,
-                        const edm::Handle<EcalRecHitCollection>& recHitsEE,
-                    		const edm::Handle<edm::ValueMap<bool> >* id_decisions,
-                        ExoDiPhotons::photonInfo_t& photon1Info,
-                        ExoDiPhotons::photonInfo_t& photon2Info,
-                        ExoDiPhotons::photonInfo_t& photon3Info);
+      // void fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> > photons,
+      //                     const edm::Handle<EcalRecHitCollection>& recHitsEB,
+      //                     const edm::Handle<EcalRecHitCollection>& recHitsEE,
+			//                     const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+      //                     ExoDiPhotons::photonInfo_t& photon1Info,
+      //                     ExoDiPhotons::photonInfo_t& photon2Info,
+      //                     ExoDiPhotons::photonInfo_t& photon3Info);
+      // void photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
+      //                   const edm::Handle<EcalRecHitCollection>& recHitsEB,
+      //                   const edm::Handle<EcalRecHitCollection>& recHitsEE,
+      //               		const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+      //                   ExoDiPhotons::photonInfo_t& photon1Info,
+      //                   ExoDiPhotons::photonInfo_t& photon2Info,
+      //                   ExoDiPhotons::photonInfo_t& photon3Info);
 
 
    private:
@@ -83,7 +83,7 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       //edm::EDGetTokenT<vector<reco::GenParticle> >    genParticlesToken_;
       edm::EDGetTokenT<edm::View<reco::GenParticle> > genParticlesMiniAODToken_;
       edm::EDGetToken                                 photonsMiniAODToken_;
-      edm::EDGetTokenT<double>                        rhoToken_;
+      // edm::EDGetTokenT<double>                        rhoToken_;
       edm::EDGetTokenT<edm::ValueMap<bool> >          phoLooseIdMapToken_;
       edm::EDGetTokenT<edm::ValueMap<bool> >          phoMediumIdMapToken_;
       edm::EDGetTokenT<edm::ValueMap<bool> >          phoTightIdMapToken_;
