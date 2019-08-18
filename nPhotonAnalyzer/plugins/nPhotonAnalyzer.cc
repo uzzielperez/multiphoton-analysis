@@ -36,10 +36,10 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fgenTree->Branch("GenDiPhoton12", &fGenDiphotonInfo12, ExoDiPhotons::diphotonBranchDefString.c_str());
    fgenTree->Branch("GenDiPhoton13", &fGenDiphotonInfo13, ExoDiPhotons::diphotonBranchDefString.c_str());
    fgenTree->Branch("GenDiPhoton23", &fGenDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
-   fgenTree->Branch("GenTriPhoton", &fGenTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
-   // fgenTree->Branch("Photon1",      &fPhoton1Info,      ExoDiPhotons::photonBranchDefString.c_str());
-   // fgenTree->Branch("Photon2",      &fPhoton2Info,      ExoDiPhotons::photonBranchDefString.c_str());
-   // fgenTree->Branch("Photon3",      &fPhoton3Info,      ExoDiPhotons::photonBranchDefString.c_str());
+   fgenTree->Branch("GenTriPhoton",  &fGenTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
+   fgenTree->Branch("Photon1",      &fPhoton1Info,      ExoDiPhotons::photonBranchDefString.c_str());
+   fgenTree->Branch("Photon2",      &fPhoton2Info,      ExoDiPhotons::photonBranchDefString.c_str());
+   fgenTree->Branch("Photon3",      &fPhoton3Info,      ExoDiPhotons::photonBranchDefString.c_str());
    // fgenTree->Branch("DiPhoton12",   &fDiphotonInfo12, ExoDiPhotons::diphotonBranchDefString.c_str());
    // fgenTree->Branch("DiPhoton13",   &fDiphotonInfo13, ExoDiPhotons::diphotonBranchDefString.c_str());
    // fgenTree->Branch("DiPhoton23",   &fDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
@@ -94,9 +94,9 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo13);
    ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo23);
    ExoDiPhotons::InitTriphotonInfo(fGenTriphotonInfo);
-   // ExoDiPhotons::InitPhotonInfo(fPhoton1Info);
-   // ExoDiPhotons::InitPhotonInfo(fPhoton2Info);
-   // ExoDiPhotons::InitPhotonInfo(fPhoton3Info);
+   ExoDiPhotons::InitPhotonInfo(fPhoton1Info);
+   ExoDiPhotons::InitPhotonInfo(fPhoton2Info);
+   ExoDiPhotons::InitPhotonInfo(fPhoton3Info);
    // ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo12);
    // ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo13);
    // ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo23);
