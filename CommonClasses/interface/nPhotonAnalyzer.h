@@ -36,7 +36,6 @@
 #include "multiphoton-analysis/CommonClasses/interface/PhotonInfo.h"
 #include "multiphoton-analysis/CommonClasses/interface/PhotonID.h"
 
-
 using namespace std;
 using namespace edm;
 
@@ -87,6 +86,16 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo13;
       ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo23;
       ExoDiPhotons::triphotonInfo_t     fGenTriphotonInfo;
+
+      // ExoDiPhotons::photonInfo_t        fPhoton1Info;
+      // ExoDiPhotons::photonInfo_t        fPhoton2Info;
+      // ExoDiPhotons::photonInfo_t        fPhoton3Info;
+      // ExoDiPhotons::diphotonInfo_t      fDiphotonInfo12;
+      // ExoDiPhotons::diphotonInfo_t      fDiphotonInfo13;
+      // ExoDiPhotons::diphotonInfo_t      fDiphotonInfo23;
+      // ExoDiPhotons::triphotonInfo_t     fTriphotonInfo;
+
+
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton1Info;
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton2Info;
       // ExoDiPhotons::diphotonInfo_t      fSherpaGenDiphotonInfo;
@@ -98,6 +107,7 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       bool isGood_;
       bool islocal_;
       bool isDAS_;
+      double xsec_; // For local generation
       double WeightAll_;
       double GenPhoton0_iso_;
       double GenPhoton1_iso_;
