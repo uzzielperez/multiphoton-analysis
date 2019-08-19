@@ -36,6 +36,14 @@
 #include "multiphoton-analysis/CommonClasses/interface/PhotonInfo.h"
 #include "multiphoton-analysis/CommonClasses/interface/PhotonID.h"
 
+// ECAL topology
+#include "Geometry/CaloTopology/interface/CaloTopology.h"
+#include "Geometry/CaloEventSetup/interface/CaloTopologyRecord.h"
+#include "FWCore/Framework/interface/ESHandle.h"
+#include "FWCore/Framework/interface/EventSetup.h"
+#include "DataFormats/EcalDetId/interface/EBDetId.h"
+#include "DataFormats/EcalDetId/interface/EEDetId.h"
+
 using namespace std;
 using namespace edm;
 
@@ -47,6 +55,20 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
       void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles);
+      void fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >& photons,
+                    const edm::Handle<EcalRecHitCollection>& recHitsEB,
+                    const edm::Handle<EcalRecHitCollection>& recHitsEE,
+                    const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+                    ExoDiPhotons::photonInfo_t& photon1Info,
+                    ExoDiPhotons::photonInfo_t& photon2Info,
+                    ExoDiPhotons::photonInfo_t& photon3Info);
+      void photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
+                    const edm::Handle<EcalRecHitCollection>& recHitsEB,
+                    const edm::Handle<EcalRecHitCollection>& recHitsEE,
+                		const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+                    ExoDiPhotons::photonInfo_t& photon1Info,
+                    ExoDiPhotons::photonInfo_t& photon2Info,
+                    ExoDiPhotons::photonInfo_t& photon3Info);
 
    private:
       virtual void beginJob() override;
@@ -59,14 +81,19 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       //edm::EDGetTokenT<vector<reco::GenParticle> >    genParticlesToken_;
       edm::EDGetTokenT<edm::View<reco::GenParticle> > genParticlesMiniAODToken_;
       edm::EDGetToken                                 photonsMiniAODToken_;
-      //edm::EDGetTokenT<double>                        rhoToken_;
+      edm::EDGetTokenT<double>                        rhoToken_;
       edm::EDGetTokenT<edm::ValueMap<bool> >          phoLooseIdMapToken_;
       edm::EDGetTokenT<edm::ValueMap<bool> >          phoMediumIdMapToken_;
       edm::EDGetTokenT<edm::ValueMap<bool> >          phoTightIdMapToken_;
       edm::EDGetTokenT<GenEventInfoProduct>           genInfoToken_;
+      edm::EDGetTokenT<EcalRecHitCollection>          recHitsEBToken;
+      edm::EDGetTokenT<EcalRecHitCollection>          recHitsEEToken;
 
       edm::InputTag genParticles_;
       edm::InputTag particles_;
+      edm::InputTag recHitsEBTag_;
+      edm::InputTag recHitsEETag_;
+
 
       enum {LOOSE = 0, MEDIUM = 1, TIGHT = 2};
       enum {FAKE = 0,  TRUE = 1};
@@ -102,7 +129,7 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 
       //Put flags in cfg later
       int nPV_;
-      //int rho_;
+      int rho_;
       bool isMC_;
       bool isGood_;
       bool islocal_;
@@ -114,6 +141,9 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       double GenPhoton2_iso_;
       uint32_t nEventsSample_;
       TString outputFile_;
+
+      const CaloSubdetectorTopology* subDetTopologyEB_;
+      const CaloSubdetectorTopology* subDetTopologyEE_;
 
 };
 

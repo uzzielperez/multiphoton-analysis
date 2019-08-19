@@ -118,7 +118,7 @@ else:
 
 process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         genparticles = cms.InputTag(inTag),
-        #photonsMiniAOD = cms.InputTag("slimmedPhotons"),
+        photonsMiniAOD = cms.InputTag("slimmedPhotons"),
         minPhotonPt = cms.double(75.),
         # genParticle tag
         #genParticlesMiniAOD = cms.InputTag("prunedGenParticles"),
@@ -131,7 +131,7 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         #jetPtThreshold = cms.double(30.),
         #jetEtaThreshold = cms.double(2.5),
         # rho tag
-        #rho = cms.InputTag("fixedGridRhoAll"),
+        rho = cms.InputTag("fixedGridRhoAll"),
         # EGM eff. areas
         #effAreaChHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfChargedHadrons_25ns_NULLcorrection.txt"),
         #effAreaNeuHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfNeutralHadrons_25ns_90percentBased.txt"),
