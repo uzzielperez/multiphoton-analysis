@@ -16,7 +16,7 @@ print "Logical FileName Provided: "
 # #inputFile = '/store/....'
 # outName = "ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa.root"
 inputFile = 'INPUTFILE'
-outName = 'out_ntuple.root'
+outName = 'OUTPUTFILE'
 
 #------------------------------------------
 print 'Configuration file Run with the following settings: '
