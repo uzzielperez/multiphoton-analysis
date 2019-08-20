@@ -6,6 +6,7 @@ import sys
 
 #Configure
 isMC           = True
+
 islocal        = True
 isDAS          = False
 
@@ -16,13 +17,14 @@ if islocal:
     INFILE    = PATH + 'DATASETNAME'
     inputFile = 'file:%s' %(INFILE)
     outName = '%s' %('DATASETNAME')
-else:
+if isDAS:
     print "Logical FileName Provided: "
-    inputFile = '/store/mc/RunIISummer16MiniAODv2/ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/6C12F491-0BB7-E611-B418-0025904FE658.root'
-    #Provide Logical Filename
-    #inputFile = '/store/....'
-    outName = "ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa.root"
-
+    # inputFile = '/store/mc/RunIISummer16MiniAODv2/ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/6C12F491-0BB7-E611-B418-0025904FE658.root'
+    # #Provide Logical Filename
+    # #inputFile = '/store/....'
+    # outName = "ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa.root"
+    inputFile = '/store/mc/RunIIFall17MiniAODv2/GGJets_M-200To500_Pt-50_13TeV-sherpa/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/FCBF2E5A-DC44-E811-984D-B496910A9790.root'
+    outName   = 'out_ntuple.root'
 #------------------------------------------
 print 'Configuration file Run with the following settings: '
 print 'isMC = ', isMC
@@ -47,8 +49,8 @@ options.setDefault('maxEvents', 10000)
 print 'nEventsSample: ', options.nEventsSample
 process = cms.Process("Demo")
 
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 globalTag = 'notset'
 #options.parseArguments()
