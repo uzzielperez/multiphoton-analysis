@@ -37,13 +37,19 @@ options.register('nEventsSample',
                  VarParsing.varType.int,
                  "Total number of events in dataset for event weight calculation.")
 ## 'maxEvents' is already registered by the Framework, changing default value
-options.setDefault('maxEvents', 10000)
+#options.setDefault('maxEvents', 10000)
 
 print 'nEventsSample: ', options.nEventsSample
 process = cms.Process("Demo")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+
+# process.maxEvents = cms.untracked.PSet(
+#     input = cms.untracked.int32(options.maxEvents)
+#     )
+
+
 
 globalTag = 'notset'
 #options.parseArguments()

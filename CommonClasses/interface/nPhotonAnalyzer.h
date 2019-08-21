@@ -61,14 +61,22 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
                     const edm::Handle<edm::ValueMap<bool> >* id_decisions,
                     ExoDiPhotons::photonInfo_t& photon1Info,
                     ExoDiPhotons::photonInfo_t& photon2Info,
-                    ExoDiPhotons::photonInfo_t& photon3Info);
+                    ExoDiPhotons::photonInfo_t& photon3Info,
+                    ExoDiPhotons::diphotonInfo_t& diphotonInfo12,
+                    ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
+                    ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
+                    ExoDiPhotons::triphotonInfo_t& triphotonInfo);
       void photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
                     const edm::Handle<EcalRecHitCollection>& recHitsEB,
                     const edm::Handle<EcalRecHitCollection>& recHitsEE,
                 		const edm::Handle<edm::ValueMap<bool> >* id_decisions,
                     ExoDiPhotons::photonInfo_t& photon1Info,
                     ExoDiPhotons::photonInfo_t& photon2Info,
-                    ExoDiPhotons::photonInfo_t& photon3Info);
+                    ExoDiPhotons::photonInfo_t& photon3Info,
+                    ExoDiPhotons::diphotonInfo_t& diphotonInfo12,
+                    ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
+                    ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
+                    ExoDiPhotons::triphotonInfo_t& triphotonInfo);
 
    private:
       virtual void beginJob() override;
@@ -117,11 +125,10 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ExoDiPhotons::photonInfo_t        fPhoton1Info;
       ExoDiPhotons::photonInfo_t        fPhoton2Info;
       ExoDiPhotons::photonInfo_t        fPhoton3Info;
-      // ExoDiPhotons::diphotonInfo_t      fDiphotonInfo12;
-      // ExoDiPhotons::diphotonInfo_t      fDiphotonInfo13;
-      // ExoDiPhotons::diphotonInfo_t      fDiphotonInfo23;
-      // ExoDiPhotons::triphotonInfo_t     fTriphotonInfo;
-
+      ExoDiPhotons::diphotonInfo_t      fDiphotonInfo12;
+      ExoDiPhotons::diphotonInfo_t      fDiphotonInfo13;
+      ExoDiPhotons::diphotonInfo_t      fDiphotonInfo23;
+      ExoDiPhotons::triphotonInfo_t     fTriphotonInfo;
 
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton1Info;
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton2Info;

@@ -75,7 +75,6 @@ namespace ExoDiPhotons
     diphotonInfo.cosThetaStar = photon1_clone.CosTheta();
     // this older implementation was provided by Yousi Ma - should check it sometime
     diphotonInfo.cosThetaStar_old = fabs(photon_vector1.P() - photon_vector2.P())/(photon_vector1+photon_vector2).P();
-    // chiDiphoton
     diphotonInfo.chiDiphoton = exp(fabs(photon_vector1.Rapidity()-photon_vector2.Rapidity()));
   }
 
@@ -123,15 +122,6 @@ namespace ExoDiPhotons
 
     FillDiphotonInfo(diphotonInfo,photon_vector1,photon_vector2);
   }
-
-  // // same function, but for local MC signal photons
-  // void FillDiphotonInfo(diphotonInfo_t &diphotonInfo, reco::LeafCandidate::LorentzVector genPhoton1p4, reco::LeafCandidate::LorentzVector genPhoton2p4)
-  // {
-  //   reco::LeafCandidate::LorentzVector photon_vector1 = genPhoton1p4;
-  //   reco::LeafCandidate::LorentzVector photon_vector2 = genPhoton2p4;
-  //
-  //   FillDiphotonInfo(diphotonInfo,photon_vector1,photon_vector2);
-  // }
 
 }
 

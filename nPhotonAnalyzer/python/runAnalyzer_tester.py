@@ -24,6 +24,7 @@ xsec = 1.00 # Default
 nevts = 69803 # Found in DAS
 genParticles_ = "prunedGenParticles" # genParticles for GEN only
 genInfo = "SIM"
+# maxEvents_ = 10
 
 s = open(templatefile).read()
 s = s.replace('ISLOCAL', islocal)
@@ -41,4 +42,7 @@ f.close()
 print "Wrote local configuration file ", ConfigFile
 
 cmd = "cmsRun " + ConfigFile
+# cmd="cmsRun %s inputFiles=%s maxEvents=%d skipEvents=%d outputFile=%s"%(cfg,inputFiles_,maxEvents_,skipEvents_, outputFile_)
+# cmd="cmsRun %s maxEvents=%d"%(ConfigFile, maxEvents_)
+
 os.system(cmd)
