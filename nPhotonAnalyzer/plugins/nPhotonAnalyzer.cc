@@ -74,7 +74,6 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    }
 }
 
-
 nPhotonAnalyzer::~nPhotonAnalyzer()
 {
 
@@ -93,23 +92,6 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    using namespace std;
    using namespace reco;
    using namespace pat;
-
-   //---Initialize
-   ExoDiPhotons::InitEventInfo(fEventInfo);
-   ExoDiPhotons::InitGenParticleInfo(fGenPhoton1Info);
-   ExoDiPhotons::InitGenParticleInfo(fGenPhoton2Info);
-   ExoDiPhotons::InitGenParticleInfo(fGenPhoton3Info);
-   ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo12);
-   ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo13);
-   ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo23);
-   ExoDiPhotons::InitTriphotonInfo(fGenTriphotonInfo);
-   ExoDiPhotons::InitPhotonInfo(fPhoton1Info);
-   ExoDiPhotons::InitPhotonInfo(fPhoton2Info);
-   ExoDiPhotons::InitPhotonInfo(fPhoton3Info);
-   ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo12);
-   ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo13);
-   ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo23);
-   ExoDiPhotons::InitTriphotonInfo(fTriphotonInfo);
 
    //---Handle, getByToken
    //edm::Handle<vector<reco::GenParticle> > genParticles;
@@ -136,28 +118,58 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    subDetTopologyEB_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalBarrel);
    subDetTopologyEE_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalEndcap);
 
+   //---Initialize
+   ExoDiPhotons::InitEventInfo(fEventInfo);
+   ExoDiPhotons::InitGenParticleInfo(fGenPhoton1Info);
+   ExoDiPhotons::InitGenParticleInfo(fGenPhoton2Info);
+   ExoDiPhotons::InitGenParticleInfo(fGenPhoton3Info);
+   ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo12);
+   ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo13);
+   ExoDiPhotons::InitDiphotonInfo(fGenDiphotonInfo23);
+   ExoDiPhotons::InitTriphotonInfo(fGenTriphotonInfo);
+   ExoDiPhotons::InitPhotonInfo(fPhoton1Info);
+   ExoDiPhotons::InitPhotonInfo(fPhoton2Info);
+   ExoDiPhotons::InitPhotonInfo(fPhoton3Info);
+   ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo12);
+   ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo13);
+   ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo23);
+   ExoDiPhotons::InitTriphotonInfo(fTriphotonInfo);
+
    //---Update
    ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    ExoDiPhotons::FillGenEventInfo(fEventInfo, &(*genInfo));
 
-   if (islocal_) ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
-   if (isDAS_) ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
-   fillGenInfo(genParticles);
-   if (isDAS_) fillPhotonInfo(photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
-   // fillPhotonInfo(photons);
-   //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
-   //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
+   if (islocal_){
+     ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
+     fillGenInfo(genParticles);
+     fgenTree->Fill();
+   }
 
-   //Debugging!
-   cout <<  "Run: "    << iEvent.id().run()
-        << ", LS: "    << iEvent.id().luminosityBlock()
-        << ", Event: " << iEvent.id().event()
-        << endl;
-   //Debugging!
+   if (isDAS_){
+     ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
+     fillGenInfo(genParticles);
+     fillPhotonInfo(photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
+     fTree->Fill();
+   }
 
-   //Fill
-   if (islocal_)         fgenTree->Fill();
-   if (isDAS_)              fTree->Fill();
+   // if (islocal_) ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
+   // if (isDAS_) ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
+   // fillGenInfo(genParticles);
+   // if (isDAS_) fillPhotonInfo(photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
+   // // fillPhotonInfo(photons);
+   // //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
+   // //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
+   //
+   // //Debugging!
+   // // cout <<  "Run: "    << iEvent.id().run()
+   // //      << ", LS: "    << iEvent.id().luminosityBlock()
+   // //      << ", Event: " << iEvent.id().event()
+   // //      << endl;
+   // //Debugging!
+   //
+   // //Fill
+   // if (islocal_)         fgenTree->Fill();
+   // if (isDAS_)              fTree->Fill();
 
 
 }
@@ -198,13 +210,8 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
        if (gen->isHardProcess() && gen->pt() == 0)    interactingPartons.push_back(gen->pdgId());
        if (gen->isHardProcess() && gen->pdgId()==22){
          genPhotons.push_back(gen);
-         // cout << "Hard Process genParticle: "
-         //      << "status = "  << gen->status()
-         //      << "; pdgId = " << gen->pdgId()
-         //      << "; pt = "    << gen->pt()
-         //      << "; eta = "   << gen->eta()
-         //      << "; phi = "   << gen->phi()
-         //      << endl;
+         // cout << "Hard Process genParticle: " << "status = "  << gen->status() << "; pdgId = " << gen->pdgId()
+         //      << "; pt = "    << gen->pt()    << "; eta = "   << gen->eta()    << "; phi = "   << gen->phi()   << endl;
        }
      }//end for loop over gen particles
 
@@ -263,9 +270,7 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >&
 
       for (size_t i = 0; i < photons->size(); ++i){
         const auto pho = photons->ptrAt(i);
-        // print photon info
         //cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
-        // bool isSat = false;
         bool isSat = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
 
         //To-do: Apply high pT, VID (loose, medium, tight) here with flags

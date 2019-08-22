@@ -13,15 +13,20 @@ nevtsdict = {}
 islocal = 'False'
 isDAS = 'True' # Centrally Produced
 # inputFile_ = '/store/mc/RunIIFall17MiniAODv2/GGJets_M-200To500_Pt-50_13TeV-sherpa/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/FCBF2E5A-DC44-E811-984D-B496910A9790.root'
-inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/triphoton/CMSSW_10_3_0/src/GGJets_M-200To500_Pt-50_13TeV-sherpa_sample.root'
-outputFile_ = "GGJets_M-200To500_Pt-50_13TeV-sherpa_sampleOUT.root"
+# inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/triphoton/CMSSW_10_3_0/src/GGJets_M-200To500_Pt-50_13TeV-sherpa_sample.root'
+# outputFile_ = "GGJets_M-200To500_Pt-50_13TeV-sherpa_sampleOUT.root"
+# nevts = 69803 # Found in DAS
+
+inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/triphoton/CMSSW_10_3_0/src/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sample.root'
+outputFile_ = "GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sampleOUT.root"
+nevts = 2118 
 
 print 'Processing ', inputFile_
 cmssw_base = os.getenv("CMSSW_BASE")
 templatefile = cmssw_base + "/src/multiphoton-analysis/nPhotonAnalyzer/python/cmsRun_cfg_tester.py"
 ConfigFile = "cmsRun_cfg_DAStestinput.py"
 xsec = 1.00 # Default
-nevts = 69803 # Found in DAS
+
 genParticles_ = "prunedGenParticles" # genParticles for GEN only
 genInfo = "SIM"
 # maxEvents_ = 10
