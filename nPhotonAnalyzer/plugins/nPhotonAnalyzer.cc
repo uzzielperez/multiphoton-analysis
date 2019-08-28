@@ -254,15 +254,15 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >&
 
         //To-do: Apply high pT, VID (loose, medium, tight) here with flags
         bool pass_HighPtID = ExoDiPhotons::passHighPtID(&(*pho), rho_, isSat);
-        // bool passEGMLooseID  = (*id_decisions[LOOSE])[pho];
-        // bool passEGMMediumID = (*id_decisions[MEDIUM])[pho];
-        // bool passEGMTightID  = (*id_decisions[TIGHT])[pho];
+        bool passEGMLooseID  = (*id_decisions[LOOSE])[pho];
+        bool passEGMMediumID = (*id_decisions[MEDIUM])[pho];
+        bool passEGMTightID  = (*id_decisions[TIGHT])[pho];
 
         bool pass_ID_version = pass_HighPtID;
 
-        // if ( IDmode_ == "LOOSE"     ) pass_ID_version = passEGMLooseID;
-        // if ( IDmode_ == "MEDIUM"    ) pass_ID_version = passEGMMediumID;
-        // if ( IDmode_ == "TIGHT"     ) pass_ID_version = passEGMTightID;
+        if ( IDmode_ == "LOOSE"     ) pass_ID_version = passEGMLooseID;
+        if ( IDmode_ == "MEDIUM"    ) pass_ID_version = passEGMMediumID;
+        if ( IDmode_ == "TIGHT"     ) pass_ID_version = passEGMTightID;
         if ( IDmode_ == "hightPTID" ) pass_ID_version = pass_HighPtID;
 
         // if( pass_HighPtID ){

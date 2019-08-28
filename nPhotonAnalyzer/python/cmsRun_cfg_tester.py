@@ -100,7 +100,6 @@ process.TFileService = cms.Service("TFileService",
                     fileName = cms.string(outName)
 )
 
-
 # Setup VID for EGM ID
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
@@ -155,8 +154,8 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         #isReMINIAOD = cms.bool(isReMINIAOD),
         isolationConeR = cms.double(0.3),
         xsec = cms.double(CROSSSECTION),
-        IDmode = cms.string("hightPTID") # VID (LOOSE, MEDIUM, TIGHT) or highPT
-        # IDmode = cms.string("MEDIUM") # VID (LOOSE, MEDIUM, TIGHT) or highPT
+        # IDmode = cms.string("hightPTID") # VID (LOOSE, MEDIUM, TIGHT) or highPT
+        IDmode = cms.string("MEDIUM") # VID (LOOSE, MEDIUM, TIGHT) or highPT
 
 )
 process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
