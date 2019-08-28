@@ -31,6 +31,7 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    islocal_                  =                                           ps.getParameter<bool>("islocal");
    isDAS_                    =                                           ps.getParameter<bool>("isDAS");
    outputFile_               =                                   TString(ps.getParameter<std::string>("outputFile"));
+   IDmode_                   =                                           ps.getParameter<std::string>("IDmode");
 
    if (islocal_){
    fgenTree = fs->make<TTree>("fgenTree","GENDiphotonTree");
@@ -111,7 +112,6 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByToken(phoLooseIdMapToken_,   id_decisions[LOOSE]);
    iEvent.getByToken(phoMediumIdMapToken_,  id_decisions[MEDIUM]);
    iEvent.getByToken(phoTightIdMapToken_ ,  id_decisions[TIGHT]);
-   iEvent.getByToken(phoTightIdMapToken_ ,  id_decisions[TIGHT]);
    iEvent.getByToken(recHitsEBToken,recHitsEB);
    iEvent.getByToken(recHitsEEToken,recHitsEE);
    iSetup.get<CaloTopologyRecord>().get(caloTopology);
@@ -151,27 +151,6 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
      fillPhotonInfo(photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
      fTree->Fill();
    }
-
-   // if (islocal_) ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
-   // if (isDAS_) ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
-   // fillGenInfo(genParticles);
-   // if (isDAS_) fillPhotonInfo(photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
-   // // fillPhotonInfo(photons);
-   // //ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
-   // //ExoDiPhotons::fillGenDiPhoInfo(  fGenPhoton1Info, fGenPhoton2Info, fGenDiPhotonInfo, genParticles);
-   //
-   // //Debugging!
-   // // cout <<  "Run: "    << iEvent.id().run()
-   // //      << ", LS: "    << iEvent.id().luminosityBlock()
-   // //      << ", Event: " << iEvent.id().event()
-   // //      << endl;
-   // //Debugging!
-   //
-   // //Fill
-   // if (islocal_)         fgenTree->Fill();
-   // if (isDAS_)              fTree->Fill();
-
-
 }
 
 
@@ -275,8 +254,19 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >&
 
         //To-do: Apply high pT, VID (loose, medium, tight) here with flags
         bool pass_HighPtID = ExoDiPhotons::passHighPtID(&(*pho), rho_, isSat);
+        // bool passEGMLooseID  = (*id_decisions[LOOSE])[pho];
+        // bool passEGMMediumID = (*id_decisions[MEDIUM])[pho];
+        // bool passEGMTightID  = (*id_decisions[TIGHT])[pho];
 
-        if(pass_HighPtID){
+        bool pass_ID_version = pass_HighPtID;
+
+        // if ( IDmode_ == "LOOSE"     ) pass_ID_version = passEGMLooseID;
+        // if ( IDmode_ == "MEDIUM"    ) pass_ID_version = passEGMMediumID;
+        // if ( IDmode_ == "TIGHT"     ) pass_ID_version = passEGMTightID;
+        if ( IDmode_ == "hightPTID" ) pass_ID_version = pass_HighPtID;
+
+        // if( pass_HighPtID ){
+        if( pass_ID_version ){
           goodPhotons.push_back(pho);
           realAndFakePhotons.push_back(std::pair<edm::Ptr<pat::Photon>, int>(pho, TRUE));
         }

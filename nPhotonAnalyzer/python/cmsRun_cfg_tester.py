@@ -154,7 +154,9 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         #isClosureTest = cms.bool(False),
         #isReMINIAOD = cms.bool(isReMINIAOD),
         isolationConeR = cms.double(0.3),
-        xsec = cms.double(CROSSSECTION)
+        xsec = cms.double(CROSSSECTION),
+        IDmode = cms.string("hightPTID") # VID (LOOSE, MEDIUM, TIGHT) or highPT
+        # IDmode = cms.string("MEDIUM") # VID (LOOSE, MEDIUM, TIGHT) or highPT
 
 )
 process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
