@@ -44,6 +44,9 @@
 #include "DataFormats/EcalDetId/interface/EBDetId.h"
 #include "DataFormats/EcalDetId/interface/EEDetId.h"
 
+// for EGM ID
+#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+
 using namespace std;
 using namespace edm;
 
@@ -106,9 +109,9 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       enum {LOOSE = 0, MEDIUM = 1, TIGHT = 2};
       enum {FAKE = 0,  TRUE = 1};
 
-      //EffectiveAreas effAreaChHadrons_;
-      //EffectiveAreas effAreaNeuHadrons_;
-      //EffectiveAreas effAreaPhotons_;
+      // EffectiveAreas effAreaChHadrons_;
+      // EffectiveAreas effAreaNeuHadrons_;
+      // EffectiveAreas effAreaPhotons_;
 
       TTree *fgenTree;
       TTree *fTree;
@@ -148,10 +151,10 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       double GenPhoton2_iso_;
       uint32_t nEventsSample_;
       TString outputFile_;
+      std::string IDmode_;  // VID (Loose, Medium, Tight) or hightPTID
 
       const CaloSubdetectorTopology* subDetTopologyEB_;
       const CaloSubdetectorTopology* subDetTopologyEE_;
-
 };
 
 

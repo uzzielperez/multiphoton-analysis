@@ -159,5 +159,12 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
 
 )
 process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
-process.p = cms.Path(process.demo * process.xsec)
+# process.p = cms.Path(process.demo * process.xsec)
 #process.p = cms.Path(process.demo)
+if isMC:
+    process.p = cms.Path(process.egmPhotonIDSequence * process.demo * process.xsec)
+else:
+    if "Run2017" in outName or "Run2018" in outName:
+        process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.demo)
+    else:
+        process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.demo)

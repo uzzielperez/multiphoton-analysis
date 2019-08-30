@@ -100,7 +100,6 @@ process.TFileService = cms.Service("TFileService",
                     fileName = cms.string(outName)
 )
 
-
 # Setup VID for EGM ID
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
@@ -154,9 +153,16 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         #isClosureTest = cms.bool(False),
         #isReMINIAOD = cms.bool(isReMINIAOD),
         isolationConeR = cms.double(0.3),
-        xsec = cms.double(CROSSSECTION)
-
+        xsec = cms.double(CROSSSECTION),
+        IDmode = cms.string("IDMODE") # VID (LOOSE, MEDIUM, TIGHT) or highPTID
 )
 process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
-process.p = cms.Path(process.demo * process.xsec)
+# process.p = cms.Path(process.demo * process.xsec)
 #process.p = cms.Path(process.demo)
+if isMC:
+    process.p = cms.Path(process.egmPhotonIDSequence * process.demo * process.xsec)
+else:
+    if "Run2017" in outName or "Run2018" in outName:
+        process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.demo)
+    else:
+        process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.demo)
