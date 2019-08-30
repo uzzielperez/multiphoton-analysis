@@ -257,7 +257,6 @@ namespace ExoDiPhotons{
       !passHadTowerOverEmCut(photon) ||
       !passChargedHadronCut(photon) ||
       !passSigmaIetaIetaCut(photon,isSat)
-
     );
 
     if (isEB)

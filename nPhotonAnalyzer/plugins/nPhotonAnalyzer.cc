@@ -341,6 +341,7 @@ void nPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>& pho
             ExoDiPhotons::FillDiphotonInfo(diphotonInfo12,&(*photons[0]),&(*photons[1]));
             ExoDiPhotons::FillDiphotonInfo(diphotonInfo13,&(*photons[0]),&(*photons[2]));
             ExoDiPhotons::FillDiphotonInfo(diphotonInfo23,&(*photons[1]),&(*photons[2]));
+            ExoDiPhotons::FillTriphotonInfo(triphotonInfo,&(*photons[0]),&(*photons[1]),&(*photons[2]));
 
 
 }//end photonFiller

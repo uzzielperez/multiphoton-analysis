@@ -30,6 +30,8 @@ xsec = 1.00 # Default
 genParticles_ = "prunedGenParticles" # genParticles for GEN only
 genInfo = "SIM"
 # maxEvents_ = 10
+#idmode_ = "highPTID"
+idmode_ = "MEDIUM" # LOOSE, MEDIUM or TIGHT
 
 s = open(templatefile).read()
 s = s.replace('ISLOCAL', islocal)
@@ -40,6 +42,7 @@ s = s.replace('NEVTS', str(nevts))
 s = s.replace('GENPARTICLES', str(genParticles_))
 s = s.replace('GENINFO', str(genInfo))
 s = s.replace('OUTPUTFILE', str(outputFile_))
+s = s.replace('IDMODE', str(idmode_))
 f = open(ConfigFile, 'w')
 f.write(s)
 f.close()
