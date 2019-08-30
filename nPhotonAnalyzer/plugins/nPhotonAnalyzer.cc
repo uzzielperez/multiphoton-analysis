@@ -4,34 +4,42 @@ using namespace std;
 using namespace edm;
 
 nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
-
+   :effAreaChHadrons_( (ps.getParameter<edm::FileInPath>("effAreaChHadFile")).fullPath() ),
+    effAreaNeuHadrons_( (ps.getParameter<edm::FileInPath>("effAreaNeuHadFile")).fullPath() ),
+    effAreaPhotons_( (ps.getParameter<edm::FileInPath>("effAreaPhoFile")).fullPath() )
 {
    usesResource("TFileService");
    isGood_                    = false;
    nPV_                       = 0;
    GenPhoton0_iso_      = 9999.99;
    GenPhoton1_iso_      = 9999.99;
+   // EffectiveAreas effAreaChHadrons_;
+   // EffectiveAreas effAreaNeuHadrons_;
+   // EffectiveAreas effAreaPhotons_;
 
-   genParticlesToken_        = consumes<edm::View<reco::GenParticle> >  (ps.getParameter<InputTag>("genparticles"));
+   genParticlesToken_        = consumes<edm::View<reco::GenParticle> > (ps.getParameter<InputTag>("genparticles"));
    //genParticlesMiniAODToken_ = consumes<edm::View<reco::GenParticle> >  (ps.getParameter<InputTag>("genParticlesMiniAOD"));
    //genParticlesToken_        = consumes<vector<reco::GenParticle>>      (ps.getParameter<InputTag>("genparticles"));
-   rhoToken_                 = consumes<double>                         (ps.getParameter<edm::InputTag>("rho"));
-   phoLooseIdMapToken_       = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoLooseIdMap"));
-   phoMediumIdMapToken_      = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoMediumIdMap"));
-   phoTightIdMapToken_       = consumes<edm::ValueMap<bool> >           (ps.getParameter<edm::InputTag>("phoTightIdMap"));
-   nEventsSample_            =                                          (ps.getParameter<uint32_t>("nEventsSample"));
-   genInfoToken_             = consumes<GenEventInfoProduct>            (ps.getParameter<edm::InputTag>("genInfo"));
+   rhoToken_                 = consumes<double>                      (ps.getParameter<edm::InputTag>("rho"));
+   // effAreaChHadrons_         = ps.getParameter<edm::FileInPath>("effAreaChHadFile").fullPath();
+   // effAreaNeuHadrons_        = ps.getParameter<edm::FileInPath>("effAreaNeuHadFile").fullPath();
+   // effAreaPhotons_           = ps.getParameter<edm::FileInPath>("effAreaPhoFile").fullPath();
+   phoLooseIdMapToken_       = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoLooseIdMap"));
+   phoMediumIdMapToken_      = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoMediumIdMap"));
+   phoTightIdMapToken_       = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoTightIdMap"));
+   nEventsSample_            =                                        (ps.getParameter<uint32_t>("nEventsSample"));
+   genInfoToken_             = consumes<GenEventInfoProduct>          (ps.getParameter<edm::InputTag>("genInfo"));
    //genParticlesMiniAODToken_ = mayConsume<edm::View<reco::GenParticle> >(ps.getParameter<edm::InputTag>("genParticlesMiniAOD"));
-   photonsMiniAODToken_      = consumes<edm::View<pat::Photon> >        (ps.getParameter<edm::InputTag>("photonsMiniAOD"));
+   photonsMiniAODToken_      = consumes<edm::View<pat::Photon> >      (ps.getParameter<edm::InputTag>("photonsMiniAOD"));
    recHitsEBTag_             = ps.getUntrackedParameter<edm::InputTag>("RecHitsEBTag",edm::InputTag("reducedEgamma:reducedEBRecHits"));
    recHitsEETag_             = ps.getUntrackedParameter<edm::InputTag>("RecHitsEETag",edm::InputTag("reducedEgamma:reducedEERecHits"));
    recHitsEBToken            = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEBTag_);
    recHitsEEToken            = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEETag_);
-   isMC_                     =                                           ps.getParameter<bool>("isMC");
-   islocal_                  =                                           ps.getParameter<bool>("islocal");
-   isDAS_                    =                                           ps.getParameter<bool>("isDAS");
-   outputFile_               =                                   TString(ps.getParameter<std::string>("outputFile"));
-   IDmode_                   =                                           ps.getParameter<std::string>("IDmode");
+   isMC_                     =                                         ps.getParameter<bool>("isMC");
+   islocal_                  =                                         ps.getParameter<bool>("islocal");
+   isDAS_                    =                                         ps.getParameter<bool>("isDAS");
+   IDmode_                   =                                         ps.getParameter<std::string>("IDmode");
+   outputFile_               =                                 TString(ps.getParameter<std::string>("outputFile"));
 
    if (islocal_){
    fgenTree = fs->make<TTree>("fgenTree","GENDiphotonTree");
@@ -322,20 +330,21 @@ void nPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>& pho
             ExoDiPhotons::FillPhotonIDInfo(photon3Info, &(*photons[2]), rho_, photon3Info.isSaturated);
 
             // EGM ID Info
-            // ExoDiPhotons::FillPhotonEGMidInfo(photon1Info, &(*photons[0]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
-            // photon1Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[0]];
-            // photon1Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[0]];
-            // photon1Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[0]];
-            //
-            // ExoDiPhotons::FillPhotonEGMidInfo(photon2Info, &(*photons[1]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
-            // photon2Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[1]];
-            // photon2Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[1]];
-            // photon2Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[1]];
-            //
-            // ExoDiPhotons::FillPhotonEGMidInfo(photon3Info, &(*photons[2]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
-            // photon3Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[2]];
-            // photon3Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[2]];
-            // photon3Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[2]];
+            photon1Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[0]];
+            photon1Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[0]];
+            photon1Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[0]];
+
+            photon2Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[1]];
+            photon2Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[1]];
+            photon2Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[1]];
+
+            photon3Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[2]];
+            photon3Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[2]];
+            photon3Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[2]];
+
+            ExoDiPhotons::FillPhotonEGMidInfo(photon1Info, &(*photons[0]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
+            ExoDiPhotons::FillPhotonEGMidInfo(photon2Info, &(*photons[1]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
+            ExoDiPhotons::FillPhotonEGMidInfo(photon3Info, &(*photons[2]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
 
             // Fill Diphoton and Triphoton Information
             ExoDiPhotons::FillDiphotonInfo(diphotonInfo12,&(*photons[0]),&(*photons[1]));
