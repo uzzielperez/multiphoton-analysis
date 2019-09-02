@@ -190,6 +190,7 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       // Store Information in these vectors
       vector< edm::Ptr<const reco::GenParticle> > genPhotons;
       vector<int> interactingPartons;
+      
 
       for (size_t i = 0; i < genParticles->size(); ++i){
        const auto gen = genParticles->ptrAt(i);
@@ -258,7 +259,7 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >&
       for (size_t i = 0; i < photons->size(); ++i){
         const auto pho = photons->ptrAt(i);
         // cout << "Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
-        bool isSat = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+        isSat = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
 
         //To-do: Apply high pT, VID (loose, medium, tight) here with flags
         bool pass_HighPtID = ExoDiPhotons::passHighPtID(&(*pho), rho_, isSat);
@@ -273,8 +274,11 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >&
         if ( IDmode_ == "TIGHT"     ) pass_ID_version = passEGMTightID;
         if ( IDmode_ == "hightPTID" ) pass_ID_version = pass_HighPtID;
 
+        pass_ID_version = 1;
         // if( pass_HighPtID ){
         if( pass_ID_version ){
+          // cout << "PASS HPT Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
+          // cout << endl;
           goodPhotons.push_back(pho);
           realAndFakePhotons.push_back(std::pair<edm::Ptr<pat::Photon>, int>(pho, TRUE));
         }
@@ -285,8 +289,7 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >&
 
       if (goodPhotons.size() >= 3){
         isGood_ = true;
-        cout << "TRIPHOTON FOUND" << endl;
-        //photonFiller(goodPhotons, recHitsEB, recHitsEE, )
+        // cout << "TRIPHOTON FOUND" << endl;
         photonFiller(goodPhotons, recHitsEB, recHitsEE, &id_decisions[0], photon1Info, photon2Info, photon3Info, diphotonInfo12, diphotonInfo13, diphotonInfo23, triphotonInfo);
         // To-do: isMC genparticle fill
         // if (isMC_){
@@ -294,6 +297,7 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >&
         // }
         // To-do: isClosureTest_
       }
+      if (goodPhotons.size() < 3) cout << "TRIPHOTON NOT FOUND in PAT" << endl;
 
 }//end of fillPhotonInfo
 
@@ -309,23 +313,23 @@ void nPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>& pho
                                        ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
                                        ExoDiPhotons::triphotonInfo_t& triphotonInfo){
 
-            std::cout << "Photon 1 pt = " << photons[0]->pt() << "; eta = " << photons[0]->eta() << "; phi = " << photons[0]->phi() << std::endl;
-            std::cout << "Photon 2 pt = " << photons[1]->pt() << "; eta = " << photons[1]->eta() << "; phi = " << photons[1]->phi() << std::endl;
-            std::cout << "Photon 3 pt = " << photons[2]->pt() << "; eta = " << photons[2]->eta() << "; phi = " << photons[2]->phi() << std::endl;
+            // std::cout << "Photon 1 pt = " << photons[0]->pt() << "; eta = " << photons[0]->eta() << "; phi = " << photons[0]->phi() << std::endl;
+            // std::cout << "Photon 2 pt = " << photons[1]->pt() << "; eta = " << photons[1]->eta() << "; phi = " << photons[1]->phi() << std::endl;
+            // std::cout << "Photon 3 pt = " << photons[2]->pt() << "; eta = " << photons[2]->eta() << "; phi = " << photons[2]->phi() << std::endl;
 
             // Individual photon Information
             photon1Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[0]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-            std::cout << "Photon 1 isSat: " << photon1Info.isSaturated << std::endl;
+            // std::cout << "Photon 1 isSat: " << photon1Info.isSaturated << std::endl;
             ExoDiPhotons::FillBasicPhotonInfo(photon1Info, &(*photons[0]));
             ExoDiPhotons::FillPhotonIDInfo(photon1Info, &(*photons[0]), rho_, photon1Info.isSaturated);
 
             photon2Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[1]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-            std::cout << "Photon 2 isSat: " << photon2Info.isSaturated << std::endl;
+            // std::cout << "Photon 2 isSat: " << photon2Info.isSaturated << std::endl;
             ExoDiPhotons::FillBasicPhotonInfo(photon2Info, &(*photons[1]));
             ExoDiPhotons::FillPhotonIDInfo(photon2Info, &(*photons[1]), rho_, photon2Info.isSaturated);
 
             photon3Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[2]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-            std::cout << "Photon 3 isSat: " << photon3Info.isSaturated << std::endl;
+            // std::cout << "Photon 3 isSat: " << photon3Info.isSaturated << std::endl;
             ExoDiPhotons::FillBasicPhotonInfo(photon3Info, &(*photons[2]));
             ExoDiPhotons::FillPhotonIDInfo(photon3Info, &(*photons[2]), rho_, photon3Info.isSaturated);
 

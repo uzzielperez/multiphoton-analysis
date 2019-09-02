@@ -17,9 +17,9 @@ isDAS = 'True' # Centrally Produced
 # outputFile_ = "GGJets_M-200To500_Pt-50_13TeV-sherpa_sampleOUT.root"
 # nevts = 69803 # Found in DAS
 
-inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/triphoton/CMSSW_10_3_0/src/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sample.root'
+inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/triphoton/CMSSW_10_2_8/src/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sample.root'
 outputFile_ = "GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sampleOUT.root"
-nevts = 2118 
+nevts = 2118
 
 print 'Processing ', inputFile_
 cmssw_base = os.getenv("CMSSW_BASE")
@@ -30,8 +30,8 @@ xsec = 1.00 # Default
 genParticles_ = "prunedGenParticles" # genParticles for GEN only
 genInfo = "SIM"
 # maxEvents_ = 10
-#idmode_ = "highPTID"
-idmode_ = "MEDIUM" # LOOSE, MEDIUM or TIGHT
+idmode_ = "highPTID"
+#idmode_ = "MEDIUM" # LOOSE, MEDIUM or TIGHT
 
 s = open(templatefile).read()
 s = s.replace('ISLOCAL', islocal)
