@@ -104,7 +104,7 @@ namespace ExoDiPhotons{
     double sIeIe = photon->full5x5_sigmaIetaIeta();
     double sIeIeCut = -1.;
 
-    if (phoEta < 1.4442 && !isSaturated) sIeIeCut = 0.0105;
+    if (phoEta < 1.4442 && !isSaturated) sIeIeCut = 0.0105; 
     else if (phoEta < 1.4442 && isSaturated) sIeIeCut = 0.0112;
     else if (1.566 < phoEta && phoEta < 2.5 && !isSaturated) sIeIeCut = 0.0280;
     else if (1.566 < phoEta && phoEta < 2.5 && isSaturated) sIeIeCut = 0.0300;

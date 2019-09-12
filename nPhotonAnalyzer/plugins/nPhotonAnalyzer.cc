@@ -157,6 +157,7 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
      ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
      fillGenInfo(genParticles);
      fillPhotonInfo(photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
+     cout << "isGood: " << isGood_ << endl;
      fTree->Fill();
    }
 }
@@ -190,7 +191,7 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       // Store Information in these vectors
       vector< edm::Ptr<const reco::GenParticle> > genPhotons;
       vector<int> interactingPartons;
-      
+
 
       for (size_t i = 0; i < genParticles->size(); ++i){
        const auto gen = genParticles->ptrAt(i);
@@ -273,8 +274,13 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >&
         if ( IDmode_ == "MEDIUM"    ) pass_ID_version = passEGMMediumID;
         if ( IDmode_ == "TIGHT"     ) pass_ID_version = passEGMTightID;
         if ( IDmode_ == "hightPTID" ) pass_ID_version = pass_HighPtID;
-
-        pass_ID_version = 1;
+        if ( IDmode_ == "NOid"      ) pass_ID_version = 1;
+        if ( IDmode_ != "LOOSE" && IDmode_ != "MEDIUM" && IDmode_ != "TIGHT" && IDmode_ != "highPTID") {
+          cout << "Invalid choice! Default to NO ID mode." << endl;
+          pass_ID_version = 1;
+          //return;
+        }
+        // pass_ID_version = 1;
         // if( pass_HighPtID ){
         if( pass_ID_version ){
           // cout << "PASS HPT Photon: " << "pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << endl;
@@ -297,8 +303,10 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >&
         // }
         // To-do: isClosureTest_
       }
-      if (goodPhotons.size() < 3) cout << "TRIPHOTON NOT FOUND in PAT" << endl;
-
+      if (goodPhotons.size() < 3){
+        isGood_ = false;
+        cout << "TRIPHOTON NOT FOUND in PAT for " << IDmode_ << endl;
+      }
 }//end of fillPhotonInfo
 
 void nPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
