@@ -9,6 +9,9 @@
 #include "DataFormats/EcalDetId/interface/EBDetId.h"
 #include "DataFormats/EcalDetId/interface/EEDetId.h"
 
+#include <math.h>
+#include <iostream>
+
 namespace ExoDiPhotons{
 
   // checking for saturated photons in 5x5 around seed crystal
@@ -16,7 +19,6 @@ namespace ExoDiPhotons{
   bool isSaturated(const pat::Photon *photon, const EcalRecHitCollection *recHitsEB, const EcalRecHitCollection *recHitsEE,
 		   const CaloSubdetectorTopology* subDetTopologyEB_, const CaloSubdetectorTopology* subDetTopologyEE_) {
     using namespace std;
-
     bool isSat = false;
     DetId seedDetId = ((photon->superCluster())->seed())->seed();
 
@@ -104,7 +106,7 @@ namespace ExoDiPhotons{
     double sIeIe = photon->full5x5_sigmaIetaIeta();
     double sIeIeCut = -1.;
 
-    if (phoEta < 1.4442 && !isSaturated) sIeIeCut = 0.0105; 
+    if (phoEta < 1.4442 && !isSaturated) sIeIeCut = 0.0105;
     else if (phoEta < 1.4442 && isSaturated) sIeIeCut = 0.0112;
     else if (1.566 < phoEta && phoEta < 2.5 && !isSaturated) sIeIeCut = 0.0280;
     else if (1.566 < phoEta && phoEta < 2.5 && isSaturated) sIeIeCut = 0.0300;
@@ -233,6 +235,53 @@ namespace ExoDiPhotons{
 
     else return false;
   }
+
+  // SIGMAiETAiETA Low pT
+
+  double sIeIeCutvspt(const pat::Photon* photon) {
+    double phoPT = photon->pt();
+    double p0 = 0.01701634;
+    double p1 = -0.000443893;
+    double p2 = 7.52907e-6;
+    double sieieCut = p2*pow(phoPT, 2.0) + p1*pow(phoPT, 1.0) + p0;
+    if (phoPT == 12.0 || phoPT == 15.0 || phoPT == 20.0) std::cout << sieieCut << std::endl;
+    return sieieCut;
+  }
+
+  bool passlowPTSigmaIetaIetaCut(const pat::Photon* photon, bool isSaturated) {
+
+    double phoEta = fabs(photon->superCluster()->eta());
+    double sIeIe = photon->full5x5_sigmaIetaIeta();
+    double sIeIeCut = -1.;
+
+    if (phoEta < 1.4442 && !isSaturated){
+      // sIeIeCut = 0.0105;
+      // If phoPT is strictly less than 30, then sIeIeCut will be a function of pT.
+
+      if (photon->pt() < 30) sIeIeCut = sIeIeCutvspt(photon);
+      else if (photon->pt() >= 30) sIeIeCut = 0.0105; // Flattens out to normal cut
+    }
+
+    else if (phoEta < 1.4442 && isSaturated) sIeIeCut = 0.0112;
+    else if (1.566 < phoEta && phoEta < 2.5 && !isSaturated) sIeIeCut = 0.0280;
+    else if (1.566 < phoEta && phoEta < 2.5 && isSaturated) sIeIeCut = 0.0300;
+
+    if (sIeIe < sIeIeCut) return true;
+    else return false;
+  }
+
+  bool passLowPtID(const pat::Photon* photon, double rho, bool isSat) {
+    if (
+      passHadTowerOverEmCut(photon) &&
+      passChargedHadronCut(photon) &&
+      passlowPTSigmaIetaIetaCut(photon,isSat) &&
+      passCorPhoIsoHighPtID(photon,rho) &&
+      photon->passElectronVeto()
+    ) return true;
+
+    else return false;
+  }
+
 
   // must pass all cuts in the High pT ID except for the Sieie cut and chIso cut
   // NOTE: enforce chIso and sieie cuts offline depending on if this is used for numerator or fake template

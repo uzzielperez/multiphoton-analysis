@@ -274,9 +274,9 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >&
         if ( IDmode_ == "MEDIUM"    ) pass_ID_version = passEGMMediumID;
         if ( IDmode_ == "TIGHT"     ) pass_ID_version = passEGMTightID;
         if ( IDmode_ == "hightPTID" ) pass_ID_version = pass_HighPtID;
-        if ( IDmode_ == "NOid"      ) pass_ID_version = 1;
-        if ( IDmode_ != "LOOSE" && IDmode_ != "MEDIUM" && IDmode_ != "TIGHT" && IDmode_ != "highPTID") {
-          cout << "Invalid choice! Default to NO ID mode." << endl;
+        //if ( IDmode_ == "NOid"      ) pass_ID_version = 1;
+        if ((IDmode_ != "LOOSE" && IDmode_ != "MEDIUM" && IDmode_ != "TIGHT" && IDmode_ != "highPTID") || IDmode_ == "Noid") {
+          cout << "Set to NO ID mode." << endl;
           pass_ID_version = 1;
           //return;
         }
