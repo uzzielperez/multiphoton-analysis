@@ -248,6 +248,16 @@ namespace ExoDiPhotons{
     return sieieCut;
   }
 
+  double sIeIeCutvspt_endcaps(const pat::Photon* photon) {
+    double phoPT = photon->pt();
+    double p0 = 0.047553;
+    double p1 = -0.00115685;
+    double p2 = 1.91035e-5;
+    double sieieCut = p2*pow(phoPT, 2.0) + p1*pow(phoPT, 1.0) + p0;
+    // if (phoPT == 12.0 || phoPT == 15.0 || phoPT == 20.0) std::cout << sieieCut << std::endl;
+    return sieieCut;
+  }
+
   bool passlowPTSigmaIetaIetaCut(const pat::Photon* photon, bool isSaturated) {
 
     double phoEta = fabs(photon->superCluster()->eta());
@@ -255,15 +265,17 @@ namespace ExoDiPhotons{
     double sIeIeCut = -1.;
 
     if (phoEta < 1.4442 && !isSaturated){
-      // sIeIeCut = 0.0105;
       // If phoPT is strictly less than 30, then sIeIeCut will be a function of pT.
-
       if (photon->pt() < 30) sIeIeCut = sIeIeCutvspt(photon);
       else if (photon->pt() >= 30) sIeIeCut = 0.0105; // Flattens out to normal cut
     }
 
+    else if (1.566 < phoEta && phoEta < 2.5 && !isSaturated){
+      if (photon->pt() < 30) sIeIeCut = sIeIeCutvspt_endcaps(photon);
+      else if (photon->pt() >= 30) sIeIeCut = 0.0280; // Flattens out to normal cut
+    }
+
     else if (phoEta < 1.4442 && isSaturated) sIeIeCut = 0.0112;
-    else if (1.566 < phoEta && phoEta < 2.5 && !isSaturated) sIeIeCut = 0.0280;
     else if (1.566 < phoEta && phoEta < 2.5 && isSaturated) sIeIeCut = 0.0300;
 
     if (sIeIe < sIeIeCut) return true;

@@ -1,4 +1,4 @@
-#ifndef CROSSSECTIONS_INC
+  #ifndef CROSSSECTIONS_INC
 #define CROSSSECTIONS_INC
 
 namespace ExoDiPhotons {
