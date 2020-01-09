@@ -6,6 +6,10 @@ namespace ExoDiPhotons {
   // provides cross sections (in pb) that are used to calculate event weights
   double crossSection(const TString& sample) {
     double xsec = -1.0;
+    // 2017 Low-pt Triphoton External Background Samples
+    if(sample.Contains("DiPhotonJetsBox_M40_80-Sherpa")) xsec = 3.101e+02;
+    if(sample.Contains("QCD_Pt-30toInf_DoubleEMEnriched_MGG-40to80_TuneCP5_13TeV_Pythia8")) xsec = 2.419e+05;
+    // Original Background samples
     if(sample.Contains("DiPhotonJets_MGG-80toInf_13TeV_amcatnloFXFX_pythia8")) xsec = 135.1;
     if(sample.Contains("DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa")) xsec = 82.81; // +/- 0.12
     if(sample.Contains("GGJets_M-60To200_Pt-50_13TeV-sherpa")) xsec = 5.785e+00;

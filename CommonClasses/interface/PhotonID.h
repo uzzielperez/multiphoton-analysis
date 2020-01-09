@@ -138,7 +138,7 @@ namespace ExoDiPhotons{
       }
     } // end EE
     else {
-      return 99999.99;
+      return -99999.99;
     }
   }
 
@@ -196,12 +196,18 @@ namespace ExoDiPhotons{
 
   double corPhoIsoHighPtID(const pat::Photon* photon, double rho) {
     double phoIso = photon->photonIso();
-    return (phoAlphaHighPtID(photon) + phoIso - rho*phoEAHighPtID(photon) - phoKappaHighPtID(photon)*photon->pt());
+    double corPhoIsoVal = (phoAlphaHighPtID(photon) + phoIso - rho*phoEAHighPtID(photon) - phoKappaHighPtID(photon)*photon->pt());
+    std::cout << "phoAlphaHighPtID: " << phoAlphaHighPtID(photon)
+              << "; phoEAHighPtID(photon): " << phoEAHighPtID(photon)
+              << "; phoKappaHighPtID" << phoKappaHighPtID(photon)
+              << "; rho input:" << rho
+              << "; corPhoIsoVal: " << corPhoIsoVal << std::endl;
+    return corPhoIsoVal;
   }
 
   bool passCorPhoIsoHighPtID(const pat::Photon* photon, double rho) {
     double phoEta = fabs(photon->superCluster()->eta());
-    double corPhoIsoCut = -999.9;
+    double corPhoIsoCut = -99999.9;
     double corPhoIso = corPhoIsoHighPtID(photon,rho);
 
     if (phoEta < 1.4442) corPhoIsoCut = 2.75;
@@ -244,7 +250,7 @@ namespace ExoDiPhotons{
     double p1 = -0.000443893;
     double p2 = 7.52907e-6;
     double sieieCut = p2*pow(phoPT, 2.0) + p1*pow(phoPT, 1.0) + p0;
-    if (phoPT == 12.0 || phoPT == 15.0 || phoPT == 20.0) std::cout << sieieCut << std::endl;
+    // if (phoPT == 12.0 || phoPT == 15.0 || phoPT == 20.0) std::cout << sieieCut << std::endl;
     return sieieCut;
   }
 
