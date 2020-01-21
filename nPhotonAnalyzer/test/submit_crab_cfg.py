@@ -16,13 +16,14 @@ args = parser.parse_args()
 
 dosubmit = True
 
-dotriphotonbaseline = False
+dotriphotonbkg = False
+dotriphotonbaseline = True 
 do2017signal = False
 do2017data = False
 do2016data = False
 do2016mc = False
 dospring2016ggmc = False
-do2016ggmc = True 
+do2016ggmc = False
 do2015data = False
 do2015mc = False
 do2015signal = False
@@ -37,10 +38,15 @@ DATASETS = [[]]
 # datasets with extensions should be added following this example:
 #   datasets.append(["/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1/MINIAODSIM",
 #                   "/QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15MiniAODv2-Asympt25ns_74X_mcRun2_asymptotic_v2_ext1-v1/MINIAODSIM"])
+
+if dotriphotonbkg:
+    DATASETS.append(['/DiPhotonJetsBox_M40_80-Sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'])
+    #DATASETS.append(['/GJet_Pt-20toInf_DoubleEMEnriched_MGG-40to80_TuneCP5_13TeV_Pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+    DATASETS.append(['/QCD_Pt-30toInf_DoubleEMEnriched_MGG-40to80_TuneCP5_13TeV_Pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
 if dotriphotonbaseline:
-    DATASETS.append(['/GGGJets_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM'])
+    #DATASETS.append(['/GGGJets_13TeV-sherpa/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM']) # NOT IN HERE 
     DATASETS.append(['/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8/PhaseISpring17MiniAOD-FlatPU28to62HcalNZS_90X_upgrade2017_realistic_v20-v1/MINIAODSIM'])
-    DATASETS.append(['/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/MINIAODSIM'])
+    #DATASETS.append(['/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8/RunIISummer17MiniAOD-NZSFlatPU28to62_92X_upgrade2017_realistic_v10-v1/MINIAODSIM'])
 
 if do2017signal:
 # DATASETS.append(['/ADDGravToGG_NegInt-0_LambdaT-10000_M-1000To2000_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
