@@ -189,7 +189,7 @@ process.demo = cms.EDAnalyzer(
     isMC = cms.bool(isMC),
     islocal = cms.bool(islocal),
     isDAS = cms.bool(isDAS),
-    isClosureTest = cms.bool(False),
+    isClosureTest = cms.bool(True),
     isReMINIAOD = cms.bool(isReMINIAOD),
     isolationConeR = cms.double(0.3)
     )

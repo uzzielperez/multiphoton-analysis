@@ -155,7 +155,7 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
    if (isDAS_){
      ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
-     fillGenInfo(genParticles);
+     // fillGenInfo(genParticles); // Should be inside fillPhotonInfo
      fillPhotonInfo(photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
      cout << "isGood: " << isGood_ << endl;
      fTree->Fill();
@@ -298,9 +298,14 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >&
         // cout << "TRIPHOTON FOUND" << endl;
         photonFiller(goodPhotons, recHitsEB, recHitsEE, &id_decisions[0], photon1Info, photon2Info, photon3Info, diphotonInfo12, diphotonInfo13, diphotonInfo23, triphotonInfo);
         // To-do: isMC genparticle fill
-        // if (isMC_){
-        //   fillGenInfo(goodPhotons);
-        // }
+        if (isMC_){
+          fillGenInfo(goodPhotons);
+          if (isClosureTest_){
+            mcTruthFiller(&(*goodPhotons[0]), fPhoton1Info, genParticles);
+            mcTruthFiller(&(*goodPhotons[0]), fPhoton2Info, genParticles);
+            mcTruthFiller(&(*goodPhotons[0]), fPhoton3Info, genParticles);
+          }
+        }
         // To-do: isClosureTest_
       }
       if (goodPhotons.size() < 3){
@@ -366,6 +371,24 @@ void nPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>& pho
 
 
 }//end photonFiller
+
+void nPhotonAnalyzer::mcTruthFiller (const pat::Photon *photon, ExoDiPhotons::photonInfo_t& photonInfo, const edm::Handle<edm::View<reco::GenParticle> > genParticles)
+{
+  bool printInfo = false;
+  if (printInfo) std::cout << "Photon: pt = " << photon->pt() << "; eta = " << photon->eta() << "; phi = " << photon->phi() << std::endl;
+
+  const double deltaR_cut = 0.1;
+  double minDeltaR = deltaR_cut;
+  const reco::GenParticle *photon_gen_match = NULL;
+
+  // Find best gen-to-reco match in dR cone
+  for (size_t i = 0; i < genParticles->size(); ++i){
+    const auto gen = genParticles->ptrAt(i);
+    double deltaR = reco::deltaR(photon->eta(), photon->phi(), gen->eta(), gen->phi());
+    if (gen->status() == 1)
+  }
+
+}// end mcTruthFiller
 
 
 DEFINE_FWK_MODULE(nPhotonAnalyzer);

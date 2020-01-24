@@ -80,6 +80,9 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
                     ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
                     ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
                     ExoDiPhotons::triphotonInfo_t& triphotonInfo);
+      void mcTruthFiller(const pat::Photon *photon,
+                    ExoDiPhotons::photonInfo_t& photonInfo,
+                    const edm::Handle<edm::View<reco::GenParticle> > genParticles);
 
    private:
       virtual void beginJob() override;
@@ -141,6 +144,7 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       int nPV_;
       int rho_;
       bool isMC_;
+      bool isClosureTest_;
       bool isGood_;
       bool islocal_;
       bool isDAS_;
