@@ -58,7 +58,8 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
       void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles);
-      void fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >& photons,
+      void fillPhotonInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+                    const edm::Handle<edm::View<pat::Photon> >& photons,
                     const edm::Handle<EcalRecHitCollection>& recHitsEB,
                     const edm::Handle<EcalRecHitCollection>& recHitsEE,
                     const edm::Handle<edm::ValueMap<bool> >* id_decisions,

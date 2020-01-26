@@ -155,8 +155,8 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
    if (isDAS_){
      ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
-     // fillGenInfo(genParticles); // Should be inside fillPhotonInfo
-     fillPhotonInfo(photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
+     fillGenInfo(genParticles); // Should be inside fillPhotonInfo
+     fillPhotonInfo(genParticles, photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
      cout << "isGood: " << isGood_ << endl;
      fTree->Fill();
    }
@@ -238,7 +238,8 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       // fill gen triphoton info
 }//end of fillGenInfo
 
-void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >& photons,
+void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+                                     const edm::Handle<edm::View<pat::Photon> >& photons,
                                      const edm::Handle<EcalRecHitCollection>& recHitsEB,
                                      const edm::Handle<EcalRecHitCollection>& recHitsEE,
 			                               const edm::Handle<edm::ValueMap<bool> >* id_decisions,
@@ -297,15 +298,19 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >&
         isGood_ = true;
         // cout << "TRIPHOTON FOUND" << endl;
         photonFiller(goodPhotons, recHitsEB, recHitsEE, &id_decisions[0], photon1Info, photon2Info, photon3Info, diphotonInfo12, diphotonInfo13, diphotonInfo23, triphotonInfo);
+        mcTruthFiller(&(*goodPhotons[0]), fPhoton1Info, genParticles);
+        mcTruthFiller(&(*goodPhotons[1]), fPhoton2Info, genParticles);
+        mcTruthFiller(&(*goodPhotons[2]), fPhoton3Info, genParticles);
+        //fillGenInfo(genParticles);
         // To-do: isMC genparticle fill
-        if (isMC_){
-          fillGenInfo(goodPhotons);
-          if (isClosureTest_){
-            mcTruthFiller(&(*goodPhotons[0]), fPhoton1Info, genParticles);
-            mcTruthFiller(&(*goodPhotons[0]), fPhoton2Info, genParticles);
-            mcTruthFiller(&(*goodPhotons[0]), fPhoton3Info, genParticles);
-          }
-        }
+        // if (isMC_){
+          //fillGenInfo(genParticles);
+          // if (isClosureTest_){
+          //   mcTruthFiller(&(*goodPhotons[0]), fPhoton1Info, genParticles);
+          //   mcTruthFiller(&(*goodPhotons[0]), fPhoton2Info, genParticles);
+          //   mcTruthFiller(&(*goodPhotons[0]), fPhoton3Info, genParticles);
+          // }
+        //}
         // To-do: isClosureTest_
       }
       if (goodPhotons.size() < 3){
@@ -398,6 +403,7 @@ void nPhotonAnalyzer::mcTruthFiller (const pat::Photon *photon, ExoDiPhotons::ph
 
     bool is_fake = false;
 
+
     // if matched, look at gen. history to determine if reco photon is fake
     if (photon_gen_match){
       if (printInfo) std::cout << "Final state gen particle match: status = " << photon_gen_match->status() << "; pdgId = " << photon_gen_match->pdgId()
@@ -406,6 +412,7 @@ void nPhotonAnalyzer::mcTruthFiller (const pat::Photon *photon, ExoDiPhotons::ph
     // if matched to a photon, check mothers to determine if fake
     if (photon_gen_match->pdgId()==22){
       // FAKE if first non-photon mother does not come from hard interaction proton
+      // I honestly don't like the name matchedMother for j = 0 since it's just the photon we're looking at
       const reco::GenParticle *matchedMother = &(*photon_gen_match);
       double minMotherMatchDeltaR = 1000000;
       int matchMotherIndex = 0;
@@ -441,6 +448,8 @@ void nPhotonAnalyzer::mcTruthFiller (const pat::Photon *photon, ExoDiPhotons::ph
       if (fabs(photon_gen_match->pdgId()) > 99 && photon_gen_match->pt() != 0.) is_fake = true;
     }
   }//if photon gen match
+
+  if (is_fake) photonInfo.isMCTruthFake = true;
 }// end mcTruthFiller
 
 
