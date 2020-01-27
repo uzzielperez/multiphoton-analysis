@@ -143,12 +143,12 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 
       //Put flags in cfg later
       int nPV_;
-      int rho_;
       bool isMC_;
       bool isClosureTest_;
       bool isGood_;
       bool islocal_;
       bool isDAS_;
+      double rho_;
       double xsec_; // For local generation
       double WeightAll_;
       double GenPhoton0_iso_;

@@ -125,6 +125,8 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iSetup.get<CaloTopologyRecord>().get(caloTopology);
    subDetTopologyEB_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalBarrel);
    subDetTopologyEE_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalEndcap);
+   rho_ = *rhoH;
+
 
    //---Initialize
    ExoDiPhotons::InitEventInfo(fEventInfo);
@@ -269,15 +271,18 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<reco::GenPartic
         bool passEGMMediumID = (*id_decisions[MEDIUM])[pho];
         bool passEGMTightID  = (*id_decisions[TIGHT])[pho];
 
+
+
         bool pass_ID_version = pass_HighPtID;
 
         if ( IDmode_ == "LOOSE"     ) pass_ID_version = passEGMLooseID;
         if ( IDmode_ == "MEDIUM"    ) pass_ID_version = passEGMMediumID;
         if ( IDmode_ == "TIGHT"     ) pass_ID_version = passEGMTightID;
         if ( IDmode_ == "hightPTID" ) pass_ID_version = pass_HighPtID;
-        if ( IDmode_ == "NOid"      ) pass_ID_version = 1;
-        if ( IDmode_ != "LOOSE" && IDmode_ != "MEDIUM" && IDmode_ != "TIGHT" && IDmode_ != "highPTID") {
-          cout << "Invalid choice! Default to NO ID mode." << endl;
+        //if ( IDmode_ == "NOid"      ) pass_ID_version = 1;
+        if ((IDmode_ != "LOOSE" && IDmode_ != "MEDIUM" && IDmode_ != "TIGHT" && IDmode_ != "highPTID") || IDmode_ == "Noid") {
+          cout << "Set to NO ID mode." << endl;
+          std::cout << "rho: " << rho_ << endl;
           pass_ID_version = 1;
           //return;
         }

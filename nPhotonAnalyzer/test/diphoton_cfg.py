@@ -182,6 +182,7 @@ process.demo = cms.EDAnalyzer(
     phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
     # gen event info
     genInfo = cms.InputTag("generator", "", "SIM"),
+    #genInfo = cms.InputTag("generator", "", "GENINFO"),
     # output file name
     outputFile = cms.string(outName),
     # number of events in the sample (for calculation of event weights)
@@ -191,13 +192,20 @@ process.demo = cms.EDAnalyzer(
     isDAS = cms.bool(isDAS),
     isClosureTest = cms.bool(True),
     isReMINIAOD = cms.bool(isReMINIAOD),
-    isolationConeR = cms.double(0.3)
+    isolationConeR = cms.double(0.3),
+    IDmode = cms.string("NOid") # VID (LOOSE, MEDIUM, TIGHT) or highPTID/NOid
     )
 
 process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
 #process.p = cms.Path(process.demo)
-process.p = cms.Path(process.demo * process.xsec)
-
+# process.p = cms.Path(process.demo * process.xsec)
+if isMC:
+    process.p = cms.Path(process.egmPhotonIDSequence * process.demo * process.xsec)
+else:
+    if "Run2017" in outName or "Run2018" in outName:
+        process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.demo)
+    else:
+        process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.demo)
 # # analyzer to print cross section
 # process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
 # if isMC:
