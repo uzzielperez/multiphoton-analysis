@@ -217,6 +217,18 @@ namespace ExoDiPhotons{
     else return false;
   }
 
+  bool passlowPTCorPhoIso(const pat::Photon* photon, double rho) {
+    double phoEta = fabs(photon->superCluster()->eta());
+    double corPhoIsoCut = -99999.9;
+    double corPhoIso = corPhoIsoHighPtID(photon,rho);
+
+    if (phoEta < 1.4442) corPhoIsoCut = 4;
+    if (1.566 < phoEta && phoEta < 2.5) corPhoIsoCut = 2.5;
+
+    if (corPhoIso < corPhoIsoCut) return true;
+    else return false;
+  }
+
   bool passCorPhoIsoDenom(const pat::Photon* photon, double rho) {
     // double phoEta = fabs(photon->superCluster()->eta());
     // double corPhoIsoCut = -999.9;
@@ -293,7 +305,7 @@ namespace ExoDiPhotons{
       passHadTowerOverEmCut(photon) &&
       passChargedHadronCut(photon) &&
       passlowPTSigmaIetaIetaCut(photon,isSat) &&
-      passCorPhoIsoHighPtID(photon,rho) &&
+      passlowPTCorPhoIso(photon,rho) &&
       photon->passElectronVeto()
     ) return true;
 
