@@ -94,10 +94,11 @@ namespace ExoDiPhotons
 
     // LowPT photon ID features
     bool passSieieLowpTID;
+    bool passCorPhoIsoLowPTID; // filled
     bool passLowPtID; // filled
   };
 
-  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:hadronicOverEm:r9:r9_5x5:sigmaIetaIeta:sigmaIetaIeta5x5:sigmaEtaEta:sigmaIphiIphi:sigmaIphiIphi5x5:sigmaIetaIphi:sigmaIetaIphi5x5:maxEnergyXtal:iEta:iPhi:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:passChIsoDenom:passCorPhoIsoDenom:isFakeable:isNumeratorObjCand:isDenominatorObj:isSaturated:isMCTruthFake:passSieieLowpTID:passLowPtID");
+  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:hadronicOverEm:r9:r9_5x5:sigmaIetaIeta:sigmaIetaIeta5x5:sigmaEtaEta:sigmaIphiIphi:sigmaIphiIphi5x5:sigmaIetaIphi:sigmaIetaIphi5x5:maxEnergyXtal:iEta:iPhi:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:passChIsoDenom:passCorPhoIsoDenom:isFakeable:isNumeratorObjCand:isDenominatorObj:isSaturated:isMCTruthFake:passSieieLowpTID:passCorPhoIsoLowPTID:passLowPtID");
 
   void InitPhotonInfo(photonInfo_t &photonInfo)
   {
@@ -181,6 +182,7 @@ namespace ExoDiPhotons
 
     // LowPTID features
     photonInfo.passSieieLowpTID = false;
+    photonInfo.passCorPhoIsoLowPTID = false;
     photonInfo.passLowPtID = false;
   }
 
@@ -253,6 +255,7 @@ namespace ExoDiPhotons
 
     // LowPT features
     photonInfo.passSieieLowpTID = ExoDiPhotons::passlowPTSigmaIetaIetaCut(photon, isSat);
+    photonInfo.passCorPhoIsoLowPTID = ExoDiPhotons::passlowPTCorPhoIso(photon,rho);
     photonInfo.passLowPtID     = ExoDiPhotons::passLowPtID(photon,rho,isSat);
   }
 

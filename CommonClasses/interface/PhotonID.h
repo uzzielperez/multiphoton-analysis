@@ -352,6 +352,7 @@ namespace ExoDiPhotons{
 
     bool passCorIso = passCorPhoIsoHighPtID(photon,rho);
 
+
     bool retVal = false;
     if (isEB && failID && passLooseIso && passCSEV && passHadOverEmCut){
       retVal = true;
