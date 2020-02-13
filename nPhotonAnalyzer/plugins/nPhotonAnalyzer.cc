@@ -10,6 +10,7 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
 {
    usesResource("TFileService");
    isGood_                    = false;
+   isGenRecoed_               = false;
    nPV_                       = 0;
    GenPhoton0_iso_      = 9999.99;
    GenPhoton1_iso_      = 9999.99;
@@ -56,6 +57,7 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    // fgenTree->Branch("DiPhoton23",   &fDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
    // fgenTree->Branch("TriPhoton",    &fTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
    fgenTree->Branch("isGood",      &isGood_);
+   fgenTree->Branch("isGenRecoed", &isGenRecoed_);
    fgenTree->Branch("nPV", &nPV_);
 
    xsec_ = ps.getParameter<double>("xsec");
@@ -78,7 +80,8 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fTree->Branch("DiPhoton13",   &fDiphotonInfo13, ExoDiPhotons::diphotonBranchDefString.c_str());
    fTree->Branch("DiPhoton23",   &fDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
    fTree->Branch("TriPhoton",    &fTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
-   fTree->Branch("isGood",            &isGood_);
+   fTree->Branch("isGood",           &isGood_);
+   fTree->Branch("isGenRecoed",      &isGenRecoed_);
    fTree->Branch("nPV", &nPV_);
    }
 }
@@ -151,15 +154,16 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
    if (islocal_){
      ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
-     fillGenInfo(genParticles);
+     fillGenInfo(genParticles, photons);
      fgenTree->Fill();
    }
 
    if (isDAS_){
      ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
-     fillGenInfo(genParticles); // Should be inside fillPhotonInfo
-     fillPhotonInfo(genParticles, photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
-     cout << "isGood: " << isGood_ << endl;
+     fillGenInfo(genParticles, photons);
+     if (isGenRecoed_) fillPhotonInfo(genParticles, photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
+     //cout << "isGood: " << isGood_ << endl;
+     cout << "isGenRecoed: " << isGenRecoed_ << endl;
      fTree->Fill();
    }
 }
@@ -188,12 +192,16 @@ nPhotonAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
 }
 
 
-void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles){
+void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+                                  const edm::Handle<edm::View<pat::Photon> >& photons){
 
       // Store Information in these vectors
       vector< edm::Ptr<const reco::GenParticle> > genPhotons;
       vector<int> interactingPartons;
-
+      bool isgenPho1_recoed = false;
+      bool isgenPho2_recoed = false;
+      bool isgenPho3_recoed = false;
+      isGenRecoed_ = false;
 
       for (size_t i = 0; i < genParticles->size(); ++i){
        const auto gen = genParticles->ptrAt(i);
@@ -222,14 +230,19 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       if(genPhotons.size() < 1) return;
       const reco::GenParticle *genPhoton1 = &(*genPhotons.at(0));
       if (genPhoton1) ExoDiPhotons::FillGenParticleInfo(fGenPhoton1Info, genPhoton1);
+      if (genPhoton1) isgenPho1_recoed = ExoDiPhotons::genRecoMatch(genPhoton1, photons);
 
       if(genPhotons.size() < 2) return;
       const reco::GenParticle *genPhoton2 = &(*genPhotons.at(1));
       if (genPhoton2) ExoDiPhotons::FillGenParticleInfo(fGenPhoton2Info, genPhoton2);
+      if (genPhoton2) isgenPho2_recoed = ExoDiPhotons::genRecoMatch(genPhoton2, photons);
 
       if(genPhotons.size() < 3) return;
       const reco::GenParticle *genPhoton3 = &(*genPhotons.at(2));
       if (genPhoton3) ExoDiPhotons::FillGenParticleInfo(fGenPhoton3Info, genPhoton3);
+      if (genPhoton3) isgenPho3_recoed = ExoDiPhotons::genRecoMatch(genPhoton3, photons);
+
+      if (isgenPho1_recoed && isgenPho2_recoed && isgenPho3_recoed) isGenRecoed_ = true;
 
       //---- Diphoton/Triphoton Information
       if (genPhoton1 && genPhoton2) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo12,genPhoton1,genPhoton2);
@@ -457,5 +470,9 @@ void nPhotonAnalyzer::mcTruthFiller (const pat::Photon *photon, ExoDiPhotons::ph
   if (is_fake) photonInfo.isMCTruthFake = true;
 }// end mcTruthFiller
 
+// void nPhotonAnalyzer::genRecoMatchFlag (const pat::Photon *photon, ExoDiPhotons::photonInfo_t& photonInfo, const edm::Handle<edm::View<reco::GenParticle> > genParticles)
+// {
+//
+// }// genRecoMatchFlag
 
 DEFINE_FWK_MODULE(nPhotonAnalyzer);
