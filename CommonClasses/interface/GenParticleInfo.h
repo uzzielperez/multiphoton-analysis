@@ -159,6 +159,37 @@ namespace ExoDiPhotons
     return(photon1->pt()>=photon2->pt());
   }
 
+  // Gen Matching Information
+  // Check if the gen particle/photon has been reconstructed
+  bool genRecoMatch(const reco::GenParticle *genPhoton,
+                    const edm::Handle<edm::View<pat::Photon> >& photons){
+
+    bool is_matched = false;
+
+    const double deltaR_cut = 0.1;
+    double minDeltaR = deltaR_cut;
+    //const reco::GenParticle *photon_gen_match = NULL;
+    const pat::Photon *photon_reco_match = NULL;
+
+    // Loop through reco collection to find the best deltaR match
+    for (size_t i = 0; i < photons->size(); ++i){
+
+      const auto pho = photons->ptrAt(i);
+      double deltaR = reco::deltaR(genPhoton->eta(), genPhoton->phi(), pho->eta(), pho->phi());
+
+      if (deltaR <= minDeltaR){
+        minDeltaR = deltaR;
+        photon_reco_match = &(*pho);
+      }
+
+    } // end for loop over reco particles
+
+    // Check if the matched reco particle is fake by looking at history
+    if ( photon_reco_match ) is_matched = true;
+
+    return is_matched;
+  }
+
 }//end of namespace
 
 
