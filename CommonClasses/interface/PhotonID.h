@@ -197,11 +197,11 @@ namespace ExoDiPhotons{
   double corPhoIsoHighPtID(const pat::Photon* photon, double rho) {
     double phoIso = photon->photonIso();
     double corPhoIsoVal = (phoAlphaHighPtID(photon) + phoIso - rho*phoEAHighPtID(photon) - phoKappaHighPtID(photon)*photon->pt());
-    std::cout << "phoAlphaHighPtID: " << phoAlphaHighPtID(photon)
-              << "; phoEAHighPtID(photon): " << phoEAHighPtID(photon)
-              << "; phoKappaHighPtID" << phoKappaHighPtID(photon)
-              << "; rho input:" << rho
-              << "; corPhoIsoVal: " << corPhoIsoVal << std::endl;
+    // std::cout << "phoAlphaHighPtID: " << phoAlphaHighPtID(photon)
+    //           << "; phoEAHighPtID(photon): " << phoEAHighPtID(photon)
+    //           << "; phoKappaHighPtID" << phoKappaHighPtID(photon)
+    //           << "; rho input:" << rho
+    //           << "; corPhoIsoVal: " << corPhoIsoVal << std::endl;
     return corPhoIsoVal;
   }
 

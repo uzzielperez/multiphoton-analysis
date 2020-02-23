@@ -85,6 +85,9 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       void mcTruthFiller(const pat::Photon *photon,
                     ExoDiPhotons::photonInfo_t& photonInfo,
                     const edm::Handle<edm::View<reco::GenParticle> > genParticles);
+      void genRecoMatchInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+                            const edm::Handle<edm::View<pat::Photon> >& photons);
+
 
    private:
       virtual void beginJob() override;
@@ -129,6 +132,13 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo13;
       ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo23;
       ExoDiPhotons::triphotonInfo_t     fGenTriphotonInfo;
+
+      ExoDiPhotons::genParticleInfo_t   fGenMatchPhoton1Info;
+      ExoDiPhotons::genParticleInfo_t   fGenMatchPhoton2Info;
+      ExoDiPhotons::genParticleInfo_t   fGenMatchPhoton3Info;
+      ExoDiPhotons::genParticleInfo_t   fGenMatchPhoton4Info;
+      ExoDiPhotons::genParticleInfo_t   fGenMatchPhoton5Info;
+  
 
       ExoDiPhotons::photonInfo_t        fPhoton1Info;
       ExoDiPhotons::photonInfo_t        fPhoton2Info;

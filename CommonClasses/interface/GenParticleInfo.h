@@ -64,9 +64,20 @@ namespace ExoDiPhotons
     //TLorentzVector p4;
     //reco::LeafCandidate::LorentzVector p4;
 
+    // If Gen Photon is reconstructed these information are stored:
+    bool isMatched;
+    double minDR;
+    double minDpT;
+    double pat_matchpt;
+    double pat_matcheta;
+    double pat_matchphi;
+    double gen_matchpt;
+    double gen_matcheta;
+    double gen_matchphi;
+
   };
 
-  std::string genParticleBranchDefString("pt/D:eta:phi:deltaR_match:deltaR_matchDau:ptDiff_match:matchCategory/I:matchType:nPhotonMotherDaughters:status:motherStatus:grandmotherStatus:pdgId:motherPdgId:grandmotherPdgId");
+  std::string genParticleBranchDefString("pt/D:eta:phi:deltaR_match:deltaR_matchDau:ptDiff_match:matchCategory/I:matchType:nPhotonMotherDaughters:status:motherStatus:grandmotherStatus:pdgId:motherPdgId:grandmotherPdgId:isMatched/B:minDR/D:minDpT:pat_matchpt:pat_matcheta:pat_matchphi:gen_matchpt:gen_matcheta:gen_matchphi");
 
   void InitGenParticleInfo(genParticleInfo_t &genParticleInfo) {
     // kinematics
@@ -89,6 +100,18 @@ namespace ExoDiPhotons
     genParticleInfo.pdgId             = -999999;
     genParticleInfo.motherPdgId       = -999999;
     genParticleInfo.grandmotherPdgId  = -999999;
+
+    // matching info
+    genParticleInfo.isMatched = false;
+    genParticleInfo.minDR = -99999.99;
+    genParticleInfo.minDpT = -99999.99;
+    genParticleInfo.pat_matchpt = -99999.99;
+    genParticleInfo.pat_matcheta = -99999.99;
+    genParticleInfo.pat_matchphi = -99999.99;
+    genParticleInfo.gen_matchpt = -99999.99;
+    genParticleInfo.gen_matcheta = -99999.99;
+    genParticleInfo.gen_matchphi = -99999.99;
+
   }
 
   void FillGenParticleInfo(genParticleInfo_t &genParticleInfo,
@@ -161,6 +184,29 @@ namespace ExoDiPhotons
   bool comparePhotonsByPt(const edm::Ptr<const reco::Candidate> photon1, const edm::Ptr<const reco::Candidate> photon2) {
     return(photon1->pt()>=photon2->pt());
   }
+
+  void FillGenPATmatchInfo(genParticleInfo_t &genParticleInfo,
+                           bool matchingflag,
+                           double minDeltaR,
+                           double minDeltapT,
+                           const pat::Photon *photon_reco_match,
+                           const reco::GenParticle *photon_gen_match) {
+      genParticleInfo.isMatched = matchingflag;
+      genParticleInfo.minDR = minDeltaR;
+      genParticleInfo.minDpT = minDeltapT;
+      if (photon_reco_match){
+        genParticleInfo.pat_matchpt = photon_reco_match->pt();
+        genParticleInfo.pat_matcheta = photon_reco_match->eta();
+        genParticleInfo.pat_matchphi = photon_reco_match->phi();
+      }
+      if (photon_gen_match){
+        genParticleInfo.gen_matchpt = photon_gen_match->pt();
+        genParticleInfo.gen_matcheta = photon_gen_match->eta();
+        genParticleInfo.gen_matchphi = photon_gen_match->phi();
+      }
+      // let's see if we need to store gen pt eta phi info
+  }
+
 
 
 }//end of namespace

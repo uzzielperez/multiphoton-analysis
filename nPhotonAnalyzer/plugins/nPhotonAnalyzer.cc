@@ -60,11 +60,13 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    // fgenTree->Branch("DiPhoton23",   &fDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
    // fgenTree->Branch("TriPhoton",    &fTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
    fgenTree->Branch("isGood",      &isGood_);
-   fTree->Branch("isgenPho1_recoed", &isgenPho1_recoed_);
-   fTree->Branch("isgenPho2_recoed", &isgenPho2_recoed_);
-   fTree->Branch("isgenPho3_recoed", &isgenPho3_recoed_);
-   fgenTree->Branch("is3GenRecoed", &is3GenRecoed_);
    fgenTree->Branch("nPV", &nPV_);
+   fgenTree->Branch("GenMatchPhoton1", &fGenMatchPhoton1Info, ExoDiPhotons::genParticleBranchDefString.c_str());
+   fgenTree->Branch("GenMatchPhoton2", &fGenMatchPhoton2Info, ExoDiPhotons::genParticleBranchDefString.c_str());
+   fgenTree->Branch("GenMatchPhoton3", &fGenMatchPhoton3Info, ExoDiPhotons::genParticleBranchDefString.c_str());
+   fgenTree->Branch("GenMatchPhoton4", &fGenMatchPhoton4Info, ExoDiPhotons::genParticleBranchDefString.c_str());
+   fgenTree->Branch("GenMatchPhoton5", &fGenMatchPhoton5Info, ExoDiPhotons::genParticleBranchDefString.c_str());
+
 
    xsec_ = ps.getParameter<double>("xsec");
    }
@@ -87,11 +89,13 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fTree->Branch("DiPhoton23",   &fDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
    fTree->Branch("TriPhoton",    &fTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
    fTree->Branch("isGood",           &isGood_);
-   fTree->Branch("isgenPho1_recoed", &isgenPho1_recoed_);
-   fTree->Branch("isgenPho2_recoed", &isgenPho2_recoed_);
-   fTree->Branch("isgenPho3_recoed", &isgenPho3_recoed_);
-   fTree->Branch("is3GenRecoed",      &is3GenRecoed_);
    fTree->Branch("nPV", &nPV_);
+   // For
+   fTree->Branch("GenMatchPhoton1", &fGenMatchPhoton1Info, ExoDiPhotons::genParticleBranchDefString.c_str());
+   fTree->Branch("GenMatchPhoton2", &fGenMatchPhoton2Info, ExoDiPhotons::genParticleBranchDefString.c_str());
+   fTree->Branch("GenMatchPhoton3", &fGenMatchPhoton3Info, ExoDiPhotons::genParticleBranchDefString.c_str());
+   fTree->Branch("GenMatchPhoton4", &fGenMatchPhoton4Info, ExoDiPhotons::genParticleBranchDefString.c_str());
+   fTree->Branch("GenMatchPhoton5", &fGenMatchPhoton5Info, ExoDiPhotons::genParticleBranchDefString.c_str());
    }
 }
 
@@ -157,6 +161,11 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo23);
    ExoDiPhotons::InitTriphotonInfo(fTriphotonInfo);
 
+   ExoDiPhotons::InitGenParticleInfo(fGenMatchPhoton1Info);
+   ExoDiPhotons::InitGenParticleInfo(fGenMatchPhoton2Info);
+   ExoDiPhotons::InitGenParticleInfo(fGenMatchPhoton3Info);
+   ExoDiPhotons::InitGenParticleInfo(fGenMatchPhoton4Info);
+   ExoDiPhotons::InitGenParticleInfo(fGenMatchPhoton5Info);
    //---Update
    ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    ExoDiPhotons::FillGenEventInfo(fEventInfo, &(*genInfo));
@@ -164,6 +173,8 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    if (islocal_){
      ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
      fillGenInfo(genParticles, photons);
+     genRecoMatchInfo (genParticles, photons);
+     //cout << "isGood: " << isGood_ << endl;
      fgenTree->Fill();
    }
 
@@ -172,6 +183,7 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
      fillGenInfo(genParticles, photons);
      fillPhotonInfo(genParticles, photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
      //cout << "isGood: " << isGood_ << endl;
+     genRecoMatchInfo (genParticles, photons);
      fTree->Fill();
    }
 }
@@ -210,6 +222,7 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       isgenPho2_recoed_ = false;
       isgenPho3_recoed_ = false;
       is3GenRecoed_ = false;
+      // bool isRecoed = false;
 
 
       for (size_t i = 0; i < genParticles->size(); ++i){
@@ -218,8 +231,11 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
        if (gen->isHardProcess() && gen->pt() == 0)    interactingPartons.push_back(gen->pdgId());
        if (gen->isHardProcess() && gen->pdgId()==22){
          genPhotons.push_back(gen);
-         // cout << "Hard Process genParticle: " << "status = "  << gen->status() << "; pdgId = " << gen->pdgId()
-         //      << "; pt = "    << gen->pt()    << "; eta = "   << gen->eta()    << "; phi = "   << gen->phi()   << endl;
+         // isRecoed = ExoDiPhotons::genRecoMatch(&(*gen), photons);
+         // if (isRecoed && (gen->status()==1)){
+         //   cout << "Hard Process genParticle: " << "status = "  << gen->status() << "; pdgId = " << gen->pdgId()
+         //        << "; pt = "    << gen->pt()    << "; eta = "   << gen->eta()    << "; phi = "   << gen->phi()   << endl;
+         // }
        }
      }//end for loop over gen particles
 
@@ -239,25 +255,21 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       if(genPhotons.size() < 1) return;
       const reco::GenParticle *genPhoton1 = &(*genPhotons.at(0));
       if (genPhoton1) ExoDiPhotons::FillGenParticleInfo(fGenPhoton1Info, genPhoton1, photons);
-      if (genPhoton1) isgenPho1_recoed_ = ExoDiPhotons::genRecoMatch(genPhoton1, photons);
 
       if(genPhotons.size() < 2) return;
       const reco::GenParticle *genPhoton2 = &(*genPhotons.at(1));
       if (genPhoton2) ExoDiPhotons::FillGenParticleInfo(fGenPhoton2Info, genPhoton2, photons);
-      if (genPhoton2) isgenPho2_recoed_ = ExoDiPhotons::genRecoMatch(genPhoton2, photons);
 
       if(genPhotons.size() < 3) return;
       const reco::GenParticle *genPhoton3 = &(*genPhotons.at(2));
       if (genPhoton3) ExoDiPhotons::FillGenParticleInfo(fGenPhoton3Info, genPhoton3, photons);
-      if (genPhoton3) isgenPho3_recoed_ = ExoDiPhotons::genRecoMatch(genPhoton3, photons);
-
-      if (isgenPho1_recoed_ && isgenPho2_recoed_ && isgenPho3_recoed_) is3GenRecoed_ = true;
 
       //---- Diphoton/Triphoton Information
       if (genPhoton1 && genPhoton2) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo12,genPhoton1,genPhoton2);
       if (genPhoton1 && genPhoton3) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo13,genPhoton1,genPhoton3);
       if (genPhoton2 && genPhoton3) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo23,genPhoton2,genPhoton3);
       if (genPhoton1 && genPhoton2 && genPhoton3) ExoDiPhotons::FillTriphotonInfo(fGenTriphotonInfo,genPhoton1,genPhoton2,genPhoton3);
+
 
       // fill gen triphoton info
 }//end of fillGenInfo
@@ -293,8 +305,6 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<reco::GenPartic
         bool passEGMMediumID = (*id_decisions[MEDIUM])[pho];
         bool passEGMTightID  = (*id_decisions[TIGHT])[pho];
 
-
-
         bool pass_ID_version = pass_HighPtID;
 
         if ( IDmode_ == "LOOSE"     ) pass_ID_version = passEGMLooseID;
@@ -303,8 +313,8 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<reco::GenPartic
         if ( IDmode_ == "hightPTID" ) pass_ID_version = pass_HighPtID;
         //if ( IDmode_ == "NOid"      ) pass_ID_version = 1;
         if ((IDmode_ != "LOOSE" && IDmode_ != "MEDIUM" && IDmode_ != "TIGHT" && IDmode_ != "highPTID") || IDmode_ == "Noid") {
-          cout << "Set to NO ID mode." << endl;
-          std::cout << "rho: " << rho_ << endl;
+          // cout << "Set to NO ID mode." << endl;
+          // std::cout << "rho: " << rho_ << endl;
           pass_ID_version = 1;
           //return;
         }
@@ -328,17 +338,6 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<reco::GenPartic
         mcTruthFiller(&(*goodPhotons[0]), fPhoton1Info, genParticles);
         mcTruthFiller(&(*goodPhotons[1]), fPhoton2Info, genParticles);
         mcTruthFiller(&(*goodPhotons[2]), fPhoton3Info, genParticles);
-        //fillGenInfo(genParticles);
-        // To-do: isMC genparticle fill
-        // if (isMC_){
-          //fillGenInfo(genParticles);
-          // if (isClosureTest_){
-          //   mcTruthFiller(&(*goodPhotons[0]), fPhoton1Info, genParticles);
-          //   mcTruthFiller(&(*goodPhotons[0]), fPhoton2Info, genParticles);
-          //   mcTruthFiller(&(*goodPhotons[0]), fPhoton3Info, genParticles);
-          // }
-        //}
-        // To-do: isClosureTest_
       }
       if (goodPhotons.size() < 3){
         isGood_ = false;
@@ -419,7 +418,7 @@ void nPhotonAnalyzer::mcTruthFiller (const pat::Photon *photon, ExoDiPhotons::ph
     double deltaR = reco::deltaR(photon->eta(), photon->phi(), gen->eta(), gen->phi());
     // status 1 Final State particle
     if (gen->status() == 1){
-      if (printInfo) std::cout << "Gen. particle: status = " << gen->status() << "; pdgId = " << gen->pdgId()
+      if (printInfo && (gen->pdgId() == 22)) std::cout << "Gen. particle: status = " << gen->status() << "; pdgId = " << gen->pdgId()
 		  << "; pt = " << gen->pt() << "; eta = " << gen->eta() << "; phi = " << gen->phi() << "; dR = " << deltaR << std::endl;
       if (deltaR <= minDeltaR){
         minDeltaR = deltaR;
@@ -434,7 +433,7 @@ void nPhotonAnalyzer::mcTruthFiller (const pat::Photon *photon, ExoDiPhotons::ph
     // if matched, look at gen. history to determine if reco photon is fake
     if (photon_gen_match){
       if (printInfo) std::cout << "Final state gen particle match: status = " << photon_gen_match->status() << "; pdgId = " << photon_gen_match->pdgId()
-		<< "; pt = " << photon_gen_match->pt() << "; eta = " << photon_gen_match->eta() << "; phi = " << photon_gen_match->phi() << std::endl;
+		<< "; pt = " << photon_gen_match->pt() << "; eta = " << photon_gen_match->eta() << "; phi = " << photon_gen_match->phi() << "; dR = " << minDeltaR << std::endl;
 
     // if matched to a photon, check mothers to determine if fake
     if (photon_gen_match->pdgId()==22){
@@ -474,14 +473,79 @@ void nPhotonAnalyzer::mcTruthFiller (const pat::Photon *photon, ExoDiPhotons::ph
     if (photon_gen_match->pdgId() != 22){
       if (fabs(photon_gen_match->pdgId()) > 99 && photon_gen_match->pt() != 0.) is_fake = true;
     }
+    if (printInfo) std::cout << "Fake? " << is_fake << std::endl;
+
   }//if photon gen match
 
   if (is_fake) photonInfo.isMCTruthFake = true;
 }// end mcTruthFiller
 
-// void nPhotonAnalyzer::genRecoMatchFlag (const pat::Photon *photon, ExoDiPhotons::photonInfo_t& photonInfo, const edm::Handle<edm::View<reco::GenParticle> > genParticles)
-// {
-//
-// }// genRecoMatchFlag
+void nPhotonAnalyzer::genRecoMatchInfo (const edm::Handle<edm::View<reco::GenParticle> > genParticles, const edm::Handle<edm::View<pat::Photon> >& photons)
+{
+  vector< edm::Ptr<const reco::GenParticle> > genPhotons;
+  std::vector<edm::Ptr<pat::Photon>> patPhotons;
+
+  //print gen photons only
+  for (size_t i = 0; i < genParticles->size(); ++i){
+    const auto gen = genParticles->ptrAt(i);
+    if (gen->status()==1 && gen->pdgId() == 22) genPhotons.push_back(gen);
+    // std::cout << "GenPho: status =" << gen->status() << "; pdgId = " << gen->pdgId() << "; pt = " << gen->pt() << "; eta = " << gen->eta() << "; phi = " << gen->phi() << std::endl;
+  }
+
+  //print reco photons only
+  for (size_t i = 0; i < photons->size(); ++i){
+    const auto pho = photons->ptrAt(i);
+    patPhotons.push_back(pho);
+    //std::cout << "Photon: pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << std::endl;
+  }
+
+  sort(genPhotons.begin(), genPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
+  sort(patPhotons.begin(),patPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
+
+    // loop over sorted collection to calculate deltaR
+    for(std::vector<int>::size_type i = 0; i != genPhotons.size(); i++) {
+      // const auto gen = genPho->ptrAt(i);
+      const reco::GenParticle *genPho = &(*genPhotons.at(i));
+      double minDeltaR = 0.1;
+      double minDeltapT = -9999.99;
+      double deltaPT;
+      bool isptmatched = false;
+      bool ismatched = false;
+      const pat::Photon *photon_reco_match = NULL;
+      const reco::GenParticle *photon_gen_match = NULL;
+
+      std::cout << "GenPho: pt = " << genPho->pt() << "; eta = " << genPho->eta() << "; phi = " << genPho->phi() << std::endl;
+      for(std::vector<int>::size_type j = 0; j != patPhotons.size(); j++){
+         const pat::Photon *patPho = &(*patPhotons.at(j));
+         double deltaR = reco::deltaR(genPho->eta(), genPho->phi(), patPho->eta(), patPho->phi());
+         deltaPT = fabs(genPho->pt() - patPho->pt());
+         std::cout << "Pho: pt = " << patPho->pt() << "; eta = " << patPho->eta() << "; phi = " << patPho->phi() << "; deltaR = " << deltaR << "; deltaPT = " << deltaPT <<std::endl;
+         if (deltaPT <= 0.2*genPho->pt()) isptmatched = true;
+         if (deltaR <= minDeltaR && isptmatched){
+           minDeltaR = deltaR;
+           minDeltapT = deltaPT;
+           ismatched = true;
+           photon_reco_match = &(*patPho);
+           photon_gen_match = &(*genPho);
+         }
+       }
+      if (ismatched) cout << "Match FOUND - minDR: " << minDeltaR  << "; dPT: " <<  minDeltapT
+                          << "; gen:pat pt = " << photon_gen_match->pt() << " : " << photon_reco_match->pt()
+                          << "; gen:pat eta = " << photon_gen_match->eta() << " : " << photon_reco_match->eta()
+                          << "; gen:pat phi = " << photon_gen_match->phi() << " : " << photon_reco_match->phi()
+                          << std::endl;
+
+      if (i == 0) ExoDiPhotons::FillGenPATmatchInfo(fGenMatchPhoton1Info, ismatched, minDeltaR, minDeltapT,
+                                     photon_reco_match, photon_gen_match);
+      if (i == 1) ExoDiPhotons::FillGenPATmatchInfo(fGenMatchPhoton2Info, ismatched, minDeltaR,
+                                     minDeltapT, photon_reco_match, photon_gen_match);
+      if (i == 2) ExoDiPhotons::FillGenPATmatchInfo(fGenMatchPhoton3Info, ismatched, minDeltaR,
+                                     minDeltapT, photon_reco_match, photon_gen_match);
+      if (i == 3) ExoDiPhotons::FillGenPATmatchInfo(fGenMatchPhoton4Info, ismatched, minDeltaR,
+                                     minDeltapT, photon_reco_match, photon_gen_match);
+      if (i == 4) ExoDiPhotons::FillGenPATmatchInfo(fGenMatchPhoton5Info, ismatched, minDeltaR,
+                                     minDeltapT, photon_reco_match, photon_gen_match);
+    }
+   }
 
 DEFINE_FWK_MODULE(nPhotonAnalyzer);

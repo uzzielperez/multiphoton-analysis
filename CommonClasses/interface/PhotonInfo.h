@@ -1,4 +1,4 @@
-#ifndef PHOTON_INFO_INC
+ #ifndef PHOTON_INFO_INC
 #define PHOTON_INFO_INC
 
 #include "DataFormats/PatCandidates/interface/Photon.h"
@@ -98,6 +98,7 @@ namespace ExoDiPhotons
     bool passLowPtID; // filled
 
     // bool isGenRecoed;
+
   };
 
   std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:hadronicOverEm:r9:r9_5x5:sigmaIetaIeta:sigmaIetaIeta5x5:sigmaEtaEta:sigmaIphiIphi:sigmaIphiIphi5x5:sigmaIetaIphi:sigmaIetaIphi5x5:maxEnergyXtal:iEta:iPhi:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:passChIsoDenom:passCorPhoIsoDenom:isFakeable:isNumeratorObjCand:isDenominatorObj:isSaturated:isMCTruthFake:passSieieLowpTID:passCorPhoIsoLowPTID:passLowPtID");
@@ -189,6 +190,8 @@ namespace ExoDiPhotons
 
     // Reco version of Gen
     // photonInfo.isGenRecoed = false;
+
+
   }
 
   void FillBasicPhotonInfo(photonInfo_t &photonInfo, const pat::Photon *photon)
@@ -291,44 +294,7 @@ namespace ExoDiPhotons
   // bool comparePhotonsByPt(genParticleInfo_t photon1, genParticleInfo_t photon2) {
   //        return(photon1.pt>=photon2.pt);
   // }
-
-  // Gen Matching Information
-  // Check if the gen particle/photon has been reconstructed
-  bool genRecoMatch(const reco::GenParticle *genPhoton,
-                    const edm::Handle<edm::View<pat::Photon> >& photons){
-
-    bool is_matched = false;
-
-    const double deltaR_cut = 0.1;
-    double minDeltaR = deltaR_cut;
-    //const reco::GenParticle *photon_gen_match = NULL;
-    const pat::Photon *photon_reco_match = NULL;
-
-    // Loop through reco collection to find the best deltaR match
-    for (size_t i = 0; i < photons->size(); ++i){
-
-      const auto pho = photons->ptrAt(i);
-      double deltaR = reco::deltaR(genPhoton->eta(), genPhoton->phi(), pho->eta(), pho->phi());
-
-      if (deltaR <= minDeltaR){
-        minDeltaR = deltaR;
-        photon_reco_match = &(*pho);
-      }
-
-    } // end for loop over reco particles
-
-    // Check if the matched reco particle is fake by looking at history
-    if ( photon_reco_match ) is_matched = true;
-
-    return is_matched;
-  }
-
-    // void FillMatchingInfo(const reco::GenParticle *genPhoton, const edm::Handle<edm::View<pat::Photon> >& photons){
-    //   photonInfo.isGenRecoed = genRecoMatch(genPhoton, photons);
-    // }
-
-
-
+  
 } // end of namespace
 
 #endif
