@@ -101,8 +101,8 @@ namespace ExoDiPhotons
     genParticleInfo.genmatchindex = -99999;
     genParticleInfo.patmatchindex = -99999;
     genParticleInfo.isMatched  = false;
-    genParticleInfo.minDeltaR  = -999999;
-    genParticleInfo.minDeltapT = -999999;
+    genParticleInfo.minDeltaR  = 999999;
+    genParticleInfo.minDeltapT = 999999;
   }
 
   void FillGenParticleInfo(genParticleInfo_t &genParticleInfo,
@@ -188,13 +188,18 @@ std::tuple< std::vector<bool>, std::vector<double>, std::vector<double>, std::ve
       std::vector<double> minDpTvec;
       std::vector<bool> ptdRmatchInfo;
       std::vector<std::tuple<int, int>> genpatindexvec;
+
+      // std::vector<const pat::Photon> patmatchedcollection;
+      // std::vector<const reco::GenParticle> genmatchedcollection;
       // Loop over sorted collections to calculate deltaR
+      // std::cout << "Looping over genphotons collection of size " << genPhotons_sorted.size() << std::endl;
+      // if (genPhotons_sorted.size() > 3)  std::cout << "MORE THAN 3 PHOTONS found " << std::endl;
       for (std::vector<int>::size_type i = 0; i != genPhotons_sorted.size(); i++)
       {
           // const auto gen = genPho->ptrAt(i);
           const reco::GenParticle *genPho = &(*genPhotons_sorted.at(i));
-          double minDeltaR = 0.1;
-          double minDeltapT = -9999.99;
+          double minDeltaR = 99999.99;
+          double minDeltapT = 99999.99;
           double deltaPT;
           bool isptmatched = false;
           bool ismatched = false;
@@ -224,7 +229,7 @@ std::tuple< std::vector<bool>, std::vector<double>, std::vector<double>, std::ve
               {
                   minDeltaR = deltaR;
                   minDeltapT = deltaPT;
-                  ismatched = true;
+                  if (minDeltaR<0.10) ismatched = true;
                   gen_index = i;
                   pat_index = j;
                   genpatindices = std::make_tuple( gen_index , pat_index );
@@ -233,7 +238,7 @@ std::tuple< std::vector<bool>, std::vector<double>, std::vector<double>, std::ve
                   if (isptmatched) isptdRmatched = true;
               }
           }
-              if (ismatched) cout << "CONGRATULATIONS! YOU HAVE FOUND A MATCH! minDR: " << minDeltaR  << "; dPT: " <<  minDeltapT
+              if (ismatched) cout << "MATCH FOUND! minDR: " << minDeltaR  << "; dPT: " <<  minDeltapT
                                   << "; gen:pat pt = " << photon_gen_match->pt() << " : " << photon_reco_match->pt()
                                   << "; gen:pat eta = " << photon_gen_match->eta() << " : " << photon_reco_match->eta()
                                   << "; gen:pat phi = " << photon_gen_match->phi() << " : " << photon_reco_match->phi()
@@ -246,6 +251,10 @@ std::tuple< std::vector<bool>, std::vector<double>, std::vector<double>, std::ve
            minDpTvec.push_back(minDeltapT);
            ptdRmatchInfo.push_back(isptdRmatched);
            genpatindexvec.push_back(genpatindices);
+
+           // Later if I want to retrieve the full matching information:
+           // patmatchedcollection.push_back(photon_reco_match);
+           // genmatchedcollection.push_back(photon_gen_match);
       }
       return {matchingInfo, minDRvec, minDpTvec, ptdRmatchInfo, genpatindexvec};
 }

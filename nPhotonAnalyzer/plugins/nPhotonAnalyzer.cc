@@ -252,13 +252,15 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       std::vector<bool> ptdRmatchInfo = std::get<3>(match_tuple);
       std::vector <std::tuple <int, int>> genpatindices = std::get<4>(match_tuple);
 
-
+      if (genPhotons.size() > 3) exit(1);
       if(genPhotons.size() < 1) return;
       const reco::GenParticle *genPhoton1 = &(*genPhotons.at(0));
       if (genPhoton1){
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton1Info, genPhoton1, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton1Info, matchInfo.at(0), minDRvec.at(0), minDpTvec.at(0),
                                           ptdRmatchInfo.at(0), genpatindices.at(0));
+        if ( matchInfo.at(0) ) std::cout << "MATCH FOUND for genpho1 - minDR: " << minDRvec.at(0) << std::endl;
+        if ( !matchInfo.at(0) ) std::cout << "MATCH not FOUND! for genpho1 - minDR: " << minDRvec.at(0) << std::endl;
       }
 
       if(genPhotons.size() < 2) return;
@@ -267,6 +269,8 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton2Info, genPhoton2, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton2Info, matchInfo.at(1), minDRvec.at(1), minDpTvec.at(1),
                                           ptdRmatchInfo.at(1), genpatindices.at(1));
+        if ( matchInfo.at(1) ) std::cout << "MATCH FOUND for genpho2 - minDR: " << minDRvec.at(1) << std::endl;
+        if ( !matchInfo.at(1) ) std::cout << "MATCH not FOUND! for genpho2 - minDR: " << minDRvec.at(1) << std::endl;
       }
 
       if(genPhotons.size() < 3) return;
@@ -275,8 +279,9 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton3Info, genPhoton3, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton3Info, matchInfo.at(2), minDRvec.at(2), minDpTvec.at(2),
                                           ptdRmatchInfo.at(2), genpatindices.at(2));
+       if ( matchInfo.at(2) ) std::cout << "MATCH FOUND for genpho2 - minDR: " << minDRvec.at(2) << std::endl;
+       if ( !matchInfo.at(2) ) std::cout << "MATCH not FOUND! for genpho3 - minDR: " << minDRvec.at(2) << std::endl;
       }
-      if(genPhotons.size() < 4) std::cout<< "There are more than three gen photons!" << std::endl;
 
 
       //---- Diphoton/Triphoton Information
