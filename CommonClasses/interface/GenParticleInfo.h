@@ -198,7 +198,8 @@ std::tuple< std::vector<bool>, std::vector<double>, std::vector<double>, std::ve
       {
           // const auto gen = genPho->ptrAt(i);
           const reco::GenParticle *genPho = &(*genPhotons_sorted.at(i));
-          double minDeltaR = 99999.99;
+          // double minDeltaR = 99999.99;
+          double minDeltaR = 0.1;
           double minDeltapT = 99999.99;
           double deltaPT;
           bool isptmatched = false;
