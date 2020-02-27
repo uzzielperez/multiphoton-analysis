@@ -231,14 +231,14 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
 
       else cout << "Exactly two interacting partons not found!" << endl;
       //--- Matching Loop to determine if gen Particle was reconstructed
-      for (size_t i = 0; i < photons->size(); ++i){
-        const auto pho = photons->ptrAt(i);
-        patPhotons.push_back(pho);
-        //std::cout << "Photon: pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << std::endl;
-      }
+      // for (size_t i = 0; i < photons->size(); ++i){
+      //   const auto pho = photons->ptrAt(i);
+      //   patPhotons.push_back(pho);
+      //   //std::cout << "Photon: pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << std::endl;
+      // }
 
-      sort(genPhotons.begin(), genPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
-      sort(patPhotons.begin(),patPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
+      // sort(genPhotons.begin(), genPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
+      // sort(patPhotons.begin(),patPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
 
       //---- Photon Information
       // Samples with only fakes may have no hard-process photons
