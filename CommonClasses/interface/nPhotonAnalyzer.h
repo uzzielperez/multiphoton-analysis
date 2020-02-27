@@ -57,7 +57,8 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ~nPhotonAnalyzer();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-      void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles);
+      void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+                       const edm::Handle<edm::View<pat::Photon> >& photons);
       void fillPhotonInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
                     const edm::Handle<edm::View<pat::Photon> >& photons,
                     const edm::Handle<EcalRecHitCollection>& recHitsEB,
@@ -84,6 +85,9 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       void mcTruthFiller(const pat::Photon *photon,
                     ExoDiPhotons::photonInfo_t& photonInfo,
                     const edm::Handle<edm::View<reco::GenParticle> > genParticles);
+      void genRecoMatchInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+                            const edm::Handle<edm::View<pat::Photon> >& photons);
+
 
    private:
       virtual void beginJob() override;
@@ -146,6 +150,10 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       bool isMC_;
       bool isClosureTest_;
       bool isGood_;
+      bool is3GenRecoed_;
+      bool isgenPho1_recoed_;
+      bool isgenPho2_recoed_;
+      bool isgenPho3_recoed_;
       bool islocal_;
       bool isDAS_;
       double rho_;

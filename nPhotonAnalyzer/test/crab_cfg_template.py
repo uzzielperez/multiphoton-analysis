@@ -35,7 +35,7 @@ config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
 #config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/nPhotonAnalyzer'
-config.Data.outLFNDirBase = '/store/user/ciperez/triphoton/'
+config.Data.outLFNDirBase = '/store/user/ciperez/triphoton/genMatchingInsights'
 
 if "Run2018" in taskname:
     config.Data.splitting = 'LumiBased'
