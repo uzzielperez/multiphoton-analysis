@@ -7,7 +7,8 @@ import re
 
 
 
-doAAAsherpa = True
+doAAAsherpa = False
+doAAAmg5 = True
 
 DATASET = []
 
@@ -32,6 +33,22 @@ if doAAAsherpa:
     xsecdict.update(xsecdict_temp)
     nevtsdict.update(nevtsdict_temp)
     keypattern = "sherpa_([^(]*)_MASTER_cff_py_GEN.root"
+
+if doAAAmg5:
+    DATASET.append("GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_spring.root")
+
+    # Cross-section hardcoded in pb
+    xsecdict_temp = {
+        "spring" : 1.720e+00 #25.3500,    #  2.535e-02 +- 3.505e-04 pb
+    }
+    xsecdict.update(xsecdict_temp)
+
+    nevtsdict_temp = {
+        "spring" : 13433
+    }
+    xsecdict.update(xsecdict_temp)
+    nevtsdict.update(nevtsdict_temp)
+    keypattern = "GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_([^(]*).root"
 
 for dset in DATASET:
 

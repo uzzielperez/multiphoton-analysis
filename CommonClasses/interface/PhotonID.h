@@ -197,11 +197,11 @@ namespace ExoDiPhotons{
   double corPhoIsoHighPtID(const pat::Photon* photon, double rho) {
     double phoIso = photon->photonIso();
     double corPhoIsoVal = (phoAlphaHighPtID(photon) + phoIso - rho*phoEAHighPtID(photon) - phoKappaHighPtID(photon)*photon->pt());
-    std::cout << "phoAlphaHighPtID: " << phoAlphaHighPtID(photon)
-              << "; phoEAHighPtID(photon): " << phoEAHighPtID(photon)
-              << "; phoKappaHighPtID" << phoKappaHighPtID(photon)
-              << "; rho input:" << rho
-              << "; corPhoIsoVal: " << corPhoIsoVal << std::endl;
+    // std::cout << "phoAlphaHighPtID: " << phoAlphaHighPtID(photon)
+    //           << "; phoEAHighPtID(photon): " << phoEAHighPtID(photon)
+    //           << "; phoKappaHighPtID" << phoKappaHighPtID(photon)
+    //           << "; rho input:" << rho
+    //           << "; corPhoIsoVal: " << corPhoIsoVal << std::endl;
     return corPhoIsoVal;
   }
 
@@ -212,6 +212,18 @@ namespace ExoDiPhotons{
 
     if (phoEta < 1.4442) corPhoIsoCut = 2.75;
     if (1.566 < phoEta && phoEta < 2.5) corPhoIsoCut = 2.00;
+
+    if (corPhoIso < corPhoIsoCut) return true;
+    else return false;
+  }
+
+  bool passlowPTCorPhoIso(const pat::Photon* photon, double rho) {
+    double phoEta = fabs(photon->superCluster()->eta());
+    double corPhoIsoCut = -99999.9;
+    double corPhoIso = corPhoIsoHighPtID(photon,rho);
+
+    if (phoEta < 1.4442) corPhoIsoCut = 4;
+    if (1.566 < phoEta && phoEta < 2.5) corPhoIsoCut = 2.5;
 
     if (corPhoIso < corPhoIsoCut) return true;
     else return false;
@@ -293,7 +305,7 @@ namespace ExoDiPhotons{
       passHadTowerOverEmCut(photon) &&
       passChargedHadronCut(photon) &&
       passlowPTSigmaIetaIetaCut(photon,isSat) &&
-      passCorPhoIsoHighPtID(photon,rho) &&
+      passlowPTCorPhoIso(photon,rho) &&
       photon->passElectronVeto()
     ) return true;
 
@@ -339,6 +351,7 @@ namespace ExoDiPhotons{
     bool passHadOverEmCut = photon->hadronicOverEm() < 0.1;
 
     bool passCorIso = passCorPhoIsoHighPtID(photon,rho);
+
 
     bool retVal = false;
     if (isEB && failID && passLooseIso && passCSEV && passHadOverEmCut){

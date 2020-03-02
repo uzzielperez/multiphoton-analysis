@@ -57,8 +57,10 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ~nPhotonAnalyzer();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-      void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles);
-      void fillPhotonInfo(const edm::Handle<edm::View<pat::Photon> >& photons,
+      void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+                       const edm::Handle<edm::View<pat::Photon> >& photons);
+      void fillPhotonInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+                    const edm::Handle<edm::View<pat::Photon> >& photons,
                     const edm::Handle<EcalRecHitCollection>& recHitsEB,
                     const edm::Handle<EcalRecHitCollection>& recHitsEE,
                     const edm::Handle<edm::ValueMap<bool> >* id_decisions,
@@ -80,6 +82,12 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
                     ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
                     ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
                     ExoDiPhotons::triphotonInfo_t& triphotonInfo);
+      void mcTruthFiller(const pat::Photon *photon,
+                    ExoDiPhotons::photonInfo_t& photonInfo,
+                    const edm::Handle<edm::View<reco::GenParticle> > genParticles);
+      void genRecoMatchInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+                            const edm::Handle<edm::View<pat::Photon> >& photons);
+
 
    private:
       virtual void beginJob() override;
@@ -140,7 +148,12 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       //Put flags in cfg later
       int nPV_;
       bool isMC_;
+      bool isClosureTest_;
       bool isGood_;
+      bool is3GenRecoed_;
+      bool isgenPho1_recoed_;
+      bool isgenPho2_recoed_;
+      bool isgenPho3_recoed_;
       bool islocal_;
       bool isDAS_;
       double rho_;
