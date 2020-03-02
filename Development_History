@@ -1,8 +1,13 @@
 * V01:5-26-18
   WORKING BRANCHES
+
+  As of March 2, 2020:
   master    : Pythia8 local GEN only analyzer (working)
+  - Added feature on deltaR matching information between gen and pat photons
+
   CMSSW_80X : -Include globalTags
               -other elements from ExoDiPhotonAnalyzer (under development)
+
 
   DEBUG MODE
   StandardVerbose        : Common Classes, and Particle History
