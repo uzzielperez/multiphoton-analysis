@@ -1,5 +1,6 @@
 * V01:5-26-18
   WORKING BRANCHES
+  photon_conversions : Adding information on whether photons were converted
 
   As of March 2, 2020:
   master    : Pythia8 local GEN only analyzer (working)
