@@ -18,6 +18,8 @@
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
+#include "DataFormats/EgammaCandidates/interface/Conversion.h"
+#include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
 //#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
 #include <vector>
 #include "TLorentzVector.h"
@@ -38,6 +40,7 @@
 #include "multiphoton-analysis/CommonClasses/interface/TriPhotonInfo.h"
 #include "multiphoton-analysis/CommonClasses/interface/PhotonInfo.h"
 #include "multiphoton-analysis/CommonClasses/interface/PhotonID.h"
+#include "multiphoton-analysis/CommonClasses/interface/BeamSpotInfo.h"
 
 // ECAL topology
 #include "Geometry/CaloTopology/interface/CaloTopology.h"
@@ -58,7 +61,9 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
       void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
-                       const edm::Handle<edm::View<pat::Photon> >& photons);
+                       const edm::Handle<edm::View<pat::Photon> >& photons,
+                       const edm::Handle<reco::Conversion> hConversions,
+                       const edm::Handle<reco::BeamSpot> beamspot);
       void fillPhotonInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
                     const edm::Handle<edm::View<pat::Photon> >& photons,
                     const edm::Handle<EcalRecHitCollection>& recHitsEB,
@@ -87,6 +92,12 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
                     const edm::Handle<edm::View<reco::GenParticle> > genParticles);
       void genRecoMatchInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
                             const edm::Handle<edm::View<pat::Photon> >& photons);
+      void printExtraInfo (const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+                           const std::vector<edm::Ptr<pat::Photon>>& photons,
+                           const edm::Handle<reco::Conversion> hConversions,
+                           const edm::Handle<reco::SuperCluster> superCluster,
+                           const edm::Handle<reco::PhotonCore> photonCore);
+
 
 
    private:
@@ -107,12 +118,21 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       edm::EDGetTokenT<GenEventInfoProduct>           genInfoToken_;
       edm::EDGetTokenT<EcalRecHitCollection>          recHitsEBToken;
       edm::EDGetTokenT<EcalRecHitCollection>          recHitsEEToken;
+      edm::EDGetTokenT<edm::View<reco::Conversion> > conversionToken_;
+      edm::EDGetTokenT<edm::View<reco::Conversion> > conversionTokenSingleLeg_;
+      edm::EDGetTokenT<reco::BeamSpot>               beamSpotToken_;
+      edm::EDGetTokenT<edm::View<reco::PhotonCore> > photonCoreToken_;
+      edm::EDGetTokenT<edm::View<reco::SuperCluster> > superClusterToken_;
 
       edm::InputTag genParticles_;
       edm::InputTag particles_;
       edm::InputTag recHitsEBTag_;
       edm::InputTag recHitsEETag_;
-
+      edm::InputTag ConversionTag_;
+      edm::InputTag ConversionTagSingleLeg_;
+      edm::InputTag photonCore_;
+      edm::InputTag superCluster_;
+      edm::InputTag beamSpot_;
 
       enum {LOOSE = 0, MEDIUM = 1, TIGHT = 2};
       enum {FAKE = 0,  TRUE = 1};
@@ -140,6 +160,8 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ExoDiPhotons::diphotonInfo_t      fDiphotonInfo13;
       ExoDiPhotons::diphotonInfo_t      fDiphotonInfo23;
       ExoDiPhotons::triphotonInfo_t     fTriphotonInfo;
+
+      ExoDiPhotons::beamSpotInfo_t fBeamSpotInfo;
 
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton1Info;
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton2Info;

@@ -28,6 +28,8 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    // effAreaChHadrons_         = ps.getParameter<edm::FileInPath>("effAreaChHadFile").fullPath();
    // effAreaNeuHadrons_        = ps.getParameter<edm::FileInPath>("effAreaNeuHadFile").fullPath();
    // effAreaPhotons_           = ps.getParameter<edm::FileInPath>("effAreaPhoFile").fullPath();
+   conversionToken_          = consumes<edm::View<reco::Conversion> >      (ps.getParameter<edm::InputTag>( "ConversionTag" ));
+   conversionTokenSingleLeg_ = consumes<edm::View<reco::Conversion> >      (ps.getParameter<edm::InputTag>( "ConversionTagSingleLeg" ));
    phoLooseIdMapToken_       = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoLooseIdMap"));
    phoMediumIdMapToken_      = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoMediumIdMap"));
    phoTightIdMapToken_       = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoTightIdMap"));
@@ -35,6 +37,9 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    genInfoToken_             = consumes<GenEventInfoProduct>          (ps.getParameter<edm::InputTag>("genInfo"));
    //genParticlesMiniAODToken_ = mayConsume<edm::View<reco::GenParticle> >(ps.getParameter<edm::InputTag>("genParticlesMiniAOD"));
    photonsMiniAODToken_      = consumes<edm::View<pat::Photon> >      (ps.getParameter<edm::InputTag>("photonsMiniAOD"));
+   beamSpotToken_            = consumes<reco::BeamSpot>               (ps.getParameter<edm::InputTag>("beamSpot"));
+   photonCoreToken_          = consumes<edm::View<reco::PhotonCore> >  (ps.getParameter<edm::InputTag>("photonCore"));
+   superClusterToken_        = consumes<edm::View<reco::SuperCluster> > (ps.getParameter<edm::InputTag>("superCluster"));
    recHitsEBTag_             = ps.getUntrackedParameter<edm::InputTag>("RecHitsEBTag",edm::InputTag("reducedEgamma:reducedEBRecHits"));
    recHitsEETag_             = ps.getUntrackedParameter<edm::InputTag>("RecHitsEETag",edm::InputTag("reducedEgamma:reducedEERecHits"));
    recHitsEBToken            = consumes <edm::SortedCollection<EcalRecHit> > (recHitsEBTag_);
@@ -55,6 +60,7 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fgenTree->Branch("GenDiPhoton13", &fGenDiphotonInfo13, ExoDiPhotons::diphotonBranchDefString.c_str());
    fgenTree->Branch("GenDiPhoton23", &fGenDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
    fgenTree->Branch("GenTriPhoton",  &fGenTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
+   fgenTree->Branch("BeamSpot",      &fBeamSpotInfo,     ExoDiPhotons::beamSpotBranchDefString.c_str());
    // fgenTree->Branch("DiPhoton12",   &fDiphotonInfo12, ExoDiPhotons::diphotonBranchDefString.c_str());
    // fgenTree->Branch("DiPhoton13",   &fDiphotonInfo13, ExoDiPhotons::diphotonBranchDefString.c_str());
    // fgenTree->Branch("DiPhoton23",   &fDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
@@ -79,10 +85,10 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fTree->Branch("DiPhoton13",   &fDiphotonInfo13, ExoDiPhotons::diphotonBranchDefString.c_str());
    fTree->Branch("DiPhoton23",   &fDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
    fTree->Branch("TriPhoton",    &fTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
+   fTree->Branch("BeamSpot",     &fBeamSpotInfo,  ExoDiPhotons::beamSpotBranchDefString.c_str());
    fTree->Branch("isGood",           &isGood_);
    fTree->Branch("nPV", &nPV_);
    // For
-
    }
 }
 
@@ -114,7 +120,10 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    edm::Handle< double >                      rhoH;
    edm::Handle<EcalRecHitCollection>          recHitsEB;
    edm::Handle<EcalRecHitCollection>          recHitsEE;
+   edm::Handle<reco::BeamSpot>                beamSpotHandle;
+   edm::Handle<reco::Conversion>              hConversions;
    edm::ESHandle<CaloTopology> caloTopology;
+
 
    iEvent.getByToken(genParticlesToken_,    genParticles);
    iEvent.getByToken(genInfoToken_,         genInfo);
@@ -125,6 +134,8 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByToken(phoTightIdMapToken_ ,  id_decisions[TIGHT]);
    iEvent.getByToken(recHitsEBToken,recHitsEB);
    iEvent.getByToken(recHitsEEToken,recHitsEE);
+   iEvent.getByToken(beamSpotToken_,beamSpotHandle);
+   iEvent.getByToken(conversionToken_, hConversions);
    iSetup.get<CaloTopologyRecord>().get(caloTopology);
    subDetTopologyEB_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalBarrel);
    subDetTopologyEE_ = caloTopology->getSubdetectorTopology(DetId::Ecal,EcalEndcap);
@@ -147,20 +158,22 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo13);
    ExoDiPhotons::InitDiphotonInfo(fDiphotonInfo23);
    ExoDiPhotons::InitTriphotonInfo(fTriphotonInfo);
+   ExoDiPhotons::InitBeamSpotInfo(fBeamSpotInfo);
    //---Update
    ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    ExoDiPhotons::FillGenEventInfo(fEventInfo, &(*genInfo));
+   ExoDiPhotons::FillBeamSpotInfo(fBeamSpotInfo,&(*beamSpotHandle));
 
    if (islocal_){
-     ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
-     fillGenInfo(genParticles, photons);
+     // ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
+     // fillGenInfo(genParticles, photons, hConversions, beamSpotHandle);
      //cout << "isGood: " << isGood_ << endl;
      fgenTree->Fill();
    }
 
    if (isDAS_){
      ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
-     fillGenInfo(genParticles, photons);
+     fillGenInfo(genParticles, photons, hConversions, beamSpotHandle);
      fillPhotonInfo(genParticles, photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
      //cout << "isGood: " << isGood_ << endl;
      fTree->Fill();
@@ -192,7 +205,9 @@ nPhotonAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
 
 
 void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
-                                  const edm::Handle<edm::View<pat::Photon> >& photons){
+                                  const edm::Handle<edm::View<pat::Photon> >& photons,
+                                  const edm::Handle<reco::Conversion> hConversions,
+                                  const edm::Handle<reco::BeamSpot> beamspot){
 
       // Store Information in these vectors
       vector< edm::Ptr<const reco::GenParticle> > genPhotons;
@@ -236,7 +251,7 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       // Samples with one fake may have only one hard-process photon in diphoton pair
       // Samples with fakes may have only one hard-process photon in the triphoton system
 
-      auto match_tuple = ExoDiPhotons::genpatmatchInfo(genPhotons, patPhotons);
+      auto match_tuple = ExoDiPhotons::genpatmatchInfo(genPhotons, patPhotons, hConversions, beamspot);
       std::vector<bool> matchInfo    = std::get<0>(match_tuple);
       std::vector<double> minDRvec   = std::get<1>(match_tuple);
       std::vector<double> minDpTvec   = std::get<2>(match_tuple);
@@ -489,4 +504,14 @@ void nPhotonAnalyzer::mcTruthFiller (const pat::Photon *photon, ExoDiPhotons::ph
   if (is_fake) photonInfo.isMCTruthFake = true;
 }// end mcTruthFiller
 
+// Extra Info
+
+void nPhotonAnalyzer::printExtraInfo (const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+                                      const std::vector<edm::Ptr<pat::Photon>>& photons,
+                                      const edm::Handle<reco::Conversion> hConversions,
+                                      const edm::Handle<reco::SuperCluster> superCluster,
+                                      const edm::Handle<reco::PhotonCore> photonCore)
+{
+  std::cout << "Extra Info" << std::endl;
+}// end mcTruthFiller
 DEFINE_FWK_MODULE(nPhotonAnalyzer);

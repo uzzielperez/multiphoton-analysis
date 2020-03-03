@@ -3,6 +3,7 @@
 
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
+#include "DataFormats/EgammaCandidates/interface/Conversion.h"
 
 // for EGM ID
 #include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
@@ -294,7 +295,7 @@ namespace ExoDiPhotons
   // bool comparePhotonsByPt(genParticleInfo_t photon1, genParticleInfo_t photon2) {
   //        return(photon1.pt>=photon2.pt);
   // }
-  
+
 } // end of namespace
 
 #endif

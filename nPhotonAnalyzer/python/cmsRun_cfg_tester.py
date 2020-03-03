@@ -120,12 +120,17 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         genparticles = cms.InputTag("GENPARTICLES"),
         photonsMiniAOD = cms.InputTag("slimmedPhotons"),
         minPhotonPt = cms.double(75.),
+        ConversionTag = cms.InputTag("reducedEgamma","reducedConversions"),
+        ConversionTagSingleLeg = cms.InputTag("reducedEgamma","reducedSingleLegConversions"),
+        # extra tags:
+        photonCore = cms.InputTag("reducedEgamma"),
+        superCluster = cms.InputTag("reducedEgamma"), 
         # genParticle tag
         #genParticlesMiniAOD = cms.InputTag("prunedGenParticles"),
         # vertex tag
         #vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
         # beam spot tag
-        #beamSpot = cms.InputTag("offlineBeamSpot", "", "RECO"),
+        beamSpot = cms.InputTag("offlineBeamSpot", "", "RECO"),
         # ak4 jets
         #jetsMiniAOD = cms.InputTag(jetLabel),
         #jetPtThreshold = cms.double(30.),

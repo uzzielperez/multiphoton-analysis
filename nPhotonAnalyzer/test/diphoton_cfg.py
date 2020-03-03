@@ -159,9 +159,15 @@ process.demo = cms.EDAnalyzer(
     # photon tag
     photonsMiniAOD = cms.InputTag("slimmedPhotons"),
     minPhotonPt = cms.double(75.),
+    # extra tags:
+    photonCore = cms.InputTag("reducedEgamma"),
+    superCluster = cms.InputTag("reducedEgamma"), 
     # genParticle tag
     genparticles = cms.InputTag("prunedGenParticles"),
     genParticlesMiniAOD = cms.InputTag("prunedGenParticles"),
+    # Conversions tag
+    ConversionTag = cms.InputTag("reducedEgamma","reducedConversions"),
+    ConversionTagSingleLeg = cms.InputTag("reducedEgamma","reducedSingleLegConversions"),
     # vertex tag
     vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
     # beam spot tag

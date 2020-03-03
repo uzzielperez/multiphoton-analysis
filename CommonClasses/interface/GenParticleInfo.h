@@ -4,6 +4,8 @@
 #include "multiphoton-analysis/CommonClasses/interface/DiPhotonInfo.h"
 #include "TMath.h"
 #include "TLorentzVector.h"
+#include "DataFormats/EgammaCandidates/interface/Conversion.h"
+#include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
 //#include <typeinfo>
 
 
@@ -181,7 +183,9 @@ namespace ExoDiPhotons
 std::tuple< std::vector<bool>, std::vector<double>, std::vector<double>, std::vector<bool>,
             std::vector<std::tuple<int,int>> > genpatmatchInfo(
                          std::vector< edm::Ptr<const reco::GenParticle> > genPhotons_sorted,
-                         std::vector<edm::Ptr<pat::Photon>> patPhotons_sorted){
+                         std::vector<edm::Ptr<pat::Photon>> patPhotons_sorted,
+                         const edm::Handle<reco::Conversion> hConversions,
+                         const edm::Handle<reco::BeamSpot> beamspot){
 
       std::vector<bool> matchingInfo;
       std::vector<double> minDRvec;
@@ -201,6 +205,7 @@ std::tuple< std::vector<bool>, std::vector<double>, std::vector<double>, std::ve
           double minDeltaR = 99999.99;
           double minDeltapT = 99999.99;
           double deltaPT;
+          double deltaPhi;
           bool isptmatched = false;
           bool ismatched = false;
           bool isptdRmatched = false;
@@ -219,10 +224,18 @@ std::tuple< std::vector<bool>, std::vector<double>, std::vector<double>, std::ve
           for(std::vector<int>::size_type j = 0; j != patPhotons_sorted.size(); j++)
           {
               const pat::Photon *patPho = &(*patPhotons_sorted.at(j));
+              //reco::ConversionRef conv = ConversionTools::matchedConversion( patPho->superCluster(), hConversions, beamspot.position() );
+              // static bool matchconv = ConversionTools::matchesConversion( patPho->superCluster(), hConversions, 0.1, 999., 999.);
+              // bool matchconv = patPho->Conversion::isConverted();
+
+              // bool matchconv = ConversionTools::matchesConversion( patPho->superCluster(), hConversions);
               double deltaR = reco::deltaR(genPho->eta(), genPho->phi(), patPho->eta(), patPho->phi());
               deltaPT = fabs(genPho->pt() - patPho->pt());
+              deltaPhi = fabs(genPho->phi() - patPho->phi());
 
-              std::cout << "Pho: pt = " << patPho->pt() << "; eta = " << patPho->eta() << "; phi = " << patPho->phi() << "; deltaR = " << deltaR << "; deltaPT = " << deltaPT <<std::endl;
+              // bool conversionmatch = ConversionTools::matchesConversion(patPho->superCluster(), conversion);
+
+              std::cout << "Pho: pt = " << patPho->pt() << "; eta = " << patPho->eta() << "; phi = " << patPho->phi() <<"; R9 = " << patPho->r9() << "; dPhi = " << deltaPhi << "; deltaR = " << deltaR << "; passCSEV: " << patPho->passElectronVeto() << "; deltaPT = " << deltaPT <<std::endl;
 
               if (deltaPT <= 0.2*genPho->pt()) isptmatched = true;
               if (deltaR <= minDeltaR)
