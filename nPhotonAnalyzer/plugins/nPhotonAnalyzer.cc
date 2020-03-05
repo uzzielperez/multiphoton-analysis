@@ -242,6 +242,8 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       std::vector<double> minDpTvec   = std::get<2>(match_tuple);
       std::vector<bool> ptdRmatchInfo = std::get<3>(match_tuple);
       std::vector <std::tuple <int, int>> genpatindices = std::get<4>(match_tuple);
+      std::vector<double> minDphivec   = std::get<5>(match_tuple);
+      std::vector<double> minDetavec   = std::get<6>(match_tuple);
 
       if (genPhotons.size() > 3) exit(1);
       if(genPhotons.size() < 1) return;
@@ -249,7 +251,7 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       if (genPhoton1){
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton1Info, genPhoton1, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton1Info, matchInfo.at(0), minDRvec.at(0), minDpTvec.at(0),
-                                          ptdRmatchInfo.at(0), genpatindices.at(0));
+                                          ptdRmatchInfo.at(0), genpatindices.at(0), minDphivec.at(0), minDetavec.at(0));
         if ( matchInfo.at(0) ) std::cout << "MATCH FOUND for genpho1 - minDR: " << minDRvec.at(0) << std::endl;
         if ( !matchInfo.at(0) ) std::cout << "MATCH not FOUND! for genpho1 - minDR: " << minDRvec.at(0) << std::endl;
       }
@@ -259,7 +261,7 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       if (genPhoton2){
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton2Info, genPhoton2, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton2Info, matchInfo.at(1), minDRvec.at(1), minDpTvec.at(1),
-                                          ptdRmatchInfo.at(1), genpatindices.at(1));
+                                          ptdRmatchInfo.at(1), genpatindices.at(1), minDphivec.at(1), minDetavec.at(1));
         if ( matchInfo.at(1) ) std::cout << "MATCH FOUND for genpho2 - minDR: " << minDRvec.at(1) << std::endl;
         if ( !matchInfo.at(1) ) std::cout << "MATCH not FOUND! for genpho2 - minDR: " << minDRvec.at(1) << std::endl;
       }
@@ -269,7 +271,7 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       if (genPhoton3){
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton3Info, genPhoton3, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton3Info, matchInfo.at(2), minDRvec.at(2), minDpTvec.at(2),
-                                          ptdRmatchInfo.at(2), genpatindices.at(2));
+                                          ptdRmatchInfo.at(2), genpatindices.at(2),  minDphivec.at(2), minDetavec.at(2));
        if ( matchInfo.at(2) ) std::cout << "MATCH FOUND for genpho2 - minDR: " << minDRvec.at(2) << std::endl;
        if ( !matchInfo.at(2) ) std::cout << "MATCH not FOUND! for genpho3 - minDR: " << minDRvec.at(2) << std::endl;
       }
