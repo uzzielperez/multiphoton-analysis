@@ -98,10 +98,11 @@ namespace ExoDiPhotons
     bool passLowPtID; // filled
 
     // bool isGenRecoed;
+    bool hasConversionTracks;
 
   };
 
-  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:hadronicOverEm:r9:r9_5x5:sigmaIetaIeta:sigmaIetaIeta5x5:sigmaEtaEta:sigmaIphiIphi:sigmaIphiIphi5x5:sigmaIetaIphi:sigmaIetaIphi5x5:maxEnergyXtal:iEta:iPhi:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:passChIsoDenom:passCorPhoIsoDenom:isFakeable:isNumeratorObjCand:isDenominatorObj:isSaturated:isMCTruthFake:passSieieLowpTID:passCorPhoIsoLowPTID:passLowPtID");
+  std::string photonBranchDefString("pt/D:eta:phi:scEta:scPhi:rho:chargedHadIso03:neutralHadIso03:photonIso03:rhoCorChargedHadIso03:rhoCorNeutralHadIso03:rhoCorPhotonIso03:corPhotonIso03:hadTowerOverEm:hadronicOverEm:r9:r9_5x5:sigmaIetaIeta:sigmaIetaIeta5x5:sigmaEtaEta:sigmaIphiIphi:sigmaIphiIphi5x5:sigmaIetaIphi:sigmaIetaIphi5x5:maxEnergyXtal:iEta:iPhi:alphaHighPtID:kappaHighPtID:phoEAHighPtID:chEAegmID:nhEAegmID:phoEAegmID:passEGMLooseID/O:passEGMMediumID:passEGMTightID:isEB:isEE:isEBEtaGap:isEBPhiGap:isEERingGap:isEEDeeGap:isEBEEGap:passElectronVeto:passHTowOverE:passChIso:passCorPhoIso:passSieie:passHighPtID:passChIsoDenom:passCorPhoIsoDenom:isFakeable:isNumeratorObjCand:isDenominatorObj:isSaturated:isMCTruthFake:passSieieLowpTID:passCorPhoIsoLowPTID:passLowPtID:hasConversionTracks");
 
   void InitPhotonInfo(photonInfo_t &photonInfo)
   {
@@ -190,8 +191,7 @@ namespace ExoDiPhotons
 
     // Reco version of Gen
     // photonInfo.isGenRecoed = false;
-
-
+    photonInfo.hasConversionTracks = false;
   }
 
   void FillBasicPhotonInfo(photonInfo_t &photonInfo, const pat::Photon *photon)
@@ -262,9 +262,11 @@ namespace ExoDiPhotons
     photonInfo.isDenominatorObj   = ExoDiPhotons::passDenominatorCut(photon,rho,isSat);
 
     // LowPT features
-    photonInfo.passSieieLowpTID = ExoDiPhotons::passlowPTSigmaIetaIetaCut(photon, isSat);
+    photonInfo.passSieieLowpTID     = ExoDiPhotons::passlowPTSigmaIetaIetaCut(photon, isSat);
     photonInfo.passCorPhoIsoLowPTID = ExoDiPhotons::passlowPTCorPhoIso(photon,rho);
-    photonInfo.passLowPtID     = ExoDiPhotons::passLowPtID(photon,rho,isSat);
+    photonInfo.passLowPtID          = ExoDiPhotons::passLowPtID(photon,rho,isSat);
+
+    photonInfo.hasConversionTracks  = photon->hasConversionTracks();
   }
 
   void FillPhotonEGMidInfo(photonInfo_t &photonInfo, const pat::Photon *photon, double rho, EffectiveAreas eaCH, EffectiveAreas eaNH, EffectiveAreas eaPho)
@@ -294,7 +296,7 @@ namespace ExoDiPhotons
   // bool comparePhotonsByPt(genParticleInfo_t photon1, genParticleInfo_t photon2) {
   //        return(photon1.pt>=photon2.pt);
   // }
-  
+
 } // end of namespace
 
 #endif

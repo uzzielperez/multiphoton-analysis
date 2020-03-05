@@ -48,6 +48,10 @@ namespace ExoDiPhotons
     double deltaR_match;
     double deltaR_matchDau;
     double ptDiff_match;
+    double minDeltaR;
+    double minDeltapT;
+    double minDeltaPhi;
+    double minDeltaEta;
     int matchCategory;
     int matchType;
     int nPhotonMotherDaughters;
@@ -67,13 +71,13 @@ namespace ExoDiPhotons
     // If Gen Photon is reconstructed these information are stored:
     int genmatchindex;
     int patmatchindex;
-    bool isptdRmatched;
     bool isMatched;
-    double minDeltaR;
-    double minDeltapT;
+    bool isptdRmatched;
+
+
   };
 
-  std::string genParticleBranchDefString("pt/D:eta:phi:deltaR_match:deltaR_matchDau:ptDiff_match:matchCategory/I:matchType:nPhotonMotherDaughters:status:motherStatus:grandmotherStatus:pdgId:motherPdgId:grandmotherPdgId:genmatchindex:patmatchindex:isMatched/B:isptdRmatched:minDeltaR/D:minDeltapT");
+  std::string genParticleBranchDefString("pt/D:eta:phi:deltaR_match:deltaR_matchDau:ptDiff_match:minDeltaR:minDeltapT:minDeltaPhi:minDeltaEta:matchCategory/I:matchType:nPhotonMotherDaughters:status:motherStatus:grandmotherStatus:pdgId:motherPdgId:grandmotherPdgId:genmatchindex:patmatchindex:isMatched/B:isptdRmatched");
 
   void InitGenParticleInfo(genParticleInfo_t &genParticleInfo) {
     // kinematics
@@ -88,6 +92,10 @@ namespace ExoDiPhotons
     genParticleInfo.matchCategory          = -999999;
     genParticleInfo.matchType              = -999999;
     genParticleInfo.nPhotonMotherDaughters = -999999;
+    genParticleInfo.minDeltaR  = 999999;
+    genParticleInfo.minDeltapT = 999999;
+    genParticleInfo.minDeltaPhi = 999999;
+    genParticleInfo.minDeltaEta = 999999;
 
     // gen info
     genParticleInfo.status            = -999999;
@@ -100,9 +108,9 @@ namespace ExoDiPhotons
     // matching info
     genParticleInfo.genmatchindex = -99999;
     genParticleInfo.patmatchindex = -99999;
-    genParticleInfo.isMatched  = false;
-    genParticleInfo.minDeltaR  = 999999;
-    genParticleInfo.minDeltapT = 999999;
+    genParticleInfo.isMatched     = false;
+    genParticleInfo.isptdRmatched = false;
+
   }
 
   void FillGenParticleInfo(genParticleInfo_t &genParticleInfo,
@@ -178,16 +186,26 @@ namespace ExoDiPhotons
     return(photon1->pt()>=photon2->pt());
   }
 
-std::tuple< std::vector<bool>, std::vector<double>, std::vector<double>, std::vector<bool>,
-            std::vector<std::tuple<int,int>> > genpatmatchInfo(
-                         std::vector< edm::Ptr<const reco::GenParticle> > genPhotons_sorted,
-                         std::vector<edm::Ptr<pat::Photon>> patPhotons_sorted){
+// Returns a tuple of genpat matching information
+// match bool, minDR, mindpT, ptdRmatch bool, genpat indices, and dphi, deta
+std::tuple< std::vector<bool>,
+            std::vector<double>,
+            std::vector<double>,
+            std::vector<bool>,
+            std::vector<std::tuple<int,int>>,
+            std::vector<double>,
+            std::vector<double> > genpatmatchInfo(  std::vector< edm::Ptr<const reco::GenParticle> > genPhotons_sorted,
+                                                    std::vector<edm::Ptr<pat::Photon>> patPhotons_sorted)
+  {
 
+      bool printInfo = true;
       std::vector<bool> matchingInfo;
       std::vector<double> minDRvec;
       std::vector<double> minDpTvec;
       std::vector<bool> ptdRmatchInfo;
       std::vector<std::tuple<int, int>> genpatindexvec;
+      std::vector<double> minDphivec;
+      std::vector<double> minDetavec;
 
       // std::vector<const pat::Photon> patmatchedcollection;
       // std::vector<const reco::GenParticle> genmatchedcollection;
@@ -200,6 +218,8 @@ std::tuple< std::vector<bool>, std::vector<double>, std::vector<double>, std::ve
           const reco::GenParticle *genPho = &(*genPhotons_sorted.at(i));
           double minDeltaR = 99999.99;
           double minDeltapT = 99999.99;
+          double minDeltaPhi = 9999.99;
+          double minDeltaEta = 9999.99;
           double deltaPT;
           bool isptmatched = false;
           bool ismatched = false;
@@ -214,21 +234,28 @@ std::tuple< std::vector<bool>, std::vector<double>, std::vector<double>, std::ve
 
           const pat::Photon *photon_reco_match = NULL;
           const reco::GenParticle *photon_gen_match = NULL;
-          std::cout << "GenPho: pt = " << genPho->pt() << "; eta = " << genPho->eta() << "; phi = " << genPho->phi() << std::endl;
+          if (printInfo) std::cout << "GenPho: pt = " << genPho->pt() << "; eta = " << genPho->eta() << "; phi = " << genPho->phi() << std::endl;
 
           for(std::vector<int>::size_type j = 0; j != patPhotons_sorted.size(); j++)
           {
               const pat::Photon *patPho = &(*patPhotons_sorted.at(j));
               double deltaR = reco::deltaR(genPho->eta(), genPho->phi(), patPho->eta(), patPho->phi());
               deltaPT = fabs(genPho->pt() - patPho->pt());
+              double deltaPhi = fabs(genPho->phi() - patPho->phi());
+              double deltaEta = fabs(genPho->eta() - patPho->eta());
+              bool isinGap = false;
+              if (patPho->isEBEtaGap() || patPho->isEBPhiGap() || patPho->isEERingGap() || patPho->isEEDeeGap() || patPho->isEBEEGap() ) isinGap = true;
+              bool hasconversiontracks = patPho->hasConversionTracks();
 
-              std::cout << "Pho: pt = " << patPho->pt() << "; eta = " << patPho->eta() << "; phi = " << patPho->phi() << "; deltaR = " << deltaR << "; deltaPT = " << deltaPT <<std::endl;
+              if (printInfo) std::cout << "Pho: pt = " << patPho->pt() << "; eta = " << patPho->eta() << "; phi = " << patPho->phi() << "; deltaR = " << deltaR << "; GAP? " << isinGap << "; hasConversionTracks: " << hasconversiontracks << "; deltaPT = " << deltaPT <<std::endl;
 
               if (deltaPT <= 0.2*genPho->pt()) isptmatched = true;
               if (deltaR <= minDeltaR)
               {
                   minDeltaR = deltaR;
                   minDeltapT = deltaPT;
+                  minDeltaPhi = deltaPhi;
+                  minDeltaEta = deltaEta;
                   if (minDeltaR<0.10) ismatched = true;
                   gen_index = i;
                   pat_index = j;
@@ -238,11 +265,11 @@ std::tuple< std::vector<bool>, std::vector<double>, std::vector<double>, std::ve
                   if (isptmatched) isptdRmatched = true;
               }
           }
-              if (ismatched) cout << "MATCH FOUND! minDR: " << minDeltaR  << "; dPT: " <<  minDeltapT
+              if (ismatched && printInfo) cout << "MATCH FOUND! minDR: " << minDeltaR  << "; dPT: " <<  minDeltapT
                                   << "; gen:pat pt = " << photon_gen_match->pt() << " : " << photon_reco_match->pt()
-                                  << "; gen:pat eta = " << photon_gen_match->eta() << " : " << photon_reco_match->eta()
-                                  << "; gen:pat phi = " << photon_gen_match->phi() << " : " << photon_reco_match->phi()
-                                  << "; gen:pat index = " << gen_index <<  " : " << pat_index
+                                  << "; eta = " << photon_gen_match->eta() << " : " << photon_reco_match->eta()
+                                  << "; phi = " << photon_gen_match->phi() << " : " << photon_reco_match->phi()
+                                  << "; indices = " << gen_index <<  " : " << pat_index
                                   << "; ptdRmatched = " << isptdRmatched
                                   << std::endl;
 
@@ -251,20 +278,23 @@ std::tuple< std::vector<bool>, std::vector<double>, std::vector<double>, std::ve
            minDpTvec.push_back(minDeltapT);
            ptdRmatchInfo.push_back(isptdRmatched);
            genpatindexvec.push_back(genpatindices);
+           minDphivec.push_back(minDeltaPhi);
+           minDetavec.push_back(minDeltaEta);
 
            // Later if I want to retrieve the full matching information:
            // patmatchedcollection.push_back(photon_reco_match);
            // genmatchedcollection.push_back(photon_gen_match);
       }
-      return {matchingInfo, minDRvec, minDpTvec, ptdRmatchInfo, genpatindexvec};
+      return {matchingInfo, minDRvec, minDpTvec, ptdRmatchInfo, genpatindexvec, minDphivec, minDetavec};
 }
-
 void FillGenPATmatchInfo(genParticleInfo_t &genParticleInfo,
                          bool matchInfo,
                          double minDeltaR,
                          double minDeltapT,
                          bool ptdRmatchInfo,
-                         std::tuple <int, int> genpatindices
+                         std::tuple <int, int> genpatindices,
+                         double minDeltaPhi,
+                         double minDeltaEta
                          ){
       genParticleInfo.genmatchindex = std::get<0>(genpatindices);
       genParticleInfo.patmatchindex = std::get<1>(genpatindices);
@@ -272,6 +302,8 @@ void FillGenPATmatchInfo(genParticleInfo_t &genParticleInfo,
       genParticleInfo.isptdRmatched = ptdRmatchInfo;
       genParticleInfo.minDeltaR = minDeltaR;
       genParticleInfo.minDeltapT = minDeltapT;
+      genParticleInfo.minDeltaPhi = minDeltaPhi;
+      genParticleInfo.minDeltaEta = minDeltaEta;
   }
 }// end of namespace
 
