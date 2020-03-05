@@ -194,6 +194,7 @@ nPhotonAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
 void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
                                   const edm::Handle<edm::View<pat::Photon> >& photons){
 
+      bool (printInfo) = true;
       // Store Information in these vectors
       vector< edm::Ptr<const reco::GenParticle> > genPhotons;
       std::vector<edm::Ptr<pat::Photon>> patPhotons;
@@ -242,6 +243,8 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       std::vector<double> minDpTvec   = std::get<2>(match_tuple);
       std::vector<bool> ptdRmatchInfo = std::get<3>(match_tuple);
       std::vector <std::tuple <int, int>> genpatindices = std::get<4>(match_tuple);
+      std::vector<double> minDeltaPhi   = std::get<5>(match_tuple);
+      std::vector<double> minDeltaEta   = std::get<6>(match_tuple);
 
       if (genPhotons.size() > 3) exit(1);
       if(genPhotons.size() < 1) return;
@@ -249,9 +252,9 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       if (genPhoton1){
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton1Info, genPhoton1, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton1Info, matchInfo.at(0), minDRvec.at(0), minDpTvec.at(0),
-                                          ptdRmatchInfo.at(0), genpatindices.at(0));
-        if ( matchInfo.at(0) ) std::cout << "MATCH FOUND for genpho1 - minDR: " << minDRvec.at(0) << std::endl;
-        if ( !matchInfo.at(0) ) std::cout << "MATCH not FOUND! for genpho1 - minDR: " << minDRvec.at(0) << std::endl;
+                                          ptdRmatchInfo.at(0), genpatindices.at(0), minDeltaPhi.at(0), minDeltaEta.at(0));
+        if ( matchInfo.at(0) && printInfo ) std::cout << "MATCH FOUND for genpho1 - minDR: " << minDRvec.at(0) << std::endl;
+        if ( !matchInfo.at(0) && printInfo ) std::cout << "MATCH not FOUND! for genpho1 - minDR: " << minDRvec.at(0) << std::endl;
       }
 
       if(genPhotons.size() < 2) return;
@@ -259,9 +262,9 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       if (genPhoton2){
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton2Info, genPhoton2, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton2Info, matchInfo.at(1), minDRvec.at(1), minDpTvec.at(1),
-                                          ptdRmatchInfo.at(1), genpatindices.at(1));
-        if ( matchInfo.at(1) ) std::cout << "MATCH FOUND for genpho2 - minDR: " << minDRvec.at(1) << std::endl;
-        if ( !matchInfo.at(1) ) std::cout << "MATCH not FOUND! for genpho2 - minDR: " << minDRvec.at(1) << std::endl;
+                                          ptdRmatchInfo.at(1), genpatindices.at(1), minDeltaPhi.at(1), minDeltaEta.at(1));
+        if ( matchInfo.at(1) && printInfo ) std::cout << "MATCH FOUND for genpho2 - minDR: " << minDRvec.at(1) << std::endl;
+        if ( !matchInfo.at(1) && printInfo ) std::cout << "MATCH not FOUND! for genpho2 - minDR: " << minDRvec.at(1) << std::endl;
       }
 
       if(genPhotons.size() < 3) return;
@@ -269,9 +272,9 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       if (genPhoton3){
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton3Info, genPhoton3, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton3Info, matchInfo.at(2), minDRvec.at(2), minDpTvec.at(2),
-                                          ptdRmatchInfo.at(2), genpatindices.at(2));
-       if ( matchInfo.at(2) ) std::cout << "MATCH FOUND for genpho2 - minDR: " << minDRvec.at(2) << std::endl;
-       if ( !matchInfo.at(2) ) std::cout << "MATCH not FOUND! for genpho3 - minDR: " << minDRvec.at(2) << std::endl;
+                                          ptdRmatchInfo.at(2), genpatindices.at(2), minDeltaPhi.at(2), minDeltaEta.at(2));
+       if ( matchInfo.at(2) && printInfo ) std::cout << "MATCH FOUND for genpho2 - minDR: " << minDRvec.at(2) << std::endl;
+       if ( !matchInfo.at(2) && printInfo ) std::cout << "MATCH not FOUND! for genpho3 - minDR: " << minDRvec.at(2) << std::endl;
       }
 
 
