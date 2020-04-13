@@ -19,7 +19,7 @@ isDAS = 'True' # Centrally Produced
 
 #inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/CMSSW_10_2_8/src/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sample.root'
 inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/CMSSW_10_2_8/src/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_spring.root'
-outputFile_ = "GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sampleOUT_matching_minDRstore_diff.root"
+outputFile_ = "GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_miniREPORT_ID.root"
 #nevts = 2118
 nevts = 13433
 
@@ -33,6 +33,7 @@ genParticles_ = "prunedGenParticles" # genParticles for GEN only
 genInfo = "SIM"
 # maxEvents_ = 10
 idmode_ = "NOid"
+# idmode_ = "lowPTID"
 # idmode_ = "highPTID"
 # idmode_ = "MEDIUM" # LOOSE, MEDIUM or TIGHT
 # idmode_ = "LOOSE"

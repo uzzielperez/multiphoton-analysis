@@ -305,7 +305,8 @@ namespace ExoDiPhotons{
       passHadTowerOverEmCut(photon) &&
       passChargedHadronCut(photon) &&
       passlowPTSigmaIetaIetaCut(photon,isSat) &&
-      passlowPTCorPhoIso(photon,rho) &&
+      // passlowPTCorPhoIso(photon,rho) &&
+      passCorPhoIsoHighPtID(photon,rho) &&
       photon->passElectronVeto()
     ) return true;
 

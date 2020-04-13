@@ -197,7 +197,6 @@ std::tuple< std::vector<bool>,
             std::vector<double> > genpatmatchInfo(  std::vector< edm::Ptr<const reco::GenParticle> > genPhotons_sorted,
                                                     std::vector<edm::Ptr<pat::Photon>> patPhotons_sorted)
   {
-
       bool printInfo = true;
       std::vector<bool> matchingInfo;
       std::vector<double> minDRvec;
@@ -218,8 +217,8 @@ std::tuple< std::vector<bool>,
           const reco::GenParticle *genPho = &(*genPhotons_sorted.at(i));
           double minDeltaR = 99999.99;
           double minDeltapT = 99999.99;
-          double minDeltaPhi = 9999.99;
-          double minDeltaEta = 9999.99;
+          double minDeltaPhi = 99999.99;
+          double minDeltaEta = 99999.99;
           double deltaPT;
           bool isptmatched = false;
           bool ismatched = false;
