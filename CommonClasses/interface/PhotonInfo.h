@@ -297,6 +297,119 @@ namespace ExoDiPhotons
   //        return(photon1.pt>=photon2.pt);
   // }
 
+  // void FillMatchedPhotonInfo(std::vector<std::tuple<int,int>> genpatindices,
+  //                            std::vector<edm::Ptr<pat::Photon>> patPhotons_sorted,
+  //                            const edm::Handle<EcalRecHitCollection>& recHitsEB,
+  //                            const edm::Handle<EcalRecHitCollection>& recHitsEE,
+  //                            const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+  //                            ExoDiPhotons::photonInfo_t& photon1Info,
+  //                            ExoDiPhotons::photonInfo_t& photon2Info,
+  //                            ExoDiPhotons::photonInfo_t& photon3Info,
+  //                            ExoDiPhotons::diphotonInfo_t& diphotonInfo12,
+  //                            ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
+  //                            ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
+  //                            ExoDiPhotons::triphotonInfo_t& triphotonInfo){
+  // void FillMatchedPhotonInfo(std::vector<edm::Ptr<pat::Photon>> patPhotons_sorted,
+  //                            std::vector< edm::Ptr<const reco::GenParticle> > genPhotons_sorted){
+  // void FillMatchedPhotonInfo(const std::vector<edm::Ptr<pat::Photon>> photons,
+  //                            std::vector< edm::Ptr<const reco::GenParticle> > genPhotons,
+  //                            const edm::Handle<EcalRecHitCollection>& recHitsEB,
+  //                            const edm::Handle<EcalRecHitCollection>& recHitsEE,
+  //                            const edm::Handle<edm::ValueMap<bool> >* id_decisions[LOOSE],
+  //                            const edm::Handle<edm::ValueMap<bool> >* id_decisions[MEDIUM],
+  //                            const edm::Handle<edm::ValueMap<bool> >* id_decisions[TIGHT],
+  //                            ExoDiPhotons::photonInfo_t& photon1Info,
+  //                            ExoDiPhotons::photonInfo_t& photon2Info,
+  //                            ExoDiPhotons::photonInfo_t& photon3Info,
+  //                            ExoDiPhotons::diphotonInfo_t& diphotonInfo12,
+  //                            ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
+  //                            ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
+  //                            ExoDiPhotons::triphotonInfo_t& triphotonInfo){
+  //
+  //   bool debug = true;
+  //
+  //   // // for(int i = 0; i < 3; i++){
+  //   // std::vector<int>::size_type loopsize_;
+  //   // if (patPhotons_sorted.size() < genPhotons_sorted.size()) loopsize_ = patPhotons_sorted.size();
+  //   // else loopsize_ = genPhotons_sorted.size();
+  //   //
+  //   // for(std::vector<int>::size_type i = 0; i != loopsize_; i++){
+  //   //   const pat::Photon *patPho = &(*patPhotons_sorted.at(i));
+  //   //   const reco::GenParticle *genPho = &(*genPhotons_sorted.at(i));
+  //   //   double deltaR = reco::deltaR(genPho->eta(), genPho->phi(), patPho->eta(), patPho->phi());
+  //   //   if (debug) std::cout << "Sorted Pair deltaR : " <<  deltaR << std::endl;
+  //   // }
+  //
+  //   const pat::Photon *patPhoton1 = &(*photons.at(0));
+  //   const pat::Photon *patPhoton2 = &(*photons.at(1));
+  //   const pat::Photon *patPhoton3 = &(*photons.at(2));
+  //
+  //   if (photons.size() < 1) return;
+  //   if (patPhoton1){
+  //     // photon1Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[0]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+  //     photon1Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[0]];
+  //     photon1Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[0]];
+  //     photon1Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[0]];
+  //     ExoDiPhotons::FillBasicPhotonInfo(photon1Info, &(*photons[0]));
+  //     ExoDiPhotons::FillPhotonIDInfo(photon1Info, &(*photons[0]), rho_, photon1Info.isSaturated);
+  //     ExoDiPhotons::FillPhotonEGMidInfo(photon1Info, &(*photons[0]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
+  //   }
+  //
+  //   if (photons.size() < 2) return;
+  //   if (patPhoton2){
+  //     // photon2Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[1]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+  //     photon2Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[1]];
+  //     photon2Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[1]];
+  //     photon2Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[1]];
+  //     ExoDiPhotons::FillBasicPhotonInfo(photon2Info, &(*photons[1]));
+  //     ExoDiPhotons::FillPhotonIDInfo(photon2Info, &(*photons[1]), rho_, photon2Info.isSaturated);
+  //     ExoDiPhotons::FillPhotonEGMidInfo(photon2Info, &(*photons[1]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
+  //   }
+  //
+  //   if (photons.size() < 3) return;
+  //   if (patPhoton3){
+  //     photon3Info.isSaturated = ExoDiPhotons::isSaturated(&(*photons[2]), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
+  //     photon3Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[2]];
+  //     photon3Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[2]];
+  //     photon3Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[2]];
+  //     ExoDiPhotons::FillBasicPhotonInfo(photon3Info, &(*photons[2]));
+  //     ExoDiPhotons::FillPhotonIDInfo(photon3Info, &(*photons[2]), rho_, photon3Info.isSaturated);
+  //     ExoDiPhotons::FillPhotonEGMidInfo(photon3Info, &(*photons[2]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
+  //   }
+  //
+  //
+  //   if (patPhoton1 && patPhoton2) ExoDiPhotons::FillDiphotonInfo(diphotonInfo12,&(*photons[0]),&(*photons[1]));
+  //   if (patPhoton1 && patPhoton3) ExoDiPhotons::FillDiphotonInfo(diphotonInfo13,&(*photons[0]),&(*photons[2]));
+  //   if (patPhoton2 && patPhoton3) ExoDiPhotons::FillDiphotonInfo(diphotonInfo23,&(*photons[1]),&(*photons[2]));
+  //   if (patPhoton1 && patPhoton2 && patPhoton3) ExoDiPhotons::FillTriphotonInfo(triphotonInfo,&(*photons[0]),&(*photons[1]),&(*photons[2]));
+  //
+  //   // Are the sorted ordering ok?
+  //
+  //   // std::tuple<int, int> matchindex1 = genpatindices.at(0);
+  //   // std::tuple<int, int> matchindex2 = genpatindices.at(1);
+  //   // std::tuple<int, int> matchindex3 = genpatindices.at(2);
+  //
+  //   // int genpho1_index = std::get<0>(matchindex1);
+  //   // int genpho2_index = std::get<0>(matchindex2);
+  //   // int genpho3_index = std::get<0>(matchindex3);
+  //   //
+  //   // int patpho1_index = std::get<1>(matchindex1);
+  //   // int patpho2_index = std::get<1>(matchindex2);
+  //   // int patpho3_index = std::get<1>(matchindex3);
+  //
+  //   // if (debug){
+  //   //     std::cout << genpho1_index << " : " << patpho1_index << " ; "
+  //   //               << genpho2_index << " : " << patpho2_index << " ; "
+  //   //               << genpho3_index << " : " << patpho3_index << std::endl;
+  //   //     }
+  //
+  //       // If pat index > 0;
+  //       // Get actual pat photon
+  //       // fill ID information for each
+  //       // fill is Sat information for each
+  //
+  //   }
+
 } // end of namespace
 
 #endif

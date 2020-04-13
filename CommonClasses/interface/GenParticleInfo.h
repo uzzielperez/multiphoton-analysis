@@ -197,7 +197,10 @@ std::tuple< std::vector<bool>,
             std::vector<double> > genpatmatchInfo(  std::vector< edm::Ptr<const reco::GenParticle> > genPhotons_sorted,
                                                     std::vector<edm::Ptr<pat::Photon>> patPhotons_sorted)
   {
+      bool debug = true;
       bool printInfo = true;
+      bool pairsorted = true; // do not loop over pat collection, do pairwise calculation of dR
+
       std::vector<bool> matchingInfo;
       std::vector<double> minDRvec;
       std::vector<double> minDpTvec;
@@ -206,84 +209,140 @@ std::tuple< std::vector<bool>,
       std::vector<double> minDphivec;
       std::vector<double> minDetavec;
 
+      const pat::Photon *photon_reco_match = NULL;
+      const reco::GenParticle *photon_gen_match = NULL;
+
+      const pat::Photon *patPho = NULL;
+      const reco::GenParticle *genPho = NULL;
+
+      double minDeltaR ;
+      double minDeltapT ;
+      double minDeltaPhi;
+      double minDeltaEta;
+      bool isptmatched  ;
+      bool ismatched    ;
+      bool isptdRmatched;
+      std::tuple <int, int> genpatindices;
+      int gen_index;
+      int pat_index;
+
+      double deltaR;
+      double deltaPT;
+      double deltaPhi;
+      double deltaEta;
+
+      if (pairsorted){
+        std::vector<int>::size_type loopsize_;
+        if (patPhotons_sorted.size() < genPhotons_sorted.size()) loopsize_ = patPhotons_sorted.size();
+        else loopsize_ = genPhotons_sorted.size();
+
+        for(std::vector<int>::size_type i = 0; i != loopsize_; i++){
+
+          minDeltaR  = 99999.99;
+          minDeltapT  = 99999.99;
+          minDeltaPhi = 99999.99;
+          minDeltaEta = 99999.99;
+          isptmatched   = false;
+          ismatched     = false;
+          isptdRmatched = false;
+          genpatindices = std::make_tuple(-99999,-99999);
+          gen_index = std::get<0>(genpatindices);
+          pat_index = std::get<1>(genpatindices);
+
+          patPho = &(*patPhotons_sorted.at(i));
+          genPho = &(*genPhotons_sorted.at(i));
+          deltaR = reco::deltaR(genPho->eta(), genPho->phi(), patPho->eta(), patPho->phi());
+          deltaPT = fabs(genPho->pt() - patPho->pt());
+          if (debug) std::cout << "Sorted Pair deltaR : " <<  deltaR << std::endl;
+          if (deltaR < 0.5) ismatched = true;
+          if (deltaPT <= 0.2*genPho->pt()) isptmatched = true;
+          if (ismatched && isptmatched) isptdRmatched = true;
+          deltaPhi = fabs(genPho->phi() - patPho->phi());
+          deltaEta = fabs(genPho->eta() - patPho->eta());
+
+          matchingInfo.push_back(ismatched);
+          minDRvec.push_back(deltaR);
+          minDpTvec.push_back(deltaPT);
+          ptdRmatchInfo.push_back(isptdRmatched);
+          genpatindexvec.push_back(genpatindices); //just default
+          minDphivec.push_back(deltaPhi);
+          minDetavec.push_back(deltaEta);
+        }
+      }
       // std::vector<const pat::Photon> patmatchedcollection;
       // std::vector<const reco::GenParticle> genmatchedcollection;
       // Loop over sorted collections to calculate deltaR
       // std::cout << "Looping over genphotons collection of size " << genPhotons_sorted.size() << std::endl;
       // if (genPhotons_sorted.size() > 3)  std::cout << "MORE THAN 3 PHOTONS found " << std::endl;
-      for (std::vector<int>::size_type i = 0; i != genPhotons_sorted.size(); i++)
-      {
-          // const auto gen = genPho->ptrAt(i);
-          const reco::GenParticle *genPho = &(*genPhotons_sorted.at(i));
-          double minDeltaR = 99999.99;
-          double minDeltapT = 99999.99;
-          double minDeltaPhi = 99999.99;
-          double minDeltaEta = 99999.99;
-          double deltaPT;
-          bool isptmatched = false;
-          bool ismatched = false;
-          bool isptdRmatched = false;
-          std::tuple <int, int> genpatindices;
-          genpatindices = std::make_tuple(-99999,-99999);
-          int gen_index = std::get<0>(genpatindices);
-          int pat_index = std::get<1>(genpatindices);
-          // int gen_index = 100;
-          // int pat_index = 100;
+      if (!pairsorted){
+        for (std::vector<int>::size_type i = 0; i != genPhotons_sorted.size(); i++)
+        {
+            // const auto gen = genPho->ptrAt(i);
+            minDeltaR = 99999.99;
+            minDeltapT  = 99999.99;
+            minDeltaPhi = 99999.99;
+            minDeltaEta = 99999.99;
+            isptmatched   = false;
+            ismatched     = false;
+            isptdRmatched = false;
+            genpatindices = std::make_tuple(-99999,-99999);
+            gen_index = std::get<0>(genpatindices);
+            pat_index = std::get<1>(genpatindices);
 
 
-          const pat::Photon *photon_reco_match = NULL;
-          const reco::GenParticle *photon_gen_match = NULL;
-          if (printInfo) std::cout << "GenPho: pt = " << genPho->pt() << "; eta = " << genPho->eta() << "; phi = " << genPho->phi() << std::endl;
+            if (printInfo) std::cout << "GenPho: pt = " << genPho->pt() << "; eta = " << genPho->eta() << "; phi = " << genPho->phi() << std::endl;
 
-          for(std::vector<int>::size_type j = 0; j != patPhotons_sorted.size(); j++)
-          {
-              const pat::Photon *patPho = &(*patPhotons_sorted.at(j));
-              double deltaR = reco::deltaR(genPho->eta(), genPho->phi(), patPho->eta(), patPho->phi());
-              deltaPT = fabs(genPho->pt() - patPho->pt());
-              double deltaPhi = fabs(genPho->phi() - patPho->phi());
-              double deltaEta = fabs(genPho->eta() - patPho->eta());
-              bool isinGap = false;
-              if (patPho->isEBEtaGap() || patPho->isEBPhiGap() || patPho->isEERingGap() || patPho->isEEDeeGap() || patPho->isEBEEGap() ) isinGap = true;
-              bool hasconversiontracks = patPho->hasConversionTracks();
+            for(std::vector<int>::size_type j = 0; j != patPhotons_sorted.size(); j++)
+            {
+                patPho = &(*patPhotons_sorted.at(j));
+                double deltaR = reco::deltaR(genPho->eta(), genPho->phi(), patPho->eta(), patPho->phi());
+                deltaPT = fabs(genPho->pt() - patPho->pt());
+                double deltaPhi = fabs(genPho->phi() - patPho->phi());
+                double deltaEta = fabs(genPho->eta() - patPho->eta());
+                bool isinGap = false;
+                if (patPho->isEBEtaGap() || patPho->isEBPhiGap() || patPho->isEERingGap() || patPho->isEEDeeGap() || patPho->isEBEEGap() ) isinGap = true;
+                bool hasconversiontracks = patPho->hasConversionTracks();
 
-              if (printInfo) std::cout << "Pho: pt = " << patPho->pt() << "; eta = " << patPho->eta() << "; phi = " << patPho->phi() << "; deltaR = " << deltaR << "; GAP? " << isinGap << "; hasConversionTracks: " << hasconversiontracks << "; deltaPT = " << deltaPT <<std::endl;
+                if (printInfo) std::cout << "Pho: pt = " << patPho->pt() << "; eta = " << patPho->eta() << "; phi = " << patPho->phi() << "; deltaR = " << deltaR << "; GAP? " << isinGap << "; hasConversionTracks: " << hasconversiontracks << "; deltaPT = " << deltaPT <<std::endl;
 
-              if (deltaPT <= 0.2*genPho->pt()) isptmatched = true;
-              if (deltaR <= minDeltaR)
-              {
-                  minDeltaR = deltaR;
-                  minDeltapT = deltaPT;
-                  minDeltaPhi = deltaPhi;
-                  minDeltaEta = deltaEta;
-                  if (minDeltaR<0.10) ismatched = true;
-                  gen_index = i;
-                  pat_index = j;
-                  genpatindices = std::make_tuple( gen_index , pat_index );
-                  photon_reco_match = &(*patPho);
-                  photon_gen_match = &(*genPho);
-                  if (isptmatched) isptdRmatched = true;
-              }
-          }
-              if (ismatched && printInfo) cout << "MATCH FOUND! minDR: " << minDeltaR  << "; dPT: " <<  minDeltapT
-                                  << "; gen:pat pt = " << photon_gen_match->pt() << " : " << photon_reco_match->pt()
-                                  << "; eta = " << photon_gen_match->eta() << " : " << photon_reco_match->eta()
-                                  << "; phi = " << photon_gen_match->phi() << " : " << photon_reco_match->phi()
-                                  << "; indices = " << gen_index <<  " : " << pat_index
-                                  << "; ptdRmatched = " << isptdRmatched
-                                  << std::endl;
+                if (deltaPT <= 0.2*genPho->pt()) isptmatched = true;
+                if (deltaR <= minDeltaR)
+                {
+                    minDeltaR = deltaR;
+                    minDeltapT = deltaPT;
+                    minDeltaPhi = deltaPhi;
+                    minDeltaEta = deltaEta;
+                    if (minDeltaR<0.10) ismatched = true;
+                    gen_index = i;
+                    pat_index = j;
+                    genpatindices = std::make_tuple( gen_index , pat_index );
+                    photon_reco_match = &(*patPho);
+                    photon_gen_match = &(*genPho);
+                    if (isptmatched) isptdRmatched = true;
+                }
+            }
+                if (ismatched && printInfo) cout << "MATCH FOUND! minDR: " << minDeltaR  << "; dPT: " <<  minDeltapT
+                                    << "; gen:pat pt = " << photon_gen_match->pt() << " : " << photon_reco_match->pt()
+                                    << "; eta = " << photon_gen_match->eta() << " : " << photon_reco_match->eta()
+                                    << "; phi = " << photon_gen_match->phi() << " : " << photon_reco_match->phi()
+                                    << "; indices = " << gen_index <<  " : " << pat_index
+                                    << "; ptdRmatched = " << isptdRmatched
+                                    << std::endl;
 
-           matchingInfo.push_back(ismatched);
-           minDRvec.push_back(minDeltaR);
-           minDpTvec.push_back(minDeltapT);
-           ptdRmatchInfo.push_back(isptdRmatched);
-           genpatindexvec.push_back(genpatindices);
-           minDphivec.push_back(minDeltaPhi);
-           minDetavec.push_back(minDeltaEta);
+             matchingInfo.push_back(ismatched);
+             minDRvec.push_back(minDeltaR);
+             minDpTvec.push_back(minDeltapT);
+             ptdRmatchInfo.push_back(isptdRmatched);
+             genpatindexvec.push_back(genpatindices);
+             minDphivec.push_back(minDeltaPhi);
+             minDetavec.push_back(minDeltaEta);
 
-           // Later if I want to retrieve the full matching information:
-           // patmatchedcollection.push_back(photon_reco_match);
-           // genmatchedcollection.push_back(photon_gen_match);
-      }
+             // Later if I want to retrieve the full matching information:
+             // patmatchedcollection.push_back(photon_reco_match);
+             // genmatchedcollection.push_back(photon_gen_match);
+        }
+      } // end loop over pat collection deltaR calc
+
       return {matchingInfo, minDRvec, minDpTvec, ptdRmatchInfo, genpatindexvec, minDphivec, minDetavec};
 }
 void FillGenPATmatchInfo(genParticleInfo_t &genParticleInfo,
