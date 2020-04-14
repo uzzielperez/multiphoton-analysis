@@ -57,8 +57,20 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ~nPhotonAnalyzer();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-      void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
-                       const edm::Handle<edm::View<pat::Photon> >& photons);
+      void fillGenPatInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+                                        const edm::Handle<edm::View<pat::Photon> >& photons,
+                                        const edm::Handle<EcalRecHitCollection>& recHitsEB,
+                                        const edm::Handle<EcalRecHitCollection>& recHitsEE,
+                                        const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+                                        ExoDiPhotons::photonInfo_t& photon1Info,
+                                        ExoDiPhotons::photonInfo_t& photon2Info,
+                                        ExoDiPhotons::photonInfo_t& photon3Info,
+                                        ExoDiPhotons::diphotonInfo_t& diphotonInfo12,
+                                        ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
+                                        ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
+                                        ExoDiPhotons::triphotonInfo_t& triphotonInfo);
+      // void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+      //                  const edm::Handle<edm::View<pat::Photon> >& photons);
       void fillPhotonInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
                     const edm::Handle<edm::View<pat::Photon> >& photons,
                     const edm::Handle<EcalRecHitCollection>& recHitsEB,
@@ -87,6 +99,18 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
                     const edm::Handle<edm::View<reco::GenParticle> > genParticles);
       void genRecoMatchInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
                             const edm::Handle<edm::View<pat::Photon> >& photons);
+      // void FillMatchedPhotonInfo(const std::vector<edm::Ptr<pat::Photon>> photons,
+      //                       std::vector< edm::Ptr<const reco::GenParticle> > genPhotons,
+      //                       const edm::Handle<EcalRecHitCollection>& recHitsEB,
+      //                       const edm::Handle<EcalRecHitCollection>& recHitsEE,
+      //                       const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+      //                       ExoDiPhotons::photonInfo_t& photon1Info,
+      //                       ExoDiPhotons::photonInfo_t& photon2Info,
+      //                       ExoDiPhotons::photonInfo_t& photon3Info,
+      //                       ExoDiPhotons::diphotonInfo_t& diphotonInfo12,
+      //                       ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
+      //                       ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
+      //                       ExoDiPhotons::triphotonInfo_t& triphotonInfo);
 
 
    private:
@@ -140,6 +164,14 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ExoDiPhotons::diphotonInfo_t      fDiphotonInfo13;
       ExoDiPhotons::diphotonInfo_t      fDiphotonInfo23;
       ExoDiPhotons::triphotonInfo_t     fTriphotonInfo;
+
+      ExoDiPhotons::photonInfo_t        fMatchedPhoton1Info;
+      ExoDiPhotons::photonInfo_t        fMatchedPhoton2Info;
+      ExoDiPhotons::photonInfo_t        fMatchedPhoton3Info;
+      ExoDiPhotons::diphotonInfo_t      fMatchedDiphotonInfo12;
+      ExoDiPhotons::diphotonInfo_t      fMatchedDiphotonInfo13;
+      ExoDiPhotons::diphotonInfo_t      fMatchedDiphotonInfo23;
+      ExoDiPhotons::triphotonInfo_t     fMatchedTriphotonInfo;
 
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton1Info;
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton2Info;

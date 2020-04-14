@@ -79,6 +79,13 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    fTree->Branch("DiPhoton13",   &fDiphotonInfo13, ExoDiPhotons::diphotonBranchDefString.c_str());
    fTree->Branch("DiPhoton23",   &fDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
    fTree->Branch("TriPhoton",    &fTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
+   fTree->Branch("MatchedPhoton1", &fMatchedPhoton1Info,      ExoDiPhotons::photonBranchDefString.c_str());
+   fTree->Branch("MatchedPhoton2", &fMatchedPhoton2Info,      ExoDiPhotons::photonBranchDefString.c_str());
+   fTree->Branch("MatchedPhoton3", &fMatchedPhoton3Info,      ExoDiPhotons::photonBranchDefString.c_str());
+   fTree->Branch("MatchedDiPhoton12",   &fMatchedDiphotonInfo12, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fTree->Branch("MatchedDiPhoton13",   &fMatchedDiphotonInfo13, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fTree->Branch("MatchedDiPhoton23",   &fMatchedDiphotonInfo23, ExoDiPhotons::diphotonBranchDefString.c_str());
+   fTree->Branch("MatchedTriPhoton",    &fMatchedTriphotonInfo, ExoDiPhotons::triphotonBranchDefString.c_str());
    fTree->Branch("isGood",           &isGood_);
    fTree->Branch("nPV", &nPV_);
    // For
@@ -153,14 +160,16 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
    if (islocal_){
      ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
-     fillGenInfo(genParticles, photons);
+     //fillGenInfo(genParticles, photons);
+     fillGenPatInfo(genParticles, photons, recHitsEB, recHitsEE, &id_decisions[0], fMatchedPhoton1Info, fMatchedPhoton2Info, fMatchedPhoton3Info, fMatchedDiphotonInfo12, fMatchedDiphotonInfo13, fMatchedDiphotonInfo23, fMatchedTriphotonInfo);
      //cout << "isGood: " << isGood_ << endl;
      fgenTree->Fill();
    }
 
    if (isDAS_){
      ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
-     fillGenInfo(genParticles, photons);
+     // fillGenInfo(genParticles, photons);
+     fillGenPatInfo(genParticles, photons, recHitsEB, recHitsEE, &id_decisions[0], fMatchedPhoton1Info, fMatchedPhoton2Info, fMatchedPhoton3Info, fMatchedDiphotonInfo12, fMatchedDiphotonInfo13, fMatchedDiphotonInfo23, fMatchedTriphotonInfo);
      fillPhotonInfo(genParticles, photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
      //cout << "isGood: " << isGood_ << endl;
      fTree->Fill();
@@ -190,13 +199,25 @@ nPhotonAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
   descriptions.addDefault(desc);
 }
 
-
-void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
-                                  const edm::Handle<edm::View<pat::Photon> >& photons){
+void nPhotonAnalyzer::fillGenPatInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+                                  const edm::Handle<edm::View<pat::Photon> >& photons,
+                                  const edm::Handle<EcalRecHitCollection>& recHitsEB,
+                                  const edm::Handle<EcalRecHitCollection>& recHitsEE,
+                                  const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+                                  ExoDiPhotons::photonInfo_t& photon1Info,
+                                  ExoDiPhotons::photonInfo_t& photon2Info,
+                                  ExoDiPhotons::photonInfo_t& photon3Info,
+                                  ExoDiPhotons::diphotonInfo_t& diphotonInfo12,
+                                  ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
+                                  ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
+                                  ExoDiPhotons::triphotonInfo_t& triphotonInfo){
+// void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+//                                   const edm::Handle<edm::View<pat::Photon> >& photons){
 
       // Store Information in these vectors
       vector< edm::Ptr<const reco::GenParticle> > genPhotons;
       std::vector<edm::Ptr<pat::Photon>> patPhotons;
+      std::vector<edm::Ptr<pat::Photon>> patTriPhotons;
       vector<int> interactingPartons;
 
       //-- Loop over gen particles to store photons
@@ -218,11 +239,13 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
      for (size_t i = 0; i < photons->size(); ++i){
        const auto pho = photons->ptrAt(i);
        patPhotons.push_back(pho);
+       if (photons->size() >= 3) patTriPhotons.push_back(pho);
        //std::cout << "Photon: pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << std::endl;
      }
 
       sort(genPhotons.begin(), genPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
       sort(patPhotons.begin(),patPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
+      sort(patTriPhotons.begin(),patTriPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
 
       if(interactingPartons.size() == 2){
         fEventInfo.interactingParton1PdgId = interactingPartons[0];
@@ -244,6 +267,8 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
       std::vector <std::tuple <int, int>> genpatindices = std::get<4>(match_tuple);
       std::vector<double> minDphivec   = std::get<5>(match_tuple);
       std::vector<double> minDetavec   = std::get<6>(match_tuple);
+
+    //  photonFiller(patTriPhotons, recHitsEB, recHitsEE, &id_decisions[0], fMatchedPhoton1Info, fMatchedPhoton2Info, fMatchedPhoton3Info, fMatchedDiphotonInfo12, fMatchedDiphotonInfo13, fMatchedDiphotonInfo23, fMatchedTriphotonInfo);
 
       if (genPhotons.size() > 3) exit(1);
       if(genPhotons.size() < 1) return;
@@ -272,7 +297,7 @@ void nPhotonAnalyzer::fillGenInfo(const edm::Handle<edm::View<reco::GenParticle>
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton3Info, genPhoton3, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton3Info, matchInfo.at(2), minDRvec.at(2), minDpTvec.at(2),
                                           ptdRmatchInfo.at(2), genpatindices.at(2),  minDphivec.at(2), minDetavec.at(2));
-       if ( matchInfo.at(2) ) std::cout << "MATCH FOUND for genpho2 - minDR: " << minDRvec.at(2) << std::endl;
+       if ( matchInfo.at(2) ) std::cout << "MATCH FOUND for genpho3 - minDR: " << minDRvec.at(2) << std::endl;
        if ( !matchInfo.at(2) ) std::cout << "MATCH not FOUND! for genpho3 - minDR: " << minDRvec.at(2) << std::endl;
       }
 
@@ -312,6 +337,7 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<reco::GenPartic
 
         //To-do: Apply high pT, VID (loose, medium, tight) here with flags
         bool pass_HighPtID = ExoDiPhotons::passHighPtID(&(*pho), rho_, isSat);
+        bool pass_LowPtID  = ExoDiPhotons::passLowPtID(&(*pho), rho_, isSat);
         bool passEGMLooseID  = (*id_decisions[LOOSE])[pho];
         bool passEGMMediumID = (*id_decisions[MEDIUM])[pho];
         bool passEGMTightID  = (*id_decisions[TIGHT])[pho];
@@ -322,6 +348,7 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<reco::GenPartic
         if ( IDmode_ == "MEDIUM"    ) pass_ID_version = passEGMMediumID;
         if ( IDmode_ == "TIGHT"     ) pass_ID_version = passEGMTightID;
         if ( IDmode_ == "hightPTID" ) pass_ID_version = pass_HighPtID;
+        if ( IDmode_ == "lowPTID"   ) pass_ID_version = pass_LowPtID;
         //if ( IDmode_ == "NOid"      ) pass_ID_version = 1;
         if ((IDmode_ != "LOOSE" && IDmode_ != "MEDIUM" && IDmode_ != "TIGHT" && IDmode_ != "highPTID") || IDmode_ == "Noid") {
           // cout << "Set to NO ID mode." << endl;
@@ -490,5 +517,6 @@ void nPhotonAnalyzer::mcTruthFiller (const pat::Photon *photon, ExoDiPhotons::ph
 
   if (is_fake) photonInfo.isMCTruthFake = true;
 }// end mcTruthFiller
+
 
 DEFINE_FWK_MODULE(nPhotonAnalyzer);
