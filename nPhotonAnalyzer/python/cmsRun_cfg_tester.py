@@ -42,8 +42,8 @@ options.register('nEventsSample',
 print 'nEventsSample: ', options.nEventsSample
 process = cms.Process("Demo")
 
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+# process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 # process.maxEvents = cms.untracked.PSet(
 #     input = cms.untracked.int32(options.maxEvents)
