@@ -260,15 +260,20 @@ void nPhotonAnalyzer::fillGenPatInfo(const edm::Handle<edm::View<reco::GenPartic
       // Samples with fakes may have only one hard-process photon in the triphoton system
 
       auto match_tuple = ExoDiPhotons::genpatmatchInfo(genPhotons, patPhotons);
-      std::vector<bool> matchInfo    = std::get<0>(match_tuple);
-      std::vector<double> minDRvec   = std::get<1>(match_tuple);
+      std::vector<bool> matchInfo     = std::get<0>(match_tuple);
+      std::vector<double> minDRvec    = std::get<1>(match_tuple);
       std::vector<double> minDpTvec   = std::get<2>(match_tuple);
-      std::vector<bool> ptdRmatchInfo = std::get<3>(match_tuple);
+      std::vector<bool> ptdRmatchInfo  = std::get<3>(match_tuple);
       std::vector <std::tuple <int, int>> genpatindices = std::get<4>(match_tuple);
       std::vector<double> minDphivec   = std::get<5>(match_tuple);
       std::vector<double> minDetavec   = std::get<6>(match_tuple);
-
+      std::vector<const pat::Photon *> patmatch       = std::get<7>(match_tuple); // the collection of pat photons that matched a gen photon
+      std::vector<const reco::GenParticle *> genmatch = std::get<8>(match_tuple);
     //  photonFiller(patTriPhotons, recHitsEB, recHitsEE, &id_decisions[0], fMatchedPhoton1Info, fMatchedPhoton2Info, fMatchedPhoton3Info, fMatchedDiphotonInfo12, fMatchedDiphotonInfo13, fMatchedDiphotonInfo23, fMatchedTriphotonInfo);
+
+      // int gen_i;
+      // int pat_i;
+      // std::tuple <int, int> genpat_i;
 
       if (genPhotons.size() > 3) exit(1);
       if(genPhotons.size() < 1) return;
@@ -277,7 +282,7 @@ void nPhotonAnalyzer::fillGenPatInfo(const edm::Handle<edm::View<reco::GenPartic
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton1Info, genPhoton1, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton1Info, matchInfo.at(0), minDRvec.at(0), minDpTvec.at(0),
                                           ptdRmatchInfo.at(0), genpatindices.at(0), minDphivec.at(0), minDetavec.at(0));
-        if ( matchInfo.at(0) ) std::cout << "MATCH FOUND for genpho1 - minDR: " << minDRvec.at(0) << std::endl;
+        if ( matchInfo.at(0) ) std::cout << "MATCHED! genpho1 - minDR: " << minDRvec.at(0) << "; genpt: " << genmatch.at(0)->pt() << "; patpt: " << patmatch.at(0)->pt() <<std::endl;
         if ( !matchInfo.at(0) ) std::cout << "MATCH not FOUND! for genpho1 - minDR: " << minDRvec.at(0) << std::endl;
       }
 
@@ -287,7 +292,7 @@ void nPhotonAnalyzer::fillGenPatInfo(const edm::Handle<edm::View<reco::GenPartic
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton2Info, genPhoton2, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton2Info, matchInfo.at(1), minDRvec.at(1), minDpTvec.at(1),
                                           ptdRmatchInfo.at(1), genpatindices.at(1), minDphivec.at(1), minDetavec.at(1));
-        if ( matchInfo.at(1) ) std::cout << "MATCH FOUND for genpho2 - minDR: " << minDRvec.at(1) << std::endl;
+        if ( matchInfo.at(1) ) std::cout << "MATCHED! genpho2 - minDR: " << minDRvec.at(1) << "; genpt: " << genmatch.at(1)->pt() << "; patpt: " << patmatch.at(1)->pt() <<std::endl;
         if ( !matchInfo.at(1) ) std::cout << "MATCH not FOUND! for genpho2 - minDR: " << minDRvec.at(1) << std::endl;
       }
 
@@ -297,10 +302,9 @@ void nPhotonAnalyzer::fillGenPatInfo(const edm::Handle<edm::View<reco::GenPartic
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton3Info, genPhoton3, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton3Info, matchInfo.at(2), minDRvec.at(2), minDpTvec.at(2),
                                           ptdRmatchInfo.at(2), genpatindices.at(2),  minDphivec.at(2), minDetavec.at(2));
-       if ( matchInfo.at(2) ) std::cout << "MATCH FOUND for genpho3 - minDR: " << minDRvec.at(2) << std::endl;
+       if ( matchInfo.at(2) ) std::cout << "MATCHED! genpho3 - minDR: " << minDRvec.at(2) << "; genpt: " << genmatch.at(2)->pt() << "; patpt: " << patmatch.at(2)->pt() <<std::endl;
        if ( !matchInfo.at(2) ) std::cout << "MATCH not FOUND! for genpho3 - minDR: " << minDRvec.at(2) << std::endl;
       }
-
 
       //---- Diphoton/Triphoton Information
       if (genPhoton1 && genPhoton2) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo12,genPhoton1,genPhoton2);

@@ -194,11 +194,13 @@ std::tuple< std::vector<bool>,
             std::vector<bool>,
             std::vector<std::tuple<int,int>>,
             std::vector<double>,
-            std::vector<double> > genpatmatchInfo(  std::vector< edm::Ptr<const reco::GenParticle> > genPhotons_sorted,
+            std::vector<double>,
+            std::vector<const pat::Photon *>,
+            std::vector<const reco::GenParticle *>> genpatmatchInfo(  std::vector< edm::Ptr<const reco::GenParticle> > genPhotons_sorted,
                                                     std::vector<edm::Ptr<pat::Photon>> patPhotons_sorted)
   {
-      bool printInfo = true;
-      bool pairsorted = true; // do not loop over pat collection, do pairwise calculation of dR
+      bool printInfo = false;
+      bool pairsorted = false; // do not loop over pat collection, do pairwise calculation of dR
       bool debug = true;
 
       std::vector<bool> matchingInfo;
@@ -208,6 +210,8 @@ std::tuple< std::vector<bool>,
       std::vector<std::tuple<int, int>> genpatindexvec;
       std::vector<double> minDphivec;
       std::vector<double> minDetavec;
+      std::vector<const pat::Photon *> patmatchedcollection;
+      std::vector<const reco::GenParticle *> genmatchedcollection;
 
       double deltaR = 99999.99;
       double deltaPT = 99999.99;
@@ -226,6 +230,8 @@ std::tuple< std::vector<bool>,
 
       const reco::GenParticle *genPho;
       const pat::Photon *patPho;
+      const pat::Photon *photon_reco_match = NULL;
+      const reco::GenParticle *photon_gen_match = NULL;
 
       // Loop over sorted collections to calculate deltaR
       // std::cout << "Looping over genphotons collection of size " << genPhotons_sorted.size() << std::endl;
@@ -272,6 +278,9 @@ std::tuple< std::vector<bool>,
                   genpatindexvec.push_back(genpatindices); //just default
                   minDphivec.push_back(deltaPhi);
                   minDetavec.push_back(deltaEta);
+                  patmatchedcollection.push_back(photon_reco_match);
+                  genmatchedcollection.push_back(photon_gen_match);
+
         }
       }
 
@@ -294,9 +303,6 @@ std::tuple< std::vector<bool>,
             // int gen_index = 100;
             // int pat_index = 100;
 
-
-            const pat::Photon *photon_reco_match = NULL;
-            const reco::GenParticle *photon_gen_match = NULL;
             if (printInfo) std::cout << "GenPho: pt = " << genPho->pt() << "; eta = " << genPho->eta() << "; phi = " << genPho->phi() << std::endl;
 
             for(std::vector<int>::size_type j = 0; j != patPhotons_sorted.size(); j++)
@@ -306,11 +312,11 @@ std::tuple< std::vector<bool>,
                 deltaPT = fabs(genPho->pt() - patPho->pt());
                 double deltaPhi = fabs(genPho->phi() - patPho->phi());
                 double deltaEta = fabs(genPho->eta() - patPho->eta());
-                bool isinGap = false;
-                if (patPho->isEBEtaGap() || patPho->isEBPhiGap() || patPho->isEERingGap() || patPho->isEEDeeGap() || patPho->isEBEEGap() ) isinGap = true;
-                bool hasconversiontracks = patPho->hasConversionTracks();
+                // bool isinGap = false;
+                // if (patPho->isEBEtaGap() || patPho->isEBPhiGap() || patPho->isEERingGap() || patPho->isEEDeeGap() || patPho->isEBEEGap() ) isinGap = true;
+                // bool hasconversiontracks = patPho->hasConversionTracks();
 
-                if (printInfo) std::cout << "Pho: pt = " << patPho->pt() << "; eta = " << patPho->eta() << "; phi = " << patPho->phi() << "; deltaR = " << deltaR << "; GAP? " << isinGap << "; hasConversionTracks: " << hasconversiontracks << "; deltaPT = " << deltaPT <<std::endl;
+                //if (printInfo) std::cout << "Pho: pt = " << patPho->pt() << "; eta = " << patPho->eta() << "; phi = " << patPho->phi() << "; deltaR = " << deltaR << "; GAP? " << isinGap << "; hasConversionTracks: " << hasconversiontracks << "; deltaPT = " << deltaPT <<std::endl;
 
                 if (deltaPT <= 0.2*genPho->pt()) isptmatched = true;
                 if (deltaR <= minDeltaR)
@@ -319,7 +325,7 @@ std::tuple< std::vector<bool>,
                     minDeltapT = deltaPT;
                     minDeltaPhi = deltaPhi;
                     minDeltaEta = deltaEta;
-                    if (minDeltaR<0.10) ismatched = true;
+                    if (minDeltaR<0.5) ismatched = true;
                     gen_index = i;
                     pat_index = j;
                     genpatindices = std::make_tuple( gen_index , pat_index );
@@ -327,7 +333,7 @@ std::tuple< std::vector<bool>,
                     photon_gen_match = &(*genPho);
                     if (isptmatched) isptdRmatched = true;
                 }
-            }
+            } // end loop over pat photons
                 if (ismatched && printInfo) cout << "MATCH FOUND! minDR: " << minDeltaR  << "; dPT: " <<  minDeltapT
                                     << "; gen:pat pt = " << photon_gen_match->pt() << " : " << photon_reco_match->pt()
                                     << "; eta = " << photon_gen_match->eta() << " : " << photon_reco_match->eta()
@@ -343,6 +349,9 @@ std::tuple< std::vector<bool>,
              genpatindexvec.push_back(genpatindices);
              minDphivec.push_back(minDeltaPhi);
              minDetavec.push_back(minDeltaEta);
+             // Also want to keep the pat photon that matched to that particular gen photon
+             patmatchedcollection.push_back(photon_reco_match);
+             genmatchedcollection.push_back(photon_gen_match);
 
              // Later if I want to retrieve the full matching information:
              // patmatchedcollection.push_back(photon_reco_match);
@@ -351,7 +360,7 @@ std::tuple< std::vector<bool>,
 
       } // end if on loop over
 
-      return {matchingInfo, minDRvec, minDpTvec, ptdRmatchInfo, genpatindexvec, minDphivec, minDetavec};
+      return {matchingInfo, minDRvec, minDpTvec, ptdRmatchInfo, genpatindexvec, minDphivec, minDetavec, patmatchedcollection, genmatchedcollection};
 }
 void FillGenPATmatchInfo(genParticleInfo_t &genParticleInfo,
                          bool matchInfo,
