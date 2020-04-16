@@ -97,20 +97,24 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       void mcTruthFiller(const pat::Photon *photon,
                     ExoDiPhotons::photonInfo_t& photonInfo,
                     const edm::Handle<edm::View<reco::GenParticle> > genParticles);
-      void genRecoMatchInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
-                            const edm::Handle<edm::View<pat::Photon> >& photons);
-      // void FillMatchedPhotonInfo(const std::vector<edm::Ptr<pat::Photon>> photons,
-      //                       std::vector< edm::Ptr<const reco::GenParticle> > genPhotons,
-      //                       const edm::Handle<EcalRecHitCollection>& recHitsEB,
-      //                       const edm::Handle<EcalRecHitCollection>& recHitsEE,
-      //                       const edm::Handle<edm::ValueMap<bool> >* id_decisions,
-      //                       ExoDiPhotons::photonInfo_t& photon1Info,
-      //                       ExoDiPhotons::photonInfo_t& photon2Info,
-      //                       ExoDiPhotons::photonInfo_t& photon3Info,
-      //                       ExoDiPhotons::diphotonInfo_t& diphotonInfo12,
-      //                       ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
-      //                       ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
-      //                       ExoDiPhotons::triphotonInfo_t& triphotonInfo);
+      // void patPhoMatchFiller(const pat::Photon *photon,
+      //                        ExoDiPhotons::photonInfo_t& photonInfo,
+      //                        const edm::Handle<EcalRecHitCollection>& recHitsEB,
+      //                        const edm::Handle<EcalRecHitCollection>& recHitsEE,
+      //                    		 const edm::Handle<edm::ValueMap<bool> >* id_decisions);
+      // void genRecoMatchInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+      //                       const edm::Handle<edm::View<pat::Photon> >& photons);
+      // void photonMatchFiller(std::vector<const pat::Photon *> photons,
+      //                        const edm::Handle<EcalRecHitCollection>& recHitsEB,
+      //                        const edm::Handle<EcalRecHitCollection>& recHitsEE,
+      //                        const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+      //                        ExoDiPhotons::photonInfo_t& photon1Info,
+      //                        ExoDiPhotons::photonInfo_t& photon2Info,
+      //                        ExoDiPhotons::photonInfo_t& photon3Info,
+      //                        ExoDiPhotons::diphotonInfo_t& diphotonInfo12,
+      //                        ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
+      //                        ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
+      //                        ExoDiPhotons::triphotonInfo_t& triphotonInfo);
 
 
    private:
