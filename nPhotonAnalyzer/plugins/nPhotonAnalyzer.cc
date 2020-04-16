@@ -238,10 +238,23 @@ void nPhotonAnalyzer::fillGenPatInfo(const edm::Handle<edm::View<reco::GenPartic
      //--- Loop over reco particles
      for (size_t i = 0; i < photons->size(); ++i){
        const auto pho = photons->ptrAt(i);
+       // const auto phodummy = photons->ptrAt(0);
        patPhotons.push_back(pho);
-       if (photons->size() >= 3) patTriPhotons.push_back(pho);
+       // if (photons->size() < 3 ) {
+       //   // Initialize first three to dummy
+       //   patTriPhotons.at(0) = photons->ptrAt(0);
+       //   patTriPhotons.at(1) = photons->ptrAt(0);
+       //   patTriPhotons.at(2) = photons->ptrAt(0);
+       // }
+       // if (photons->size() >= 3) patTriPhotons.push_back(pho);
        //std::cout << "Photon: pt = " << pho->pt() << "; eta = " << pho->eta() << "; phi = " << pho->phi() << std::endl;
      }
+
+      if(photons->size()==0) return;
+      const auto phodummy = photons->ptrAt(0);
+      patTriPhotons.push_back(phodummy);
+      patTriPhotons.push_back(phodummy);
+      patTriPhotons.push_back(phodummy);
 
       sort(genPhotons.begin(), genPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
       sort(patPhotons.begin(),patPhotons.end(), ExoDiPhotons::comparePhotonsByPt);
@@ -271,40 +284,66 @@ void nPhotonAnalyzer::fillGenPatInfo(const edm::Handle<edm::View<reco::GenPartic
       std::vector<const reco::GenParticle *> genmatch = std::get<8>(match_tuple);
     //  photonFiller(patTriPhotons, recHitsEB, recHitsEE, &id_decisions[0], fMatchedPhoton1Info, fMatchedPhoton2Info, fMatchedPhoton3Info, fMatchedDiphotonInfo12, fMatchedDiphotonInfo13, fMatchedDiphotonInfo23, fMatchedTriphotonInfo);
 
-      // int gen_i;
-      // int pat_i;
-      // std::tuple <int, int> genpat_i;
+      int pat_i = 0;
+      std::tuple <int, int> genpat_i;
+
+      // patTriPhotons.at(0) = NULL;
+      // patTriPhotons.at(1) = NULL;
+      // patTriPhotons.at(2) = NULL;
 
       if (genPhotons.size() > 3) exit(1);
       if(genPhotons.size() < 1) return;
       const reco::GenParticle *genPhoton1 = &(*genPhotons.at(0));
       if (genPhoton1){
+
+        if ( matchInfo.at(0) ){
+          genpat_i = genpatindices.at(0);
+          pat_i = std::get<1>(genpat_i);
+          patTriPhotons.at(0) = patPhotons.at(pat_i);
+        }
+
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton1Info, genPhoton1, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton1Info, matchInfo.at(0), minDRvec.at(0), minDpTvec.at(0),
                                           ptdRmatchInfo.at(0), genpatindices.at(0), minDphivec.at(0), minDetavec.at(0));
-        if ( matchInfo.at(0) ) std::cout << "MATCHED! genpho1 - minDR: " << minDRvec.at(0) << "; genpt: " << genmatch.at(0)->pt() << "; patpt: " << patmatch.at(0)->pt() <<std::endl;
+        if ( matchInfo.at(0) ) std::cout << "MATCHED! genpho1 - minDR: " << minDRvec.at(0) << "; genpt: " << genmatch.at(0)->pt() << "; patpt: " << patmatch.at(0)->pt() << "patm: " << patPhotons.at(pat_i)->pt() <<  std::endl;
         if ( !matchInfo.at(0) ) std::cout << "MATCH not FOUND! for genpho1 - minDR: " << minDRvec.at(0) << std::endl;
       }
 
       if(genPhotons.size() < 2) return;
       const reco::GenParticle *genPhoton2 = &(*genPhotons.at(1));
       if (genPhoton2){
+
+        if ( matchInfo.at(1) ){
+          genpat_i = genpatindices.at(1);
+          pat_i = std::get<1>(genpat_i);
+          patTriPhotons.at(1) = patPhotons.at(pat_i);
+        }
+
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton2Info, genPhoton2, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton2Info, matchInfo.at(1), minDRvec.at(1), minDpTvec.at(1),
                                           ptdRmatchInfo.at(1), genpatindices.at(1), minDphivec.at(1), minDetavec.at(1));
-        if ( matchInfo.at(1) ) std::cout << "MATCHED! genpho2 - minDR: " << minDRvec.at(1) << "; genpt: " << genmatch.at(1)->pt() << "; patpt: " << patmatch.at(1)->pt() <<std::endl;
+        if ( matchInfo.at(1) ) std::cout << "MATCHED! genpho2 - minDR: " << minDRvec.at(1) << "; genpt: " << genmatch.at(1)->pt() << "; patpt: " << patmatch.at(1)->pt()<< "patm: " << patPhotons.at(pat_i)->pt() << std::endl;
         if ( !matchInfo.at(1) ) std::cout << "MATCH not FOUND! for genpho2 - minDR: " << minDRvec.at(1) << std::endl;
       }
 
       if(genPhotons.size() < 3) return;
       const reco::GenParticle *genPhoton3 = &(*genPhotons.at(2));
       if (genPhoton3){
+
+        if ( matchInfo.at(2) ){
+          genpat_i = genpatindices.at(2);
+          pat_i = std::get<1>(genpat_i);
+          patTriPhotons.at(2) = patPhotons.at(pat_i);
+        }
+
         ExoDiPhotons::FillGenParticleInfo(fGenPhoton3Info, genPhoton3, photons);
         ExoDiPhotons::FillGenPATmatchInfo(fGenPhoton3Info, matchInfo.at(2), minDRvec.at(2), minDpTvec.at(2),
                                           ptdRmatchInfo.at(2), genpatindices.at(2),  minDphivec.at(2), minDetavec.at(2));
-       if ( matchInfo.at(2) ) std::cout << "MATCHED! genpho3 - minDR: " << minDRvec.at(2) << "; genpt: " << genmatch.at(2)->pt() << "; patpt: " << patmatch.at(2)->pt() <<std::endl;
+       if ( matchInfo.at(2) ) std::cout << "MATCHED! genpho3 - minDR: " << minDRvec.at(2) << "; genpt: " << genmatch.at(2)->pt() << "; patpt: " << patmatch.at(2)->pt()<< "patm: " << patPhotons.at(pat_i)->pt() << std::endl;
        if ( !matchInfo.at(2) ) std::cout << "MATCH not FOUND! for genpho3 - minDR: " << minDRvec.at(2) << std::endl;
       }
+
+      photonFiller(patTriPhotons, recHitsEB, recHitsEE, &id_decisions[0], fMatchedPhoton1Info, fMatchedPhoton2Info, fMatchedPhoton3Info, fMatchedDiphotonInfo12, fMatchedDiphotonInfo13, fMatchedDiphotonInfo23, fMatchedTriphotonInfo);
 
       //---- Diphoton/Triphoton Information
       if (genPhoton1 && genPhoton2) ExoDiPhotons::FillDiphotonInfo(fGenDiphotonInfo12,genPhoton1,genPhoton2);

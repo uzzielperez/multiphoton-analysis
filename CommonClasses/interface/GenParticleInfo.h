@@ -224,7 +224,7 @@ std::tuple< std::vector<bool>,
       double isptmatched   = false;
       double ismatched     = false;
       double isptdRmatched = false;
-      std::tuple <int, int> genpatindices = std::make_tuple(-99999,-99999);
+      std::tuple <int, int> genpatindices = std::make_tuple(0,0);
       int gen_index = std::get<0>(genpatindices);
       int pat_index = std::get<1>(genpatindices);
 
@@ -251,7 +251,7 @@ std::tuple< std::vector<bool>,
                 isptmatched   = false;
                 ismatched     = false;
                 isptdRmatched = false;
-                genpatindices = std::make_tuple(-99999,-99999);
+                genpatindices = std::make_tuple(0,0);
                 gen_index = std::get<0>(genpatindices);
                 pat_index = std::get<1>(genpatindices);
 
@@ -297,7 +297,7 @@ std::tuple< std::vector<bool>,
             ismatched = false;
             isptdRmatched = false;
             std::tuple <int, int> genpatindices;
-            genpatindices = std::make_tuple(-99999,-99999);
+            genpatindices = std::make_tuple(0,0);
             gen_index = std::get<0>(genpatindices);
             pat_index = std::get<1>(genpatindices);
             // int gen_index = 100;
