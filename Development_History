@@ -7,7 +7,7 @@
   - Features include storing the matched PAT photon and their indices.
   - Bug fixes include making sure that the "matched gen and pat indices" are not out of range. Like -999999 will cause a runtime error.
 
-  Branching out to NewSinglePhotonAnalyzer
+  Branching out to PhoEfficiencyAnalyzer
   - This is to create a new analyzer with a tree information structure suitable and made specifically for efficiency studies
   - This is also to double check if we got the "storing" and the efficiency correctly.
 
