@@ -117,14 +117,17 @@ PhoEfficiencyAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
    if (islocal_){
      ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
-     fillInfo(genParticles, photons);
+     fillInfo(genParticles, photons, recHitsEB, recHitsEE, &id_decisions[0]);
+
      //cout << "isGood: " << isGood_ << endl;
      fgenTree->Fill();
    }
 
    if (isDAS_){
      ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
-     fillInfo(genParticles, photons);
+     // fillInfo(genParticles, photons);
+     fillInfo(genParticles, photons, recHitsEB, recHitsEE, &id_decisions[0]);
+
      // fillPhotonInfo(genParticles, photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
      //cout << "isGood: " << isGood_ << endl;
      fTree->Fill();
@@ -156,11 +159,15 @@ PhoEfficiencyAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descript
 
 
 void PhoEfficiencyAnalyzer::fillInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
-                                  const edm::Handle<edm::View<pat::Photon> >& photons)
+                                     const edm::Handle<edm::View<pat::Photon> >& photons,
+                                     const edm::Handle<EcalRecHitCollection>& recHitsEB,
+                                     const edm::Handle<EcalRecHitCollection>& recHitsEE,
+                                     const edm::Handle<edm::ValueMap<bool> >* id_decisions)
       {
 
       // Store Information in these vectors
       vector< edm::Ptr<const reco::GenParticle> > genPhotons;
+      //std::vector<edm::Ptr<pat::Photon>> patPhotons;
       std::vector<edm::Ptr<pat::Photon>> patPhotons;
       vector<int> interactingPartons;
 
@@ -194,60 +201,69 @@ void PhoEfficiencyAnalyzer::fillInfo(const edm::Handle<edm::View<reco::GenPartic
       // Now show go through the sorted pat and gen photons
       const reco::GenParticle *genPho;
       const pat::Photon *patPho;
-
       const pat::Photon *photon_reco_match = NULL;
-      const reco::GenParticle *photon_gen_match = NULL;
+
 
       //----- DeltaR matching
       // Find PAT deltaR match for each Gen photon
       // Store Information for each DR match in Tree
       for (std::vector<int>::size_type i = 0; i != genPhotons.size(); i++)
       {
-        genPho = &(*genPhotons_sorted.at(i));
-        minDeltaR = 99999.99;
+
+        genPho = &(*genPhotons.at(i));
+
+        double minDeltaR = 99999.99;
+
         // minDeltapT = 99999.99;
         // minDeltaPhi = 99999.99;
         // minDeltaEta = 99999.99;
         // isptmatched = false;
-        ismatched = false;
+
 
         if ( i == 0 ) ExoDiPhotons::FillGenParticleInfo( fGenPhoton1Info, genPho );
         if ( i == 1 ) ExoDiPhotons::FillGenParticleInfo( fGenPhoton2Info, genPho );
         if ( i == 2 ) ExoDiPhotons::FillGenParticleInfo( fGenPhoton3Info, genPho );
 
-        for ( std::vector<int>::size_type i = 0; i != patPhotons.size(); i++ )
+        for ( std::vector<int>::size_type j = 0; j != patPhotons.size(); j++ )
+        // for (size_t j = 0; j < patPhotons->size(); ++j){
         {
 
-            patPho = &(*patPhotons_sorted.at(j));
+            patPho = &(*patPhotons.at(j));
+            // const auto pho = patPhotons->ptrAt(j);
+            // bool ismatched = false;
             double deltaR  = reco::deltaR(genPho->eta(), genPho->phi(), patPho->eta(), patPho->phi());
-            double deltaPT = fabs(genPho->pt() - patPho->pt());
-            double deltaPhi = fabs(genPho->phi() - patPho->phi());
-            double deltaEta = fabs(genPho->eta() - patPho->eta());
+            // double deltaPT = fabs(genPho->pt() - patPho->pt());
+            // double deltaPhi = fabs(genPho->phi() - patPho->phi());
+            // double deltaEta = fabs(genPho->eta() - patPho->eta());
 
             if ( deltaR <= minDeltaR )
             {
-
                 minDeltaR   = deltaR;
                 // minDeltapT  = deltaPT;
                 // minDeltaPhi = deltaPhi;
                 // minDeltaEta = deltaEta;
-                if ( minDeltaR < 0.5 ) ismatched = true;
-                photon_reco_match = &(*patPho);
-                photon_gen_match = &(*genPho);
+                // if ( minDeltaR < 0.5 ) ismatched = true;
+                if ( minDeltaR < 0.5 ) photon_reco_match = &(*patPho);
+                //if ( minDeltaR < 0.5 ) const auto patPhoMatch = pho;
 
               }
               //---- Store matched PAT Photon Info:
-              isSat = ExoDiPhotons::isSaturated(photon_reco_match, &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
-              if ( i == 0 ) fillpatPhoIDInfo( fPhoton1Info , photon_reco_match );
-              if ( i == 1 ) fillpatPhoIDInfo( fPhoton2Info , photon_reco_match );
-              if ( i == 2 ) fillpatPhoIDInfo( fPhoton3Info , photon_reco_match );
+              if ( i == 0 ) fillpatPhoIDInfo( fPhoton1Info , photon_reco_match, recHitsEB, recHitsEE, &id_decisions[0] );
+              if ( i == 1 ) fillpatPhoIDInfo( fPhoton2Info , photon_reco_match, recHitsEB, recHitsEE, &id_decisions[0] );
+              if ( i == 2 ) fillpatPhoIDInfo( fPhoton3Info , photon_reco_match, recHitsEB, recHitsEE, &id_decisions[0] );
         }
       }
 }//end of fillInfo
 
-// Make a filling function ( input is photon_reco_match)
 
-void PhoEfficiencyAnalyzer::fillpatPhoIDInfo(photonInfo_t &photonInfo, const pat::Photon *photon)
+// void PhoEfficiencyAnalyzer::fillpatPhoIDInfo(ExoDiPhotons::photonInfo_t& photonInfo, const pat::Photon *photon,
+//                                              const edm::Handle<EcalRecHitCollection>& recHitsEB,
+//                                              const edm::Handle<EcalRecHitCollection>& recHitsEE,
+//                                              const edm::Handle<edm::ValueMap<bool> >* id_decisions)
+void PhoEfficiencyAnalyzer::fillpatPhoIDInfo( ExoDiPhotons::photonInfo_t& photonInfo, const pat::Photon *photon,
+                                              const edm::Handle<EcalRecHitCollection>& recHitsEB,
+                                              const edm::Handle<EcalRecHitCollection>& recHitsEE,
+                                              const edm::Handle<edm::ValueMap<bool> >* id_decisions)
 {
 
   photonInfo.passEGMLooseID  = (*(id_decisions[LOOSE]))[photon];

@@ -57,12 +57,17 @@ class PhoEfficiencyAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
       ~PhoEfficiencyAnalyzer();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-      void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+      // void fillInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+      //               const edm::Handle<edm::View<pat::Photon> >& photons);
+      void fillInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
                        const edm::Handle<edm::View<pat::Photon> >& photons,
                        const edm::Handle<EcalRecHitCollection>& recHitsEB,
                        const edm::Handle<EcalRecHitCollection>& recHitsEE,
                        const edm::Handle<edm::ValueMap<bool> >* id_decisions);
-      void fillpatPhoIDInfo( photonInfo_t &photonInfo, const pat::Photon *photon );
+      void fillpatPhoIDInfo( ExoDiPhotons::photonInfo_t& photonInfo, const pat::Photon *photon,
+                             const edm::Handle<EcalRecHitCollection>& recHitsEB,
+                             const edm::Handle<EcalRecHitCollection>& recHitsEE,
+                             const edm::Handle<edm::ValueMap<bool> >* id_decisions  );
       // void fillpatPhoIDInfo(photonInfo_t &photonInfo, const pat::Photon *photon,
       //                       double rho, EffectiveAreas eaCH, EffectiveAreas eaNH, EffectiveAreas eaPho,
       //                       const edm::Handle<EcalRecHitCollection>& recHitsEB,

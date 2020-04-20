@@ -25,7 +25,7 @@ nevts = 13433
 
 print 'Processing ', inputFile_
 cmssw_base = os.getenv("CMSSW_BASE")
-templatefile = cmssw_base + "/src/multiphoton-analysis/nPhotonAnalyzer/python/cmsRun_cfg_tester.py"
+templatefile = cmssw_base + "/src/multiphoton-analysis/PhoEfficiencyAnalyzer/python/cmsRun_cfg_phoEff_tester.py"
 ConfigFile = "cmsRun_cfg_phoefftest.py"
 xsec = 1.00 # Default
 
