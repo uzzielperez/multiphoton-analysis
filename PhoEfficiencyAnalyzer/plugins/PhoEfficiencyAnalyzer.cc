@@ -202,23 +202,18 @@ void PhoEfficiencyAnalyzer::fillInfo(const edm::Handle<edm::View<reco::GenPartic
       const reco::GenParticle *genPho;
       const pat::Photon *patPho;
       const pat::Photon *photon_reco_match = NULL;
-
+      const reco::GenParticle *photon_gen_match = NULL;
+      edm::Ptr<pat::Photon> patMatch;
 
       //----- DeltaR matching
       // Find PAT deltaR match for each Gen photon
       // Store Information for each DR match in Tree
       for (std::vector<int>::size_type i = 0; i != genPhotons.size(); i++)
       {
-
+        if ( genPhotons.size() < 1) return;
         genPho = &(*genPhotons.at(i));
 
         double minDeltaR = 99999.99;
-
-        // minDeltapT = 99999.99;
-        // minDeltaPhi = 99999.99;
-        // minDeltaEta = 99999.99;
-        // isptmatched = false;
-
 
         if ( i == 0 ) ExoDiPhotons::FillGenParticleInfo( fGenPhoton1Info, genPho );
         if ( i == 1 ) ExoDiPhotons::FillGenParticleInfo( fGenPhoton2Info, genPho );
@@ -227,31 +222,48 @@ void PhoEfficiencyAnalyzer::fillInfo(const edm::Handle<edm::View<reco::GenPartic
         for ( std::vector<int>::size_type j = 0; j != patPhotons.size(); j++ )
         // for (size_t j = 0; j < patPhotons->size(); ++j){
         {
-
+            // if ( patPhotons.size() < 1) return;
             patPho = &(*patPhotons.at(j));
-            // const auto pho = patPhotons->ptrAt(j);
-            // bool ismatched = false;
+            const auto pho = patPhotons.at(j);
             double deltaR  = reco::deltaR(genPho->eta(), genPho->phi(), patPho->eta(), patPho->phi());
-            // double deltaPT = fabs(genPho->pt() - patPho->pt());
-            // double deltaPhi = fabs(genPho->phi() - patPho->phi());
-            // double deltaEta = fabs(genPho->eta() - patPho->eta());
 
             if ( deltaR <= minDeltaR )
             {
-                minDeltaR   = deltaR;
-                // minDeltapT  = deltaPT;
-                // minDeltaPhi = deltaPhi;
-                // minDeltaEta = deltaEta;
-                // if ( minDeltaR < 0.5 ) ismatched = true;
-                if ( minDeltaR < 0.5 ) photon_reco_match = &(*patPho);
-                //if ( minDeltaR < 0.5 ) const auto patPhoMatch = pho;
+                minDeltaR = deltaR;
+                if ( minDeltaR < 0.5 )
+                {
+                  photon_reco_match = &(*patPho);
+                  photon_gen_match  = &(*genPho);
+                  patMatch = pho;
+                }
 
-              }
+            }
               //---- Store matched PAT Photon Info:
-              if ( i == 0 ) fillpatPhoIDInfo( fPhoton1Info , photon_reco_match, recHitsEB, recHitsEE, &id_decisions[0] );
-              if ( i == 1 ) fillpatPhoIDInfo( fPhoton2Info , photon_reco_match, recHitsEB, recHitsEE, &id_decisions[0] );
-              if ( i == 2 ) fillpatPhoIDInfo( fPhoton3Info , photon_reco_match, recHitsEB, recHitsEE, &id_decisions[0] );
+
+              // if ( patPhotons.size() < 1) return;
+              // if ( j == 0 ) fillpatPhoIDInfo( fPhoton1Info , photon_reco_match, patMatch, recHitsEB, recHitsEE, &id_decisions[0] );
+              // if ( patPhotons.size() < 2 ) return;
+              // if ( j == 1 ) fillpatPhoIDInfo( fPhoton2Info , photon_reco_match, patMatch, recHitsEB, recHitsEE, &id_decisions[0] );
+              // if ( patPhotons.size() < 3 ) return;
+              // if ( j == 2 ) fillpatPhoIDInfo( fPhoton3Info , photon_reco_match, patMatch, recHitsEB, recHitsEE, &id_decisions[0] );
         }
+        if ( minDeltaR < 0.5 ) cout << "MATCH FOUND! minDR: " << minDeltaR
+                                    << "; pt: "   << photon_gen_match->pt()  << " : " << photon_reco_match->pt()
+                                    << "; eta = " << photon_gen_match->eta() << " : " << photon_reco_match->eta()
+                                    << "; phi = " << photon_gen_match->phi() << " : " << photon_reco_match->phi() << std::endl;
+
+        if ( patPhotons.size() < 1) return;
+        const pat::Photon *patPhoton1 = &(*patPhotons.at(0));
+        if ( minDeltaR < 0.5 && patPhoton1 ) fillpatPhoIDInfo( fPhoton1Info , photon_reco_match, patMatch, recHitsEB, recHitsEE, &id_decisions[0] );
+
+        if ( patPhotons.size() < 2 ) return;
+        const pat::Photon *patPhoton2 = &(*patPhotons.at(1));
+        if ( minDeltaR < 0.5 && patPhoton2 ) fillpatPhoIDInfo( fPhoton2Info , photon_reco_match, patMatch, recHitsEB, recHitsEE, &id_decisions[0] );
+
+        if ( patPhotons.size() < 3 ) return;
+        const pat::Photon *patPhoton3 = &(*patPhotons.at(2));
+        if ( minDeltaR < 0.5 && patPhoton3 ) fillpatPhoIDInfo( fPhoton3Info , photon_reco_match, patMatch, recHitsEB, recHitsEE, &id_decisions[0] );
+
       }
 }//end of fillInfo
 
@@ -260,15 +272,15 @@ void PhoEfficiencyAnalyzer::fillInfo(const edm::Handle<edm::View<reco::GenPartic
 //                                              const edm::Handle<EcalRecHitCollection>& recHitsEB,
 //                                              const edm::Handle<EcalRecHitCollection>& recHitsEE,
 //                                              const edm::Handle<edm::ValueMap<bool> >* id_decisions)
-void PhoEfficiencyAnalyzer::fillpatPhoIDInfo( ExoDiPhotons::photonInfo_t& photonInfo, const pat::Photon *photon,
+void PhoEfficiencyAnalyzer::fillpatPhoIDInfo( ExoDiPhotons::photonInfo_t& photonInfo, const pat::Photon *photon, edm::Ptr<pat::Photon> patMatch,
                                               const edm::Handle<EcalRecHitCollection>& recHitsEB,
                                               const edm::Handle<EcalRecHitCollection>& recHitsEE,
                                               const edm::Handle<edm::ValueMap<bool> >* id_decisions)
 {
 
-  photonInfo.passEGMLooseID  = (*(id_decisions[LOOSE]))[photon];
-  photonInfo.passEGMMediumID = (*(id_decisions[MEDIUM]))[photon];
-  photonInfo.passEGMTightID  = (*(id_decisions[TIGHT]))[photon];
+  photonInfo.passEGMLooseID  = (*(id_decisions[LOOSE]))[patMatch];
+  photonInfo.passEGMMediumID = (*(id_decisions[MEDIUM]))[patMatch];
+  photonInfo.passEGMTightID  = (*(id_decisions[TIGHT]))[patMatch];
   photonInfo.isSaturated = ExoDiPhotons::isSaturated(photon, &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
   ExoDiPhotons::FillBasicPhotonInfo(photonInfo, photon);
   ExoDiPhotons::FillPhotonIDInfo(photonInfo, photon, rho_, photonInfo.isSaturated);
