@@ -215,10 +215,6 @@ void PhoEfficiencyAnalyzer::fillInfo(const edm::Handle<edm::View<reco::GenPartic
 
         double minDeltaR = 99999.99;
 
-        if ( i == 0 ) ExoDiPhotons::FillGenParticleInfo( fGenPhoton1Info, genPho );
-        if ( i == 1 ) ExoDiPhotons::FillGenParticleInfo( fGenPhoton2Info, genPho );
-        if ( i == 2 ) ExoDiPhotons::FillGenParticleInfo( fGenPhoton3Info, genPho );
-
         for ( std::vector<int>::size_type j = 0; j != patPhotons.size(); j++ )
         // for (size_t j = 0; j < patPhotons->size(); ++j){
         {
@@ -252,6 +248,11 @@ void PhoEfficiencyAnalyzer::fillInfo(const edm::Handle<edm::View<reco::GenPartic
                                     << "; eta = " << photon_gen_match->eta() << " : " << photon_reco_match->eta()
                                     << "; phi = " << photon_gen_match->phi() << " : " << photon_reco_match->phi() << std::endl;
 
+        // Update structs information
+        if ( i == 0 ) fillgenPhoIDInfo( fGenPhoton1Info, genPho, minDeltaR );
+        if ( i == 1 ) fillgenPhoIDInfo( fGenPhoton2Info, genPho, minDeltaR );
+        if ( i == 2 ) fillgenPhoIDInfo( fGenPhoton3Info, genPho, minDeltaR );
+
         if ( patPhotons.size() < 1) return;
         const pat::Photon *patPhoton1 = &(*patPhotons.at(0));
         if ( minDeltaR < 0.5 && patPhoton1 ) fillpatPhoIDInfo( fPhoton1Info , photon_reco_match, patMatch, recHitsEB, recHitsEE, &id_decisions[0] );
@@ -267,11 +268,16 @@ void PhoEfficiencyAnalyzer::fillInfo(const edm::Handle<edm::View<reco::GenPartic
       }
 }//end of fillInfo
 
+void PhoEfficiencyAnalyzer::fillgenPhoIDInfo( ExoDiPhotons::genParticleInfo_t &genParticleInfo,
+                                              const reco::GenParticle *genPho,
+                                              double minDeltaR)
+{
 
-// void PhoEfficiencyAnalyzer::fillpatPhoIDInfo(ExoDiPhotons::photonInfo_t& photonInfo, const pat::Photon *photon,
-//                                              const edm::Handle<EcalRecHitCollection>& recHitsEB,
-//                                              const edm::Handle<EcalRecHitCollection>& recHitsEE,
-//                                              const edm::Handle<edm::ValueMap<bool> >* id_decisions)
+  ExoDiPhotons::FillGenParticleInfo(genParticleInfo, genPho);
+  genParticleInfo.minDeltaR = minDeltaR;
+
+}
+
 void PhoEfficiencyAnalyzer::fillpatPhoIDInfo( ExoDiPhotons::photonInfo_t& photonInfo, const pat::Photon *photon, edm::Ptr<pat::Photon> patMatch,
                                               const edm::Handle<EcalRecHitCollection>& recHitsEB,
                                               const edm::Handle<EcalRecHitCollection>& recHitsEE,

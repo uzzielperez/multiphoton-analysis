@@ -64,6 +64,9 @@ class PhoEfficiencyAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
                        const edm::Handle<EcalRecHitCollection>& recHitsEB,
                        const edm::Handle<EcalRecHitCollection>& recHitsEE,
                        const edm::Handle<edm::ValueMap<bool> >* id_decisions);
+      void fillgenPhoIDInfo( ExoDiPhotons::genParticleInfo_t &genParticleInfo,
+                       const reco::GenParticle *genPho,
+                       double minDeltaR );
       void fillpatPhoIDInfo( ExoDiPhotons::photonInfo_t& photonInfo, const pat::Photon *photon, edm::Ptr<pat::Photon> patMatch,
                              const edm::Handle<EcalRecHitCollection>& recHitsEB,
                              const edm::Handle<EcalRecHitCollection>& recHitsEE,
