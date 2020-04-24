@@ -32,29 +32,15 @@ PhoEfficiencyAnalyzer::PhoEfficiencyAnalyzer(const edm::ParameterSet& ps)
    IDmode_                   =                                         ps.getParameter<std::string>("IDmode");
    outputFile_               =                                 TString(ps.getParameter<std::string>("outputFile"));
 
-   if (islocal_){
-   fgenTree = fs->make<TTree>("fgenTree","GENDiphotonTree");
-   fgenTree->Branch("Event",       &fEventInfo,       ExoDiPhotons::eventBranchDefString.c_str());
-   fgenTree->Branch("GenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fgenTree->Branch("GenPhoton2",  &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fgenTree->Branch("GenPhoton3",  &fGenPhoton3Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   xsec_ = ps.getParameter<double>("xsec");
-   }
-
-   if (isDAS_){
    fTree = fs->make<TTree>("fTree", "DiphotonTree");
-   fTree->Branch("Event",       &fEventInfo,       ExoDiPhotons::eventBranchDefString.c_str());
-   fTree->Branch("GenPhoton1",  &fGenPhoton1Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fTree->Branch("GenPhoton2",  &fGenPhoton2Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fTree->Branch("GenPhoton3",  &fGenPhoton3Info,  ExoDiPhotons::genParticleBranchDefString.c_str());
-   fTree->Branch("Photon1",      &fPhoton1Info,      ExoDiPhotons::photonBranchDefString.c_str());
-   fTree->Branch("Photon2",      &fPhoton2Info,      ExoDiPhotons::photonBranchDefString.c_str());
-   fTree->Branch("Photon3",      &fPhoton3Info,      ExoDiPhotons::photonBranchDefString.c_str());
+   fTree->Branch("Event",         &fEventInfo,       ExoDiPhotons::eventBranchDefString.c_str());
+   fTree->Branch("GenPhoton",     &fGenPhotonInfo,   ExoDiPhotons::genParticleBranchDefString.c_str());
+   fTree->Branch("GenPhotonNum",  &fGenPhotonNumber, "num/I");
+   fTree->Branch("Photon",        &fPhotonInfo,      ExoDiPhotons::photonBranchDefString.c_str());
+   fTree->Branch("PhotonNum",     &fPhotonNumber, "num/I");
    fTree->Branch("isGood",           &isGood_);
    fTree->Branch("nPV", &nPV_);
    // For
-
-   }
 }
 
 PhoEfficiencyAnalyzer::~PhoEfficiencyAnalyzer()
@@ -103,35 +89,19 @@ PhoEfficiencyAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
    //---Initialize
    ExoDiPhotons::InitEventInfo(fEventInfo);
-   ExoDiPhotons::InitGenParticleInfo(fGenPhoton1Info);
-   ExoDiPhotons::InitGenParticleInfo(fGenPhoton2Info);
-   ExoDiPhotons::InitGenParticleInfo(fGenPhoton3Info);
+   ExoDiPhotons::InitGenParticleInfo(fGenPhotonInfo);
+   ExoDiPhotons::InitPhotonInfo(fPhotonInfo);
+   fGenPhotonNumber = -1;
+   fPhotonNumber    = -1;
 
-   ExoDiPhotons::InitPhotonInfo(fPhoton1Info);
-   ExoDiPhotons::InitPhotonInfo(fPhoton2Info);
-   ExoDiPhotons::InitPhotonInfo(fPhoton3Info);
 
    //---Update
    ExoDiPhotons::FillBasicEventInfo(fEventInfo, iEvent);
    ExoDiPhotons::FillGenEventInfo(fEventInfo, &(*genInfo));
+   ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
+   fillInfo(genParticles, photons, recHitsEB, recHitsEE, &id_decisions[0]);
+   //fTree->Fill(); // put this in fillInfo to do it per photon
 
-   if (islocal_){
-     ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
-     fillInfo(genParticles, photons, recHitsEB, recHitsEE, &id_decisions[0]);
-
-     //cout << "isGood: " << isGood_ << endl;
-     fgenTree->Fill();
-   }
-
-   if (isDAS_){
-     ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
-     // fillInfo(genParticles, photons);
-     fillInfo(genParticles, photons, recHitsEB, recHitsEE, &id_decisions[0]);
-
-     // fillPhotonInfo(genParticles, photons, recHitsEB, recHitsEE, &id_decisions[0], fPhoton1Info, fPhoton2Info, fPhoton3Info, fDiphotonInfo12, fDiphotonInfo13, fDiphotonInfo23, fTriphotonInfo);
-     //cout << "isGood: " << isGood_ << endl;
-     fTree->Fill();
-   }
 }
 
 
@@ -165,9 +135,9 @@ void PhoEfficiencyAnalyzer::fillInfo(const edm::Handle<edm::View<reco::GenPartic
                                      const edm::Handle<edm::ValueMap<bool> >* id_decisions)
       {
 
+      bool debug = true;
       // Store Information in these vectors
       vector< edm::Ptr<const reco::GenParticle> > genPhotons;
-      //std::vector<edm::Ptr<pat::Photon>> patPhotons;
       std::vector<edm::Ptr<pat::Photon>> patPhotons;
       vector<int> interactingPartons;
 
@@ -204,21 +174,23 @@ void PhoEfficiencyAnalyzer::fillInfo(const edm::Handle<edm::View<reco::GenPartic
       const pat::Photon *photon_reco_match = NULL;
       const reco::GenParticle *photon_gen_match = NULL;
       edm::Ptr<pat::Photon> patMatch;
+      int pat_i = -1;
 
-      //----- DeltaR matching
+      if (debug) std::cout << patPhotons.size() << std::endl;
+
+      //------------------------------ DeltaR matching
       // Find PAT deltaR match for each Gen photon
       // Store Information for each DR match in Tree
+
+
       for (std::vector<int>::size_type i = 0; i != genPhotons.size(); i++)
       {
         if ( genPhotons.size() < 1) return;
         genPho = &(*genPhotons.at(i));
-
         double minDeltaR = 99999.99;
 
         for ( std::vector<int>::size_type j = 0; j != patPhotons.size(); j++ )
-        // for (size_t j = 0; j < patPhotons->size(); ++j){
         {
-            // if ( patPhotons.size() < 1) return;
             patPho = &(*patPhotons.at(j));
             const auto pho = patPhotons.at(j);
             double deltaR  = reco::deltaR(genPho->eta(), genPho->phi(), patPho->eta(), patPho->phi());
@@ -231,41 +203,29 @@ void PhoEfficiencyAnalyzer::fillInfo(const edm::Handle<edm::View<reco::GenPartic
                   photon_reco_match = &(*patPho);
                   photon_gen_match  = &(*genPho);
                   patMatch = pho;
+                  pat_i = j;
                 }
 
             }
-              //---- Store matched PAT Photon Info:
-
-              // if ( patPhotons.size() < 1) return;
-              // if ( j == 0 ) fillpatPhoIDInfo( fPhoton1Info , photon_reco_match, patMatch, recHitsEB, recHitsEE, &id_decisions[0] );
-              // if ( patPhotons.size() < 2 ) return;
-              // if ( j == 1 ) fillpatPhoIDInfo( fPhoton2Info , photon_reco_match, patMatch, recHitsEB, recHitsEE, &id_decisions[0] );
-              // if ( patPhotons.size() < 3 ) return;
-              // if ( j == 2 ) fillpatPhoIDInfo( fPhoton3Info , photon_reco_match, patMatch, recHitsEB, recHitsEE, &id_decisions[0] );
-        }
-        if ( minDeltaR < 0.5 ) cout << "MATCH FOUND! minDR: " << minDeltaR
+        } // patPho loop
+        if ( minDeltaR < 0.5 && debug ) cout << "MATCH FOUND! minDR: " << minDeltaR
                                     << "; pt: "   << photon_gen_match->pt()  << " : " << photon_reco_match->pt()
                                     << "; eta = " << photon_gen_match->eta() << " : " << photon_reco_match->eta()
                                     << "; phi = " << photon_gen_match->phi() << " : " << photon_reco_match->phi() << std::endl;
 
         // Update structs information
-        if ( i == 0 ) fillgenPhoIDInfo( fGenPhoton1Info, genPho, minDeltaR );
-        if ( i == 1 ) fillgenPhoIDInfo( fGenPhoton2Info, genPho, minDeltaR );
-        if ( i == 2 ) fillgenPhoIDInfo( fGenPhoton3Info, genPho, minDeltaR );
+        fillgenPhoIDInfo( fGenPhotonInfo, genPho, minDeltaR );
+        fGenPhotonNumber = i + 1;
 
-        if ( patPhotons.size() < 1) return;
-        const pat::Photon *patPhoton1 = &(*patPhotons.at(0));
-        if ( minDeltaR < 0.5 && patPhoton1 ) fillpatPhoIDInfo( fPhoton1Info , photon_reco_match, patMatch, recHitsEB, recHitsEE, &id_decisions[0] );
+        if ( minDeltaR < 0.5 ){
+          fillpatPhoIDInfo( fPhotonInfo, photon_reco_match, patMatch, recHitsEB, recHitsEE, &id_decisions[0] );
+          fPhotonNumber = pat_i + 1;
+        }
 
-        if ( patPhotons.size() < 2 ) return;
-        const pat::Photon *patPhoton2 = &(*patPhotons.at(1));
-        if ( minDeltaR < 0.5 && patPhoton2 ) fillpatPhoIDInfo( fPhoton2Info , photon_reco_match, patMatch, recHitsEB, recHitsEE, &id_decisions[0] );
+        fTree->Fill(); // filling per Gen Photon not just per event
+      } // genPho loop
 
-        if ( patPhotons.size() < 3 ) return;
-        const pat::Photon *patPhoton3 = &(*patPhotons.at(2));
-        if ( minDeltaR < 0.5 && patPhoton3 ) fillpatPhoIDInfo( fPhoton3Info , photon_reco_match, patMatch, recHitsEB, recHitsEE, &id_decisions[0] );
-
-      }
+      //--------------------------- End DeltaR matching
 }//end of fillInfo
 
 void PhoEfficiencyAnalyzer::fillgenPhoIDInfo( ExoDiPhotons::genParticleInfo_t &genParticleInfo,
@@ -291,6 +251,9 @@ void PhoEfficiencyAnalyzer::fillpatPhoIDInfo( ExoDiPhotons::photonInfo_t& photon
   ExoDiPhotons::FillBasicPhotonInfo(photonInfo, photon);
   ExoDiPhotons::FillPhotonIDInfo(photonInfo, photon, rho_, photonInfo.isSaturated);
   ExoDiPhotons::FillPhotonEGMidInfo(photonInfo, photon, rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
+
+  bool debug = true;
+  if (debug) std::cout << "LOOSE: " << photonInfo.passEGMLooseID << std::endl;
 
 }
 
