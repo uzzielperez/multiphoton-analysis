@@ -113,13 +113,12 @@ class PhoEfficiencyAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
       TTree *fTree;
 
       ExoDiPhotons::eventInfo_t         fEventInfo;
-      ExoDiPhotons::genParticleInfo_t   fGenPhoton1Info;
-      ExoDiPhotons::genParticleInfo_t   fGenPhoton2Info;
-      ExoDiPhotons::genParticleInfo_t   fGenPhoton3Info;
+      ExoDiPhotons::genParticleInfo_t   fGenPhotonInfo; // Each entry is an in an individual photons not whole event
+      int fGenPhotonNumber;
 
-      ExoDiPhotons::photonInfo_t        fPhoton1Info;
-      ExoDiPhotons::photonInfo_t        fPhoton2Info;
-      ExoDiPhotons::photonInfo_t        fPhoton3Info;
+      ExoDiPhotons::photonInfo_t        fPhotonInfo;
+      int fPhotonNumber; 
+
 
 
       //Put flags in cfg later
@@ -127,10 +126,6 @@ class PhoEfficiencyAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
       bool isMC_;
       bool isClosureTest_;
       bool isGood_;
-      bool is3GenRecoed_;
-      bool isgenPho1_recoed_;
-      bool isgenPho2_recoed_;
-      bool isgenPho3_recoed_;
       bool islocal_;
       bool isDAS_;
       double rho_;
