@@ -18,8 +18,12 @@ isDAS = 'True' # Centrally Produced
 # nevts = 69803 # Found in DAS
 
 #inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/CMSSW_10_2_8/src/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sample.root'
-inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/CMSSW_10_2_8/src/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_spring.root'
-outputFile_ = "GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sampleOUT_matching_minDRstore_diff.root"
+#inputFile_ = 'file:/uscms_data/d3/cuperez/e2e/CMSSW_9_4_8/src/MY/PROJECT/test/sherpa_EEA_2j_pT20_13TeV_MASTER_cff_py_GEN.root'
+#inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/CMSSW_10_2_8/src/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_spring.root'
+inputFile_ = 'file:/uscms_data/d3/cuperez/e2e/CMSSW_9_4_8/src/MY/PROJECT/test/AAA_2j_pT20_13TeV/sherpa_AAA_2j_pT20_13TeV_MASTER_cff_py_GEN.root'
+#outputFile_ = "GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sampleOUT_matching_minDRstore_diff.root"
+#outputFile_ = "GGGJets_pT20_20_20_13TeV.root"
+outputFile_ = "AAA_2j_pT20_13TeV_ntuples.root"
 #nevts = 2118
 nevts = 13433
 
