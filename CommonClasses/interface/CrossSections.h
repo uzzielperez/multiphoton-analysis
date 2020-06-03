@@ -87,6 +87,7 @@ namespace ExoDiPhotons {
     // triphoton  
     if(sample.Contains("GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8")) xsec = 1.664e+00; // local studies 
     if(sample.Contains("AAA_2j_pT20_13TeV")) xsec = 0.0704258; // pb +- ( 0.00704077 pb = 9.99 % ); Sherpa test only
+    if(sample.Contains("AAA_2j_pT10_13TeV")) xsec = 0.1869; // pb +- ( 0.00704077 pb = 9.99 % ); Sherpa test only
 
     // from running GenXsecAnalyzer on full sample
     if(sample.Contains("ADDGravToGG_MS-3000_NED-2_KK-1_M-1000To2000_13TeV-sherpa")) xsec = 9.139e-02;
