@@ -1,3 +1,4 @@
+
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 from os.path import basename
@@ -22,9 +23,9 @@ outName = 'OUTPUTFILE'
 print 'Configuration file Run with the following settings: '
 print 'isMC = ', isMC
 if islocal:
-    print 'Pythia GEN'
+    print 'GEN only'
 if isDAS:
-    print 'DAS GEN'
+    print 'Full'
 print 'processing ', inputFile
 print 'Writing output to file ', outName
 #------------------------------------------
@@ -117,7 +118,7 @@ else:
     print "cannot determine proper input type"
 
 process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
-        genparticles = cms.InputTag("GENPARTICLES"),
+        genparticles = cms.InputTag(inTag),
         photonsMiniAOD = cms.InputTag("slimmedPhotons"),
         minPhotonPt = cms.double(75.),
         # genParticle tag
