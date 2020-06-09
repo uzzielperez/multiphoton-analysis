@@ -58,36 +58,36 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
       void fillGenInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles);
-      void fillInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
-                       const edm::Handle<edm::View<pat::Photon> >& photons);
-      void fillPhotonInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
-                    const edm::Handle<edm::View<pat::Photon> >& photons,
-                    const edm::Handle<EcalRecHitCollection>& recHitsEB,
-                    const edm::Handle<EcalRecHitCollection>& recHitsEE,
-                    const edm::Handle<edm::ValueMap<bool> >* id_decisions,
-                    ExoDiPhotons::photonInfo_t& photon1Info,
-                    ExoDiPhotons::photonInfo_t& photon2Info,
-                    ExoDiPhotons::photonInfo_t& photon3Info,
-                    ExoDiPhotons::diphotonInfo_t& diphotonInfo12,
-                    ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
-                    ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
-                    ExoDiPhotons::triphotonInfo_t& triphotonInfo);
-      void photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
-                    const edm::Handle<EcalRecHitCollection>& recHitsEB,
-                    const edm::Handle<EcalRecHitCollection>& recHitsEE,
-                		const edm::Handle<edm::ValueMap<bool> >* id_decisions,
-                    ExoDiPhotons::photonInfo_t& photon1Info,
-                    ExoDiPhotons::photonInfo_t& photon2Info,
-                    ExoDiPhotons::photonInfo_t& photon3Info,
-                    ExoDiPhotons::diphotonInfo_t& diphotonInfo12,
-                    ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
-                    ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
-                    ExoDiPhotons::triphotonInfo_t& triphotonInfo);
-      void mcTruthFiller(const pat::Photon *photon,
-                    ExoDiPhotons::photonInfo_t& photonInfo,
-                    const edm::Handle<edm::View<reco::GenParticle> > genParticles);
-      void genRecoMatchInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
-                            const edm::Handle<edm::View<pat::Photon> >& photons);
+      // void fillInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+      //                  const edm::Handle<edm::View<pat::Photon> >& photons);
+      // void fillPhotonInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+      //               const edm::Handle<edm::View<pat::Photon> >& photons,
+      //               const edm::Handle<EcalRecHitCollection>& recHitsEB,
+      //               const edm::Handle<EcalRecHitCollection>& recHitsEE,
+      //               const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+      //               ExoDiPhotons::photonInfo_t& photon1Info,
+      //               ExoDiPhotons::photonInfo_t& photon2Info,
+      //               ExoDiPhotons::photonInfo_t& photon3Info,
+      //               ExoDiPhotons::diphotonInfo_t& diphotonInfo12,
+      //               ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
+      //               ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
+      //               ExoDiPhotons::triphotonInfo_t& triphotonInfo);
+      // void photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
+      //               const edm::Handle<EcalRecHitCollection>& recHitsEB,
+      //               const edm::Handle<EcalRecHitCollection>& recHitsEE,
+      //           		const edm::Handle<edm::ValueMap<bool> >* id_decisions,
+      //               ExoDiPhotons::photonInfo_t& photon1Info,
+      //               ExoDiPhotons::photonInfo_t& photon2Info,
+      //               ExoDiPhotons::photonInfo_t& photon3Info,
+      //               ExoDiPhotons::diphotonInfo_t& diphotonInfo12,
+      //               ExoDiPhotons::diphotonInfo_t& diphotonInfo13,
+      //               ExoDiPhotons::diphotonInfo_t& diphotonInfo23,
+      //               ExoDiPhotons::triphotonInfo_t& triphotonInfo);
+      // void mcTruthFiller(const pat::Photon *photon,
+      //               ExoDiPhotons::photonInfo_t& photonInfo,
+      //               const edm::Handle<edm::View<reco::GenParticle> > genParticles);
+      // void genRecoMatchInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+      //                       const edm::Handle<edm::View<pat::Photon> >& photons);
 
 
    private:
@@ -100,27 +100,27 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       edm::EDGetTokenT<edm::View<reco::GenParticle> > genParticlesToken_;
       //edm::EDGetTokenT<vector<reco::GenParticle> >    genParticlesToken_;
       edm::EDGetTokenT<edm::View<reco::GenParticle> > genParticlesMiniAODToken_;
-      edm::EDGetToken                                 photonsMiniAODToken_;
-      edm::EDGetTokenT<double>                        rhoToken_;
-      edm::EDGetTokenT<edm::ValueMap<bool> >          phoLooseIdMapToken_;
-      edm::EDGetTokenT<edm::ValueMap<bool> >          phoMediumIdMapToken_;
-      edm::EDGetTokenT<edm::ValueMap<bool> >          phoTightIdMapToken_;
+      // edm::EDGetToken                                 photonsMiniAODToken_;
+      // edm::EDGetTokenT<double>                        rhoToken_;
+      // edm::EDGetTokenT<edm::ValueMap<bool> >          phoLooseIdMapToken_;
+      // edm::EDGetTokenT<edm::ValueMap<bool> >          phoMediumIdMapToken_;
+      // edm::EDGetTokenT<edm::ValueMap<bool> >          phoTightIdMapToken_;
       edm::EDGetTokenT<GenEventInfoProduct>           genInfoToken_;
-      edm::EDGetTokenT<EcalRecHitCollection>          recHitsEBToken;
-      edm::EDGetTokenT<EcalRecHitCollection>          recHitsEEToken;
+      // edm::EDGetTokenT<EcalRecHitCollection>          recHitsEBToken;
+      // edm::EDGetTokenT<EcalRecHitCollection>          recHitsEEToken;
 
       edm::InputTag genParticles_;
       edm::InputTag particles_;
-      edm::InputTag recHitsEBTag_;
-      edm::InputTag recHitsEETag_;
+      // edm::InputTag recHitsEBTag_;
+      // edm::InputTag recHitsEETag_;
 
 
       enum {LOOSE = 0, MEDIUM = 1, TIGHT = 2};
       enum {FAKE = 0,  TRUE = 1};
-
-      EffectiveAreas effAreaChHadrons_;
-      EffectiveAreas effAreaNeuHadrons_;
-      EffectiveAreas effAreaPhotons_;
+      //
+      // EffectiveAreas effAreaChHadrons_;
+      // EffectiveAreas effAreaNeuHadrons_;
+      // EffectiveAreas effAreaPhotons_;
 
       TTree *fgenTree;
       TTree *fTree;
@@ -134,13 +134,13 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo23;
       ExoDiPhotons::triphotonInfo_t     fGenTriphotonInfo;
 
-      ExoDiPhotons::photonInfo_t        fPhoton1Info;
-      ExoDiPhotons::photonInfo_t        fPhoton2Info;
-      ExoDiPhotons::photonInfo_t        fPhoton3Info;
-      ExoDiPhotons::diphotonInfo_t      fDiphotonInfo12;
-      ExoDiPhotons::diphotonInfo_t      fDiphotonInfo13;
-      ExoDiPhotons::diphotonInfo_t      fDiphotonInfo23;
-      ExoDiPhotons::triphotonInfo_t     fTriphotonInfo;
+      // ExoDiPhotons::photonInfo_t        fPhoton1Info;
+      // ExoDiPhotons::photonInfo_t        fPhoton2Info;
+      // ExoDiPhotons::photonInfo_t        fPhoton3Info;
+      // ExoDiPhotons::diphotonInfo_t      fDiphotonInfo12;
+      // ExoDiPhotons::diphotonInfo_t      fDiphotonInfo13;
+      // ExoDiPhotons::diphotonInfo_t      fDiphotonInfo23;
+      // ExoDiPhotons::triphotonInfo_t     fTriphotonInfo;
 
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton1Info;
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton2Info;
@@ -167,8 +167,8 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       TString outputFile_;
       std::string IDmode_;  // VID (Loose, Medium, Tight) or hightPTID
 
-      const CaloSubdetectorTopology* subDetTopologyEB_;
-      const CaloSubdetectorTopology* subDetTopologyEE_;
+      // const CaloSubdetectorTopology* subDetTopologyEB_;
+      // const CaloSubdetectorTopology* subDetTopologyEE_;
 };
 
 
