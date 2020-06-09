@@ -26,7 +26,8 @@ config.General.transferLogs = True
 
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'multiphoton_analysis/nPhotonAnalyzer/test/genxsec_cfg.py'
+#config.JobType.psetName = 'multiphoton_analysis/nPhotonAnalyzer/test/genxsec_cfg.py'
+config.JobType.psetName = 'multiphoton-analysis/nPhotonAnalyzer/test/genxsec_cfg.py'
 
 config.section_("Data")
 config.Data.inputDataset = dataset
@@ -34,7 +35,7 @@ config.Data.inputDBS = 'global'
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 100
 #config.Data.outLFNDirBase = '/store/user/abuccill/DiPhotonAnalysis'
-config.Data.outLFNDirBase = '/store/user/ciperez/triphoton'
+config.Data.outLFNDirBase = '/store/user/ciperez/triphoton/xsecBkg'
 
 config.section_("Site")
 config.Site.storageSite = 'T3_US_FNALLPC' #'T2_CH_CERN'

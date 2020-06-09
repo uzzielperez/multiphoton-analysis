@@ -9,9 +9,13 @@ DATASETS = [[]]
 # das_client.py --limit=0 --query="dataset dataset=/ADDGravToGG*/RunIIFall15MiniAODv2-*/MINIAODSIM" | awk '{print "DATASETS.append(['\''"$1"'\''])"}'
 
 # 2018 Background Triphoton Samples
-DATASETS.append(['/DiPhotonJetsBox_M40_80-Sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'])
-DATASETS.append(['/GJet_Pt-20toInf_DoubleEMEnriched_MGG-40to80_TuneCP5_13TeV_Pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
-DATASETS.append(['/QCD_Pt-30toInf_DoubleEMEnriched_MGG-40to80_TuneCP5_13TeV_Pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+# DATASETS.append(['/DiPhotonJetsBox_M40_80-Sherpa/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'])
+# DATASETS.append(['/GJet_Pt-20toInf_DoubleEMEnriched_MGG-40to80_TuneCP5_13TeV_Pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+# DATASETS.append(['/QCD_Pt-30toInf_DoubleEMEnriched_MGG-40to80_TuneCP5_13TeV_Pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+
+# 2018 Background Triphoton Samples
+DATASETS.append(['/GJet_Pt-20to40_DoubleEMEnriched_MGG-80toInf_TuneCP5_13TeV_Pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM'])
+DATASETS.append(['/GJet_Pt-40toInf_DoubleEMEnriched_MGG-80toInf_TuneCP5_13TeV_Pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM'])
 
 # 2015 samples
 # # ADD signal samples
@@ -375,8 +379,13 @@ for ilist in DATASETS:
     cmssw_base = os.getenv("CMSSW_BASE")
     datasetID = ids.replace('/', '', 1).replace('/', '_', 1)
     datasetID = datasetID[0:datasetID.find('/')]
-    inputfile = "/uscms_data/d3/cuperez/tribosons/CMSSW_10_2_8/src/multiphoton-analysis/nPhotonAnalyzer/test/crab_cfg_xsec_template.py"
+    #inputfile = "/uscms_data/d3/cuperez/tribosons/CMSSW_10_2_8/src/multiphoton-analysis/nPhotonAnalyzer/test/crab_cfg_xsec_template.py"
     #inputfile = cmssw_base + "/src/multiphoton_analysis/nPhotonAnalyzer/test/crab_cfg_xsec_template.py"
+    #print os.getcwd()
+    #inputfile = os.getcwd() + "multiphoton_analysis/nPhotonAnalyzer/test/crab_cfg_xsec_template.py"
+    #inputfile = "multiphoton_analysis/nPhotonAnalyzer/test/crab_cfg_xsec_template.py"
+    inputfile = "multiphoton-analysis/nPhotonAnalyzer/test/crab_cfg_xsec_template.py"
+    print inputfile
     outputfile = "crab_cfg_xsec" + datasetID + ".py"
 
     s = open(inputfile).read()
