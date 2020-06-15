@@ -129,7 +129,8 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    ExoDiPhotons::FillGenEventInfo(fEventInfo, &(*genInfo));
 
    if (islocal_){
-     ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
+     ExoDiPhotons::FillEventWeights(fEventInfo, outputFile_, nEventsSample_);
+     //ExoDiPhotons::FillEventWeights(fEventInfo, xsec_, nEventsSample_);
      fillGenInfo(genParticles);
      //cout << "isGood: " << isGood_ << endl;
      fgenTree->Fill();
