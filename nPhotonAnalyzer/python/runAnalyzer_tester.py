@@ -20,19 +20,27 @@ isDAS = 'False' # Centrally Produced
 #inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/CMSSW_10_2_8/src/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sample.root'
 #inputFile_ = 'file:/uscms_data/d3/cuperez/e2e/CMSSW_9_4_8/src/MY/PROJECT/test/sherpa_EEA_2j_pT20_13TeV_MASTER_cff_py_GEN.root'
 #inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/CMSSW_10_2_8/src/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_spring.root'
-inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/Generation/CMSSW_10_3_0/src/MY/PROJECT/test/sherpa_AAA_2j_15_15_15_13TeV_MASTER_cff_py_GEN.root'
+
+#inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/Generation/CMSSW_10_3_0/src/MY/PROJECT/test/sherpa_AAA_2j_15_15_15_13TeV_MASTER_cff_py_GEN.root'
+#outputFile_ = "AAA_2j_pT15_13TeV_ntuples.root"
+#nevts = 10000
+#xsec = 0.0998801 # Provide in pb 
+
+inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/Generation/CMSSW_10_3_0/src/MY/PROJECT/test/sherpa_GGJets_pT15_13TeV_MASTER_cff_py_GEN.root'
+outputFile_ = "GGJets_pT15_13TeV_ntuples.root"
+nevts = 10000
+xsec = 137.237 # Provide in pb 
+
 #outputFile_ = "GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sampleOUT_matching_minDRstore_diff.root"
 #outputFile_ = "GGGJets_pT20_20_20_13TeV.root"
 #outputFile_ = "AAA_2j_pT20_13TeV_ntuples.root"
-outputFile_ = "AAA_2j_pT15_13TeV_ntuples.root"
 #nevts = 2118
-nevts = 13433
 
 print 'Processing ', inputFile_
 cmssw_base = os.getenv("CMSSW_BASE")
 templatefile = cmssw_base + "/src/multiphoton-analysis/nPhotonAnalyzer/python/cmsRun_cfg_tester.py"
 ConfigFile = "cmsRun_cfg_DAStestinput.py"
-xsec = 1.00 # Default
+
 
 # genParticles_ = "prunedGenParticles" # genParticles for GEN only
 genInfo = "SIM"

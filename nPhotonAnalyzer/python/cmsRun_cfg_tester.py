@@ -44,7 +44,7 @@ print 'nEventsSample: ', options.nEventsSample
 process = cms.Process("Demo")
 
 #process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 # process.maxEvents = cms.untracked.PSet(
 #     input = cms.untracked.int32(options.maxEvents)
@@ -112,8 +112,10 @@ for idmod in my_id_modules:
 
 if islocal:
 	inTag = "genParticles"
+	genInfo_ = "GEN"
 elif isDAS:
     inTag = "prunedGenParticles"
+    genInfo_ = "SIM"
 else:
     print "cannot determine proper input type"
 
@@ -142,8 +144,9 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
         phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
         # gen event info
-        genInfo = cms.InputTag("generator", "", "GENINFO"),
         #genInfo = cms.InputTag("generator", "", "GEN"),
+        #genInfo = cms.InputTag("generator", "", "GENINFO"),
+        genInfo = cms.InputTag("generator", "", genInfo_),
         # output file name
         outputFile = cms.string(outName),
         # number of events in the sample (for calculation of event weights)
