@@ -26,10 +26,16 @@ isDAS = 'False' # Centrally Produced
 #nevts = 10000
 #xsec = 0.0998801 # Provide in pb 
 
-inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/Generation/CMSSW_10_3_0/src/MY/PROJECT/test/sherpa_GGJets_pT15_13TeV_MASTER_cff_py_GEN.root'
-outputFile_ = "GGJets_pT15_13TeV_ntuples.root"
-nevts = 10000
-xsec = 137.237 # Provide in pb 
+#inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/Generation/CMSSW_10_3_0/src/MY/PROJECT/test/sherpa_GGJets_pT15_13TeV_MASTER_cff_py_GEN.root'
+#outputFile_ = "GGJets_pT15_13TeV_ntuples.root"
+#nevts = 10000
+#xsec = 137.237 # Provide in pb 
+
+inputFile_ = "file:/uscms/home/cuperez/nobackup/e2e/CMSSW_9_4_8/src/MY/PROJECT/test/miniAOD-prod_PAT.root"
+outputFile_ = "GGGJets_Pt15-15-15-13TeV_sherpa_privateprod.root"
+nevts = 50
+xsec = 99.8801 # pb 
+
 
 #outputFile_ = "GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sampleOUT_matching_minDRstore_diff.root"
 #outputFile_ = "GGGJets_pT20_20_20_13TeV.root"

@@ -20,7 +20,8 @@ namespace ExoDiPhotons {
     
     // Private Gen Background Samples 
     if(sample.Contains("GGJets_pT15_13TeV")) xsec = 137.237;  // 137.237 pb +- ( 1.77238 pb = 1.29 % ) // Sherpa test only
-  
+    if(sample.Contains("GGGJets_Pt15-15-15-13TeV_sherpa")) xsec = 99.8801; // Sherpa Test
+ 
     // 2017 Low-pt Triphoton External Background Samples
     if(sample.Contains("DiPhotonJetsBox_M40_80-Sherpa")) xsec = 3.101e+02;
     if(sample.Contains("QCD_Pt-30toInf_DoubleEMEnriched_MGG-40to80_TuneCP5_13TeV_Pythia8")) xsec = 2.419e+05;
