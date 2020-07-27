@@ -3,6 +3,7 @@
 import FWCore.ParameterSet.Config as cms
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 from FWCore.ParameterSet.VarParsing import VarParsing
+from os.path import basename
 import os
 import importlib
 submit_utils = importlib.import_module("multiphoton-analysis.CommonClasses.submit_utils")
@@ -35,14 +36,34 @@ print 'Writing output to file ', outName
 options = VarParsing ('python')
 options.parseArguments()
 
-outName = options.outputFile
-print("Default output name: " + outName)
-if "output" in outName: # if an input file name is specified, event weights can be determined
-    outName = "out_" + basename(options.inputFiles[0])
-    print("Output root file name: " + outName)
+options.register('nEventsSample',
+                 #61125, #100,
+                 NEVTS,
+                 VarParsing.multiplicity.singleton,
+                 VarParsing.varType.int,
+                 "Total number of events in dataset for event weight calculation.")
+## 'maxEvents' is already registered by the Framework, changing default value
+#options.setDefault('maxEvents', 10000)
 
-else:
-    options.inputFiles = "file:GGJets_M-1000To2000_Pt-50_13TeV-sherpa.root"
+print 'nEventsSample: ', options.nEventsSample
+process = cms.Process("Demo")
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.source = cms.Source("PoolSource",
+    fileNames = cms.untracked.vstring(
+        #'file:myfile.root'
+        #'file:/afs/cern.ch/user/c/ciperez/Generation/CMSSW_9_3_8/src/ADDGravToGG_NED-4_LambdaT-4000_M-500_13TeV-pythia8_cff_py_GEN.root'
+        inputFile
+    )
+)
+
+# outName = options.outputFile
+# print("Default output name: " + outName)
+# if "output" in outName: # if an input file name is specified, event weights can be determined
+#     outName = "out_" + basename(options.inputFiles[0])
+#     print("Output root file name: " + outName)
+#
+# else:
+#     options.inputFiles = "file:GGJets_M-1000To2000_Pt-50_13TeV-sherpa.root"
 
 globalTag = submit_utils.get_global_tag(outName)
 

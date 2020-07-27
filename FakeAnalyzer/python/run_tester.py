@@ -19,7 +19,7 @@ isDAS = 'True' # Centrally Produced
 ConfigFile = 'cmsRun_localNtuples.py'
 
 inputFile_ = 'file:/uscms/home/cuperez/nobackup/e2e/CMSSW_9_4_8/src/localDatasets/GGJets_M60To200_Pt50_13TeV-sherpa_RunIIFall17MiniAODv2.root'
-outputFile_ = "GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sampleOUT_PhotonEfficiency.root"
+outputFile_ = "GGJets_M60To200_Pt50_13TeV-sherpa_RunIIFall17MiniAODv2_FRNtuples.root"
 #nevts = 2118
 nevts = 70000
 xsec =  6.278e+00 #pb
