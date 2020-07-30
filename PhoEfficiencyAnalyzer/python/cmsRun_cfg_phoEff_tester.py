@@ -1,8 +1,12 @@
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 from os.path import basename
 import os
 import sys
+import importlib
+submit_utils = importlib.import_module("multiphoton-analysis.CommonClasses.submit_utils")
+
 
 #Configure
 isMC           = True
@@ -96,18 +100,44 @@ print "Using global tag: " + globalTag
 # geometry for saturation
 process.load("Configuration.StandardSequences.GeometryDB_cff")
 
+# for output file
 process.TFileService = cms.Service("TFileService",
                     fileName = cms.string(outName)
 )
 
-# Setup VID for EGM ID
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
-# define which IDs we want to produce
-my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff']
-#add them to the VID producer
-for idmod in my_id_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+process.primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
+                                           vertexCollection = cms.InputTag("offlineSlimmedPrimaryVertices"),
+                                           minimumNDOF = cms.uint32(4),
+                                           maxAbsZ = cms.double(24),
+                                           maxd0 = cms.double(2)
+)
+
+## update AK4PFchs jet collection in MiniAOD JECs
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+updateJetCollection(
+   process,
+   jetSource = cms.InputTag('slimmedJets'),
+   labelName = 'UpdatedJEC',
+   jetCorrections = ('AK4PFchs', JEC, 'None')  # Do not forget 'L2L3Residual' on data!
+)
+
+# summary of information needed for e/gamma corrections
+egm_info = submit_utils.egamma_info(outName)
+setupEgammaPostRecoSeq(process,
+                       applyEnergyCorrections=True,
+                       applyVIDOnCorrectedEgamma=True,
+                       runVID=True,
+                       runEnergyCorrections=True,
+                       era=egm_info['era'])
+
+# # Setup VID for EGM ID
+# from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+# switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
+# # define which IDs we want to produce
+# my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff']
+# #add them to the VID producer
+# for idmod in my_id_modules:
+#     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 if islocal:
 	inTag = "genParticles"
@@ -133,13 +163,19 @@ process.demo = cms.EDAnalyzer('PhoEfficiencyAnalyzer',
         # rho tag
         rho = cms.InputTag("fixedGridRhoAll"),
         # EGM eff. areas
-        effAreaChHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfChargedHadrons_25ns_NULLcorrection.txt"),
-        effAreaNeuHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfNeutralHadrons_25ns_90percentBased.txt"),
-        effAreaPhoFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfPhotons_25ns_90percentBased.txt"),
+        effAreaChHadFile = cms.FileInPath(egm_info['effAreaChHad']),
+        effAreaNeuHadFile = cms.FileInPath(egm_info['effAreaNeuHad']),
+        effAreaPhoFile = cms.FileInPath(egm_info['effAreaPhoHad']),
+        # effAreaChHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfChargedHadrons_25ns_NULLcorrection.txt"),
+        # effAreaNeuHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfNeutralHadrons_25ns_90percentBased.txt"),
+        # effAreaPhoFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfPhotons_25ns_90percentBased.txt"),
         # EGM ID decisions
-        phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
-        phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
-        phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
+        phoLooseIdMap = cms.InputTag("egmPhotonIDs:" + egm_info['loosePhoId']),
+        phoMediumIdMap = cms.InputTag("egmPhotonIDs:" + egm_info['mediumPhoId']),
+        phoTightIdMap = cms.InputTag("egmPhotonIDs:" + egm_info['tightPhoId']),
+        # phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
+        # phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
+        # phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
         # gen event info
         genInfo = cms.InputTag("generator", "", "GENINFO"),
         #genInfo = cms.InputTag("generator", "", "GEN"),
@@ -160,9 +196,9 @@ process.xsec = cms.EDAnalyzer("GenXSecAnalyzer")
 # process.p = cms.Path(process.demo * process.xsec)
 #process.p = cms.Path(process.demo)
 if isMC:
-    process.p = cms.Path(process.egmPhotonIDSequence * process.demo * process.xsec)
+    process.p = cms.Path(process.egammaPostRecoSeq * process.demo * process.xsec)
 else:
     if "Run2017" in outName or "Run2018" in outName:
-        process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.demo)
+        process.p = cms.Path(process.egammaPostRecoSeq * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.demo)
     else:
-        process.p = cms.Path(process.egmPhotonIDSequence * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.demo)
+        process.p = cms.Path(process.egammaPostRecoSeq * process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC * process.demo)

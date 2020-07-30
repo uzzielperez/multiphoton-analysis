@@ -12,11 +12,11 @@ FakeAnalyzer::FakeAnalyzer(const edm::ParameterSet& ps)
    edm::Service<TFileService> fs;
 
    rhoToken_                 = consumes<double>                      (ps.getParameter<edm::InputTag>("rho"));
-   phoLooseIdMapToken_       = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoLooseIdMap"));
-   phoMediumIdMapToken_      = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoMediumIdMap"));
-   phoTightIdMapToken_       = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoTightIdMap"));
+   //phoLooseIdMapToken_       = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoLooseIdMap"));
+   //phoMediumIdMapToken_      = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoMediumIdMap"));
+   //phoTightIdMapToken_       = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoTightIdMap"));
    outputFile_               =                                 TString(ps.getParameter<std::string>("outputFile"));
-   isReMINIAOD_              =                                         ps.getParameter<bool>("isReMINIAOD_");
+   isReMINIAOD_              =                                         ps.getParameter<bool>("isReMINIAOD");
 
    fTree = fs->make<TTree>("fTree","PhotonTree");
    fTree->Branch("Event",&fEventInfo,ExoDiPhotons::eventBranchDefString.c_str());
@@ -79,9 +79,10 @@ FakeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    edm::Handle< reco::BeamHaloSummary > bhsHandle;
    edm::Handle< edm::View<pat::Jet> > jets;
    edm::Handle< double > rhoH;
-   edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
-   edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
-   edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
+   edm::Handle<edm::ValueMap<bool> > id_decisions[3];
+   // edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
+   // edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
+   // edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
    edm::Handle<EcalRecHitCollection> recHitsEB;
    edm::Handle<EcalRecHitCollection> recHitsEE;
    edm::Handle<edm::TriggerResults> filtHandle;
@@ -89,13 +90,12 @@ FakeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    edm::Handle<pat::PackedTriggerPrescales> prescalesHandle;
    edm::Handle<reco::VertexCollection> vertices;
 
-   iEvent.getByToken(phoMediumIdMapToken_,medium_id_decisions);
    iEvent.getByToken(beamHaloSummaryToken_,bhsHandle);
    iEvent.getByToken(jetsMiniAODToken_,jets);
    iEvent.getByToken(rhoToken_,rhoH);
-   iEvent.getByToken(phoLooseIdMapToken_ ,loose_id_decisions);
-   iEvent.getByToken(phoMediumIdMapToken_,medium_id_decisions);
-   iEvent.getByToken(phoTightIdMapToken_ ,tight_id_decisions);
+   //iEvent.getByToken(phoLooseIdMapToken_ ,id_decisions[LOOSE]);
+   //iEvent.getByToken(phoMediumIdMapToken_,id_decisions[MEDIUM]);
+   //iEvent.getByToken(phoTightIdMapToken_ ,id_decisions[TIGHT]);
    iEvent.getByToken(recHitsEBToken,recHitsEB);
    iEvent.getByToken(recHitsEEToken,recHitsEE);
    iEvent.getByToken(filterDecisionToken_,filtHandle);
@@ -182,16 +182,23 @@ FakeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        ExoDiPhotons::FillBasicPhotonInfo(fPhotonInfo, &(*pho));
        ExoDiPhotons::FillPhotonIDInfo(fPhotonInfo, &(*pho), rho_, fPhotonInfo.isSaturated);
        ExoDiPhotons::FillPhotonEGMidInfo(fPhotonInfo, &(*pho), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
-       fPhotonInfo.passEGMLooseID  = true;
-       fPhotonInfo.passEGMMediumID = true;
-       fPhotonInfo.passEGMTightID  = true;
+       
+       //fPhotonInfo.passEGMLooseID  = true;
+       //fPhotonInfo.passEGMMediumID = true;
+       //fPhotonInfo.passEGMTightID  = true;
+     
+       // VID decisions
+       //UShort_t tmpphoIDbit = 0;    
+       fPhotonInfo.passEGMLooseID  = pho->photonID("cutBasedPhotonID-Fall17-94X-V2-loose"); 
+       fPhotonInfo.passEGMMediumID = pho->photonID("cutBasedPhotonID-Fall17-94X-V2-medium");
+       fPhotonInfo.passEGMTightID  = pho->photonID("cutBasedPhotonID-Fall17-94X-V2-tight");
 
        // fill our tree
        if ( ExoDiPhotons::passNumeratorCandCut(&(*pho), rho_) ||
          ExoDiPhotons::passDenominatorCut(&(*pho), rho_, fPhotonInfo.isSaturated)
        ) fTree->Fill();
 
-  } //end photon loop 
+  } //end photon loop
 
   cout << "rho: " << rho_ << endl;
   cout <<  "Run: " << iEvent.id().run() << ", LS: " <<  iEvent.id().luminosityBlock() << ", Event: " << iEvent.id().event() << endl;

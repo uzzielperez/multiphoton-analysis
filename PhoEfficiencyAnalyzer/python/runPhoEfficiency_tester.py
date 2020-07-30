@@ -18,10 +18,15 @@ isDAS = 'True' # Centrally Produced
 # nevts = 69803 # Found in DAS
 
 #inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/CMSSW_10_2_8/src/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sample.root'
-inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/CMSSW_10_2_8/src/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_spring.root'
-outputFile_ = "GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sampleOUT_PhotonEfficiency.root"
+#inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/CMSSW_10_2_8/src/GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_spring.root'
+#outputFile_ = "GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8_sampleOUT_PhotonEfficiency.root"
 #nevts = 2118
-nevts = 13433
+#nevts = 13433
+
+inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/CMSSW_9_4_13/src/localDatasets/GGJets_M60To200_Pt50_13TeV-sherpa_RunIIFall17MiniAODv2.root'
+outputFile_ = "GGJets_M-60To200_Pt-50_13TeV-sherpa_RunIIFall17MiniAODv2_FRNtuples.root"
+nevts = 70000
+xsec =  6.278e+00 #pb
 
 print 'Processing ', inputFile_
 cmssw_base = os.getenv("CMSSW_BASE")

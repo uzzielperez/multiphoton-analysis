@@ -1,9 +1,12 @@
-## Template file for CRAB submission. The script generate_crab_config.py
+## Template file for CRAB submission. The script generate_crab_config.py 
 ## replaces the following two lines with the appropriate values
 ## Do not edit manually!
+import os
+import subprocess
+
 dataset = 'DATASETNAME'
-nevents = 'NEVENTS'
-#herpa_RunIISummer16MiniAODv2-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1
+nevents = NEVENTS
+user = os.environ['USER']
 
 # CRAB3 task names can no longer be greater than 100 characters; need to shorten task name
 taskname = dataset[1:].replace('/','__').replace('RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2','MiniAODv2').replace('TuneCUETP8M1_13TeV-madgraphMLM-pythia8','13TeV-MG-PY8')
@@ -23,29 +26,34 @@ config = Configuration()
 
 config.section_("General")
 config.General.requestName = taskname
-config.General.workArea = 'outCRAB'
+config.General.workArea = 'out_crab_fake_rate'
 config.General.transferLogs = False
 
 config.section_("JobType")
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'multiphoton-analysis/PhoEfficiencyAnalyzer/test/diphoton_cfg.py'
-config.JobType.pyCfgParams = ['nEventsSample=' + str(nevents), 'outputFile=out_' + datasetID + '.root']
+config.JobType.psetName = 'multiphoton-analysis/FakeAnalyzer/test/multiphoton_fakeRate_cfg.py'
+config.JobType.pyCfgParams = ['outputFile=out_' + datasetID + '.root']
 
 config.section_("Data")
 config.Data.inputDataset = dataset
 config.Data.inputDBS = 'global'
-#config.Data.outLFNDirBase = '/store/user/ciperez/DiPhotonAnalysis/PhoEfficiencyAnalyzer'
-config.Data.outLFNDirBase = '/store/user/ciperez/triphoton/genMatchingInsights'
+cmssw_base = os.environ['CMSSW_BASE']
+commit_hash = subprocess.check_output(['git', '--git-dir=' + cmssw_base + '/src/multiphoton-analysis/.git',  'rev-parse', '--short', 'HEAD']).replace('\n', '')
+config.Data.outLFNDirBase = '/store/user/' + user + '/multiphoton_fake/' + commit_hash
 
 if "Run2018" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 10
-    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions18/13TeV/PromptReco/Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt'
+    if "Run2018D" in taskname:
+        config.Data.unitsPerJob = 15
+    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions18/13TeV/ReReco/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt'
 elif "Run2017" in taskname:
-    #config.Data.splitting = 'Automatic'
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100
-    config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/PromptReco/Cert_294927-306126_13TeV_PromptReco_Collisions17_JSON.txt'
+    if "31Mar2018" in taskname:
+        config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/ReReco/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt'
+    else:
+        config.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions17/13TeV/PromptReco/Cert_294927-306126_13TeV_PromptReco_Collisions17_JSON.txt'
 elif "Run2016" in taskname:
     config.Data.splitting = 'LumiBased'
     config.Data.unitsPerJob = 100

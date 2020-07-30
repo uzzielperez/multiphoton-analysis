@@ -90,6 +90,9 @@ class FakeAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
       double jetPtThreshold;
       double jetEtaThreshold;
 
+      enum {LOOSE = 0, MEDIUM = 1, TIGHT = 2};
+      enum {FAKE = 0,  TRUE = 1};
+
       EffectiveAreas effAreaChHadrons_;
       EffectiveAreas effAreaNeuHadrons_;
       EffectiveAreas effAreaPhotons_;

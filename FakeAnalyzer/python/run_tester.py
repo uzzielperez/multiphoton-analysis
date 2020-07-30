@@ -18,11 +18,18 @@ isDAS = 'True' # Centrally Produced
 # nevts = 69803 # Found in DAS
 ConfigFile = 'cmsRun_localNtuples.py'
 
-inputFile_ = 'file:/uscms/home/cuperez/nobackup/e2e/CMSSW_9_4_8/src/localDatasets/GGJets_M60To200_Pt50_13TeV-sherpa_RunIIFall17MiniAODv2.root'
-outputFile_ = "GGJets_M60To200_Pt50_13TeV-sherpa_RunIIFall17MiniAODv2_FRNtuples.root"
+inputFile_ = 'file:/uscms/home/cuperez/nobackup/tribosons/CMSSW_9_4_13/src/localDatasets/GGJets_M60To200_Pt50_13TeV-sherpa_RunIIFall17MiniAODv2.root'
+#inputFile_ = 'file:/uscms/home/cuperez/nobackup/e2e/CMSSW_9_4_8/src/localDatasets/GGJets_M60To200_Pt50_13TeV-sherpa_RunIIFall17MiniAODv2.root'
+#outputFile_ = "GGJets_M60To200_Pt50_13TeV-sherpa_RunIIFall17MiniAODv2_FRNtuples.root"
+outputFile_ = "GGJets_M-60To200_Pt-50_13TeV-sherpa_RunIIFall17MiniAODv2_FRNtuples.root"
 #nevts = 2118
 nevts = 70000
 xsec =  6.278e+00 #pb
+
+
+
+#if(sample.Contains("GGJets_M-60To200_Pt-50_13TeV-sherpa")) xsec = 5.785e+00;
+
 
 print 'Processing ', inputFile_
 cmssw_base = os.getenv("CMSSW_BASE")

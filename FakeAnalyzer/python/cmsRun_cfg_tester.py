@@ -145,9 +145,12 @@ process.demo = cms.EDAnalyzer(
     effAreaNeuHadFile = cms.FileInPath(egm_info['effAreaNeuHad']),
     effAreaPhoFile = cms.FileInPath(egm_info['effAreaPhoHad']),
     # EGM ID decisions
-    phoLooseIdMap = cms.InputTag("egmPhotonIDs:" + egm_info['loosePhoId']),
-    phoMediumIdMap = cms.InputTag("egmPhotonIDs:" + egm_info['mediumPhoId']),
-    phoTightIdMap = cms.InputTag("egmPhotonIDs:" + egm_info['tightPhoId']),
+#    phoLooseIdMap = cms.InputTag("egmPhotonIDs:" + egm_info['loosePhoId']),
+#    phoMediumIdMap = cms.InputTag("egmPhotonIDs:" + egm_info['mediumPhoId']),
+#    phoTightIdMap = cms.InputTag("egmPhotonIDs:" + egm_info['tightPhoId']),
+    #phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
+    #phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
+    #phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
     # output file name
     outputFile = cms.string(outName),
     isReMINIAOD = cms.bool(True)
