@@ -312,8 +312,10 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<reco::GenPartic
         isSat = ExoDiPhotons::isSaturated(&(*pho), &(*recHitsEB), &(*recHitsEE), &(*subDetTopologyEB_), &(*subDetTopologyEE_));
 
         //To-do: Apply high pT, VID (loose, medium, tight) here with flags
-        bool pass_HighPtID = ExoDiPhotons::passHighPtID(&(*pho), rho_, isSat);
-        bool passEGMLooseID  = (*id_decisions[LOOSE])[pho];
+        bool pass_HighPtID = ExoDiPhotons::passHighPtID(&(*pho), rho_, isSat); 
+      
+	// VID old version  
+	bool passEGMLooseID  = (*id_decisions[LOOSE])[pho];
         bool passEGMMediumID = (*id_decisions[MEDIUM])[pho];
         bool passEGMTightID  = (*id_decisions[TIGHT])[pho];
 
