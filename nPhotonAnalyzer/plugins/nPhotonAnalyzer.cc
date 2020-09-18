@@ -28,10 +28,10 @@ nPhotonAnalyzer::nPhotonAnalyzer(const edm::ParameterSet& ps)
    // effAreaChHadrons_         = ps.getParameter<edm::FileInPath>("effAreaChHadFile").fullPath();
    // effAreaNeuHadrons_        = ps.getParameter<edm::FileInPath>("effAreaNeuHadFile").fullPath();
    // effAreaPhotons_           = ps.getParameter<edm::FileInPath>("effAreaPhoFile").fullPath();
-   phoLooseIdMapToken_       = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoLooseIdMap"));
-   phoMediumIdMapToken_      = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoMediumIdMap"));
-   phoTightIdMapToken_       = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoTightIdMap"));
-   nEventsSample_            =                                        (ps.getParameter<uint32_t>("nEventsSample"));
+//   phoLooseIdMapToken_       = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoLooseIdMap"));
+//   phoMediumIdMapToken_      = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoMediumIdMap"));
+//   phoTightIdMapToken_       = consumes<edm::ValueMap<bool> >         (ps.getParameter<edm::InputTag>("phoTightIdMap"));
+//   nEventsSample_            =                                        (ps.getParameter<uint32_t>("nEventsSample"));
    genInfoToken_             = consumes<GenEventInfoProduct>          (ps.getParameter<edm::InputTag>("genInfo"));
    //genParticlesMiniAODToken_ = mayConsume<edm::View<reco::GenParticle> >(ps.getParameter<edm::InputTag>("genParticlesMiniAOD"));
    photonsMiniAODToken_      = consumes<edm::View<pat::Photon> >      (ps.getParameter<edm::InputTag>("photonsMiniAOD"));
@@ -313,9 +313,13 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<reco::GenPartic
 
         //To-do: Apply high pT, VID (loose, medium, tight) here with flags
         bool pass_HighPtID = ExoDiPhotons::passHighPtID(&(*pho), rho_, isSat);
-        bool passEGMLooseID  = pho->photonID("cutBasedPhotonID-Fall17-94X-V2-loose");
-        bool passEGMMediumID = pho->photonID("cutBasedPhotonID-Fall17-94X-V2-medium");
-        bool passEGMTightID  = pho->photonID("cutBasedPhotonID-Fall17-94X-V2-tight");
+        // bool passEGMLooseID  = pho->photonID("cutBasedPhotonID-Fall17-94X-V2-loose");
+        // bool passEGMMediumID = pho->photonID("cutBasedPhotonID-Fall17-94X-V2-medium");
+        // bool passEGMTightID  = pho->photonID("cutBasedPhotonID-Fall17-94X-V2-tight");
+
+        bool passEGMLooseID  = pho->photonID("cutBasedPhotonID-Spring15-25ns-V1-standalone-loose");
+        bool passEGMMediumID = pho->photonID("cutBasedPhotonID-Spring15-25ns-V1-standalone-medium");
+        bool passEGMTightID  = pho->photonID("cutBasedPhotonID-Spring15-25ns-V1-standalone-tight");
 
         bool pass_ID_version = pass_HighPtID;
 
@@ -390,17 +394,31 @@ void nPhotonAnalyzer::photonFiller(const std::vector<edm::Ptr<pat::Photon>>& pho
             ExoDiPhotons::FillPhotonIDInfo(photon3Info, &(*photons[2]), rho_, photon3Info.isSaturated);
 
             // EGM ID Info
-            photon1Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[0]];
-            photon1Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[0]];
-            photon1Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[0]];
+            // photon1Info.passEGMLooseID  = photons[0]->photonID("cutBasedPhotonID-Fall17-94X-V2-loose");
+            // photon1Info.passEGMMediumID = photons[0]->photonID("cutBasedPhotonID-Fall17-94X-V2-medium");
+            // photon1Info.passEGMTightID  = photons[0]->photonID("cutBasedPhotonID-Fall17-94X-V2-tight");
+            //
+            // photon2Info.passEGMLooseID  = photons[1]->photonID("cutBasedPhotonID-Fall17-94X-V2-loose");
+            // photon2Info.passEGMMediumID = photons[1]->photonID("cutBasedPhotonID-Fall17-94X-V2-medium");
+            // photon2Info.passEGMTightID  = photons[1]->photonID("cutBasedPhotonID-Fall17-94X-V2-tight");
+            //
+            // photon3Info.passEGMLooseID  = photons[2]->photonID("cutBasedPhotonID-Fall17-94X-V2-loose");
+            // photon3Info.passEGMMediumID = photons[2]->photonID("cutBasedPhotonID-Fall17-94X-V2-medium");
+            // photon3Info.passEGMTightID  = photons[2]->photonID("cutBasedPhotonID-Fall17-94X-V2-tight");
 
-            photon2Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[1]];
-            photon2Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[1]];
-            photon2Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[1]];
 
-            photon3Info.passEGMLooseID  = (*(id_decisions[LOOSE]))[photons[2]];
-            photon3Info.passEGMMediumID = (*(id_decisions[MEDIUM]))[photons[2]];
-            photon3Info.passEGMTightID  = (*(id_decisions[TIGHT]))[photons[2]];
+
+            photon1Info.passEGMLooseID  = photons[0]->photonID("cutBasedPhotonID-Spring15-25ns-V1-standalone-loose");
+            photon1Info.passEGMMediumID = photons[0]->photonID("cutBasedPhotonID-Spring15-25ns-V1-standalone-medium");
+            photon1Info.passEGMTightID  = photons[0]->photonID("cutBasedPhotonID-Spring15-25ns-V1-standalone-tight");
+
+            photon2Info.passEGMLooseID  = photons[1]->photonID("cutBasedPhotonID-Spring15-25ns-V1-standalone-loose");
+            photon2Info.passEGMMediumID = photons[1]->photonID("cutBasedPhotonID-Spring15-25ns-V1-standalone-medium");
+            photon2Info.passEGMTightID  = photons[1]->photonID("cutBasedPhotonID-Spring15-25ns-V1-standalone-tight");
+
+            photon3Info.passEGMLooseID  = photons[2]->photonID("cutBasedPhotonID-Spring15-25ns-V1-standalone-loose");
+            photon3Info.passEGMMediumID = photons[2]->photonID("cutBasedPhotonID-Spring15-25ns-V1-standalone-medium");
+            photon3Info.passEGMTightID  = photons[2]->photonID("cutBasedPhotonID-Spring15-25ns-V1-standalone-tight");
 
             ExoDiPhotons::FillPhotonEGMidInfo(photon1Info, &(*photons[0]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
             ExoDiPhotons::FillPhotonEGMidInfo(photon2Info, &(*photons[1]), rho_, effAreaChHadrons_, effAreaNeuHadrons_, effAreaPhotons_);
