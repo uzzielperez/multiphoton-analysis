@@ -101,9 +101,9 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       edm::EDGetTokenT<edm::View<reco::GenParticle> > genParticlesMiniAODToken_;
       edm::EDGetToken                                 photonsMiniAODToken_;
       edm::EDGetTokenT<double>                        rhoToken_;
-      edm::EDGetTokenT<edm::ValueMap<bool> >          phoLooseIdMapToken_;
-      edm::EDGetTokenT<edm::ValueMap<bool> >          phoMediumIdMapToken_;
-      edm::EDGetTokenT<edm::ValueMap<bool> >          phoTightIdMapToken_;
+//      edm::EDGetTokenT<edm::ValueMap<bool> >          phoLooseIdMapToken_;
+//      edm::EDGetTokenT<edm::ValueMap<bool> >          phoMediumIdMapToken_;
+//      edm::EDGetTokenT<edm::ValueMap<bool> >          phoTightIdMapToken_;
       edm::EDGetTokenT<GenEventInfoProduct>           genInfoToken_;
       edm::EDGetTokenT<EcalRecHitCollection>          recHitsEBToken;
       edm::EDGetTokenT<EcalRecHitCollection>          recHitsEEToken;

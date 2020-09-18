@@ -120,9 +120,9 @@ nPhotonAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    iEvent.getByToken(genInfoToken_,         genInfo);
    iEvent.getByToken(photonsMiniAODToken_,  photons);
    iEvent.getByToken(rhoToken_,          rhoH);
-   iEvent.getByToken(phoLooseIdMapToken_,   id_decisions[LOOSE]);
-   iEvent.getByToken(phoMediumIdMapToken_,  id_decisions[MEDIUM]);
-   iEvent.getByToken(phoTightIdMapToken_ ,  id_decisions[TIGHT]);
+//   iEvent.getByToken(phoLooseIdMapToken_,   id_decisions[LOOSE]);
+//   iEvent.getByToken(phoMediumIdMapToken_,  id_decisions[MEDIUM]);
+//   iEvent.getByToken(phoTightIdMapToken_ ,  id_decisions[TIGHT]);
    iEvent.getByToken(recHitsEBToken,recHitsEB);
    iEvent.getByToken(recHitsEEToken,recHitsEE);
    iSetup.get<CaloTopologyRecord>().get(caloTopology);
@@ -313,9 +313,9 @@ void nPhotonAnalyzer::fillPhotonInfo(const edm::Handle<edm::View<reco::GenPartic
 
         //To-do: Apply high pT, VID (loose, medium, tight) here with flags
         bool pass_HighPtID = ExoDiPhotons::passHighPtID(&(*pho), rho_, isSat);
-        bool passEGMLooseID  = (*id_decisions[LOOSE])[pho];
-        bool passEGMMediumID = (*id_decisions[MEDIUM])[pho];
-        bool passEGMTightID  = (*id_decisions[TIGHT])[pho];
+        bool passEGMLooseID  = pho->photonID("cutBasedPhotonID-Fall17-94X-V2-loose");
+        bool passEGMMediumID = pho->photonID("cutBasedPhotonID-Fall17-94X-V2-medium");
+        bool passEGMTightID  = pho->photonID("cutBasedPhotonID-Fall17-94X-V2-tight");
 
         bool pass_ID_version = pass_HighPtID;
 

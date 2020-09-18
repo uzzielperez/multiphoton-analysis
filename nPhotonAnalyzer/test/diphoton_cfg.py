@@ -113,11 +113,6 @@ process.source = cms.Source(
         )
     )
 
-# for global tag
-process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
-process.GlobalTag.globaltag = globalTag
-print "Using global tag: " + globalTag
-
 # geometry for saturation
 process.load("Configuration.StandardSequences.GeometryDB_cff")
 
@@ -135,14 +130,31 @@ process.primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
 )
 
 
-# Setup VID for EGM ID
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
-# define which IDs we want to produce
-my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff']
-#add them to the VID producer
-for idmod in my_id_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+# for global tag
+print "Using global tag: " + globalTag
+
+process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
+from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, globalTag)
+
+
+# geometry for saturation
+process.load("Configuration.StandardSequences.GeometryDB_cff")
+
+process.TFileService = cms.Service("TFileService",
+                    fileName = cms.string(outName)
+)
+
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+setupEgammaPostRecoSeq(process,
+                       runVID=True,
+                       era='2018-Prompt',
+                       phoIDModules=['RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Fall17_94X_V2_cff',
+                       'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Fall17_94X_V2_cff']
+                       )
+
+
 
 ## update AK4PFchs jet collection in MiniAOD JECs
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection

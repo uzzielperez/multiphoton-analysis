@@ -10,7 +10,7 @@ namespace ExoDiPhotons {
     if(sample.Contains("GGGJets_13TeV-sherpa")) xsec = 1.814e-01;
     if(sample.Contains("GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8") && sample.Contains("Spring17")) xsec = 1.664e+00;
     if(sample.Contains("GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8") && sample.Contains("Summer17")) xsec = 1.720e+00;
-    if(sample.Contains("GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8") xsec =  0.108607;
+    if(sample.Contains("GGGJets_TuneCUETP8M1_13TeV_madgraphMLM_pythia8")) xsec =  0.108607;
     // 2017 Low-pt Triphoton External Background Samples
     if(sample.Contains("DiPhotonJetsBox_M40_80-Sherpa")) xsec = 3.101e+02;
     if(sample.Contains("QCD_Pt-30toInf_DoubleEMEnriched_MGG-40to80_TuneCP5_13TeV_Pythia8")) xsec = 2.419e+05;

@@ -35,49 +35,6 @@ if islocal:
     # RS Graviton
     #inF = 'RSGravitonToGammaGamma_kMpl02_M_750_TuneCUEP8M1_13TeV_pythia8_cfi_py_GEN.root'
 
-    # Hewett Test
-    #inF       = 'ADDGravToGG_NED-2_LambdaT-3572_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-2_LambdaT-4478_M-500-13TeV-pythia8_cff_py_GEN.root'
-
-    #inF      = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_MD-LambdaT-4000_13TeV-pythia8_cff_py_GEN.root'
-    #noMD
-    #inF       = 'ADDGravToGG_NED-4_LambdaT-10000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_LambdaT-5000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_LambdaT-7000_M-500-13TeV-pythia8_cff_py_GEN.root'
-
-    #wMD
-    #inF       = 'ADDGravToGG_NED-4_MD-1128_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_MD-1410_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_MD-1974_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF       = 'ADDGravToGG_NED-4_MD-2820_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-
-    #MD Extremes Knob
-    #inF        = 'ADDGravToGG_NED-4_MD-100_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF        = 'ADDGravToGG_NED-4_MD-10000_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF        = 'ADDGravToGG_NED-4_MD-11000_LambdaT-4000_M-500-13TeV-pythia8_cff_py_GEN.root'
-    # Use MD-1128 LambdaT-4000
-
-    # Cutoff Comparisons
-    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-0_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-1_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-2_M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF        = 'ADDGravToGG_NED-4_LambdaT-4000_CO-3_M-500-13TeV-pythia8_cff_py_GEN.root'
-
-    # NegInt
-    #inF         = 'ADDGravToGG_NED-4_LambdaT-4000_NegInt-M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF          = 'ADDGravToGG_NED-4_LambdaT-4000_NegInt-nomhat-M-500-13TeV-pythia8_cff_py_GEN.root'
-    #inF         = 'ADDGravToGG_LT-4000_NegInt-M-500-13TeV-pythia8_cff_py_GEN.root'
-    # GG Standard Model Only
-    #inF         = 'GG_M-500-1100-13TeV-pythia8_cff_py_GEN.root'
-
-    # Sherpa
-    #Sherpa Samples
-    #inF         = 'ADDGravToGG_MS-4000_NED-4_KK-1_M-1000To2000_13TeV-sherpa.root'
-
-
 
     INFILE    = PATH + inF
     inputFile = 'file:%s' %(INFILE)
@@ -120,6 +77,35 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 #globalTag ='notset'
 #options.parseArguments()
 
+
+
+
+process.load("FWCore.MessageService.MessageLogger_cfi")
+
+process.source = cms.Source("PoolSource",
+    fileNames = cms.untracked.vstring(
+        #'file:myfile.root'
+        #'file:/afs/cern.ch/user/c/ciperez/Generation/CMSSW_9_3_8/src/ADDGravToGG_NED-4_LambdaT-4000_M-500_13TeV-pythia8_cff_py_GEN.root'
+        inputFile
+    )
+)
+
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+setupEgammaPostRecoSeq(process,
+                       runVID=True,
+                       era='2018-Prompt',
+                       phoIDModules=['RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Fall17_94X_V2_cff',
+                       'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Fall17_94X_V2_cff']
+                       )
+
+
+
+# for global tag
+process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
+
+#process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
+
 if isMC:
    version = os.getenv("CMSSW_VERSION")
    if "CMSSW_8" in version:
@@ -139,22 +125,13 @@ if isMC:
    JEC = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
 
 
-
-
-process.load("FWCore.MessageService.MessageLogger_cfi")
-
-process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring(
-        #'file:myfile.root'
-        #'file:/afs/cern.ch/user/c/ciperez/Generation/CMSSW_9_3_8/src/ADDGravToGG_NED-4_LambdaT-4000_M-500_13TeV-pythia8_cff_py_GEN.root'
-        inputFile
-    )
-)
-
-# for global tag
-process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
-process.GlobalTag.globaltag = globalTag
 print "Using global tag: " + globalTag
+
+
+from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
+#process.GlobalTag.globaltag = globalTag
+#process.GlobalTag = GlobalTag(process.GlobalTag, '102X_upgrade2018_realistic_v18')
+process.GlobalTag = GlobalTag(process.GlobalTag, globalTag)
 
 # geometry for saturation
 process.load("Configuration.StandardSequences.GeometryDB_cff")
@@ -165,13 +142,16 @@ process.TFileService = cms.Service("TFileService",
 
 
 # Setup VID for EGM ID
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
-# define which IDs we want to produce
-my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff']
-#add them to the VID producer
-for idmod in my_id_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+#from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+#switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
+## define which IDs we want to produce
+#my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff']
+##add them to the VID producer
+#for idmod in my_id_modules:
+#    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+
+
+
 
 if isPythia8gen:
 	inTag = "genParticles"
@@ -201,9 +181,9 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         #effAreaNeuHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfNeutralHadrons_25ns_90percentBased.txt"),
         #effAreaPhoFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfPhotons_25ns_90percentBased.txt"),
         # EGM ID decisions
-        phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
-        phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
-        phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
+      #  phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
+      #  phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
+      #  phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
         # gen event info
         genInfo = cms.InputTag("generator", "", "SIM"),
         # output file name

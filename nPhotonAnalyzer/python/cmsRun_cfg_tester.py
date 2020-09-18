@@ -57,7 +57,8 @@ if isMC:
     version = os.getenv("CMSSW_VERSION")
     major_version = version.split('_')[1] # version number formattted as CMSSW_X_Y_Z
     if major_version == "10":
-        globalTag = '102X_upgrade2018_realistic_v12'
+        globalTag = '102X_upgrade2018_realistic_v18'
+        #globalTag = '102X_upgrade2018_realistic_v12'
         jetLabel = "slimmedJets"
     elif major_version == "9":
         globalTag = '94X_mc2017_realistic_v17'
@@ -89,9 +90,16 @@ process.source = cms.Source("PoolSource",
 )
 
 # for global tag
-process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
-process.GlobalTag.globaltag = globalTag
+#process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
+#process.GlobalTag.globaltag = globalTag
 print "Using global tag: " + globalTag
+
+process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
+from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, globalTag)
+
+
 
 # geometry for saturation
 process.load("Configuration.StandardSequences.GeometryDB_cff")
@@ -101,13 +109,21 @@ process.TFileService = cms.Service("TFileService",
 )
 
 # Setup VID for EGM ID
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
-# define which IDs we want to produce
-my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff']
-#add them to the VID producer
-for idmod in my_id_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+#from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+#switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
+## define which IDs we want to produce
+#my_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff']
+##add them to the VID producer
+#for idmod in my_id_modules:
+#    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+setupEgammaPostRecoSeq(process,
+                       runVID=True,
+                       era='2018-Prompt',
+                       phoIDModules=['RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Fall17_94X_V2_cff',
+                       'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Fall17_94X_V2_cff']
+                       )
 
 if islocal:
 	inTag = "genParticles"
@@ -137,9 +153,9 @@ process.demo = cms.EDAnalyzer('nPhotonAnalyzer',
         effAreaNeuHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfNeutralHadrons_25ns_90percentBased.txt"),
         effAreaPhoFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/Spring15/effAreaPhotons_cone03_pfPhotons_25ns_90percentBased.txt"),
         # EGM ID decisions
-        phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
-        phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
-        phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
+#        phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
+#        phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
+#        phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
         # gen event info
         genInfo = cms.InputTag("generator", "", "GENINFO"),
         #genInfo = cms.InputTag("generator", "", "GEN"),
