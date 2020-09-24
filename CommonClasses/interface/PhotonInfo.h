@@ -53,6 +53,8 @@ namespace ExoDiPhotons
    double kappaHighPtID; // filled
    double phoEAHighPtID; // filled
 
+   // double minDeltaR;
+
    // EGM ID
    double chEAegmID; // filled
    double nhEAegmID; // filled
@@ -99,6 +101,7 @@ namespace ExoDiPhotons
 
    // bool isGenRecoed;
    bool hasConversionTracks;
+   // bool hasMatch;
 
  };
 
@@ -146,6 +149,8 @@ namespace ExoDiPhotons
    photonInfo.kappaHighPtID = -9999.99;
    photonInfo.phoEAHighPtID = -9999.99;
 
+   // photonInfo.minDeltaR = 99999.99;
+
    // EGM ID
    photonInfo.chEAegmID       = -9999.99;
    photonInfo.nhEAegmID       = -9999.99;
@@ -192,6 +197,7 @@ namespace ExoDiPhotons
    // Reco version of Gen
    // photonInfo.isGenRecoed = false;
    photonInfo.hasConversionTracks = false;
+   // photonInfo.hasMatch            = false;
  }
 
  void FillBasicPhotonInfo(photonInfo_t &photonInfo, const pat::Photon *photon)

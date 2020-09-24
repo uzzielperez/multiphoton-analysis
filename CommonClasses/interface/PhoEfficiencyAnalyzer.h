@@ -117,9 +117,7 @@ class PhoEfficiencyAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
       int fGenPhotonNumber;
 
       ExoDiPhotons::photonInfo_t        fPhotonInfo;
-      int fPhotonNumber; 
-
-
+      int fPhotonNumber;
 
       //Put flags in cfg later
       int nPV_;

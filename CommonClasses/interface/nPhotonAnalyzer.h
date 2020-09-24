@@ -63,7 +63,6 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
                     const edm::Handle<edm::View<pat::Photon> >& photons,
                     const edm::Handle<EcalRecHitCollection>& recHitsEB,
                     const edm::Handle<EcalRecHitCollection>& recHitsEE,
-                    const edm::Handle<edm::ValueMap<bool> >* id_decisions,
                     ExoDiPhotons::photonInfo_t& photon1Info,
                     ExoDiPhotons::photonInfo_t& photon2Info,
                     ExoDiPhotons::photonInfo_t& photon3Info,
@@ -74,7 +73,6 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       void photonFiller(const std::vector<edm::Ptr<pat::Photon>>& photons,
                     const edm::Handle<EcalRecHitCollection>& recHitsEB,
                     const edm::Handle<EcalRecHitCollection>& recHitsEE,
-                		const edm::Handle<edm::ValueMap<bool> >* id_decisions,
                     ExoDiPhotons::photonInfo_t& photon1Info,
                     ExoDiPhotons::photonInfo_t& photon2Info,
                     ExoDiPhotons::photonInfo_t& photon3Info,
@@ -87,6 +85,12 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
                     const edm::Handle<edm::View<reco::GenParticle> > genParticles);
       void genRecoMatchInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
                             const edm::Handle<edm::View<pat::Photon> >& photons);
+      void fillInfo(const edm::Handle<edm::View<reco::GenParticle> > genParticles,
+                    const edm::Handle<edm::View<pat::Photon> >& photons,
+                    const edm::Handle<EcalRecHitCollection>& recHitsEB,
+                    const edm::Handle<EcalRecHitCollection>& recHitsEE,
+                    ExoDiPhotons::photonInfo_t& photonInfo,
+                    ExoDiPhotons::genParticleInfo_t &genParticleInfo);
 
 
    private:
@@ -123,6 +127,8 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
 
       TTree *fgenTree;
       TTree *fTree;
+      TTree *fSinglePhotonTree;
+      // TTree *fMatchedTree;
 
       ExoDiPhotons::eventInfo_t         fEventInfo;
       ExoDiPhotons::genParticleInfo_t   fGenPhoton1Info;
@@ -132,7 +138,6 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo13;
       ExoDiPhotons::diphotonInfo_t      fGenDiphotonInfo23;
       ExoDiPhotons::triphotonInfo_t     fGenTriphotonInfo;
-
       ExoDiPhotons::photonInfo_t        fPhoton1Info;
       ExoDiPhotons::photonInfo_t        fPhoton2Info;
       ExoDiPhotons::photonInfo_t        fPhoton3Info;
@@ -140,6 +145,40 @@ class nPhotonAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       ExoDiPhotons::diphotonInfo_t      fDiphotonInfo13;
       ExoDiPhotons::diphotonInfo_t      fDiphotonInfo23;
       ExoDiPhotons::triphotonInfo_t     fTriphotonInfo;
+
+      // fMatchedPhotons
+      // ExoDiPhotons::genParticleInfo_t   fMGenPhoton1Info;
+      // ExoDiPhotons::genParticleInfo_t   fMGenPhoton2Info;
+      // ExoDiPhotons::genParticleInfo_t   fMGenPhoton3Info;
+      // ExoDiPhotons::diphotonInfo_t      fMGenDiphotonInfo12;
+      // ExoDiPhotons::diphotonInfo_t      fMGenDiphotonInfo13;
+      // ExoDiPhotons::diphotonInfo_t      fMGenDiphotonInfo23;
+      // ExoDiPhotons::triphotonInfo_t     fMGenTriphotonInfo;
+      ExoDiPhotons::photonInfo_t        fMPhoton1Info;
+      ExoDiPhotons::photonInfo_t        fMPhoton2Info;
+      ExoDiPhotons::photonInfo_t        fMPhoton3Info;
+      ExoDiPhotons::diphotonInfo_t      fMDiphotonInfo12;
+      ExoDiPhotons::diphotonInfo_t      fMDiphotonInfo13;
+      ExoDiPhotons::diphotonInfo_t      fMDiphotonInfo23;
+      ExoDiPhotons::triphotonInfo_t     fMTriphotonInfo;
+      bool hasThreePho_;
+
+      // fSinglePhotonTree
+      ExoDiPhotons::genParticleInfo_t   fGenPhotonInfo; // Each entry is an in an individual photons not whole event
+      ExoDiPhotons::photonInfo_t        fPhotonInfo;
+      int fGenPhotonNumber;
+      int fPhotonNumber;
+
+
+
+      // // Matched PAT Photons
+      // ExoDiPhotons::photonInfo_t        fMatchedPhoton1Info;
+      // ExoDiPhotons::photonInfo_t        fMatchedPhoton2Info;
+      // ExoDiPhotons::photonInfo_t        fMatchedPhoton3Info;
+      // ExoDiPhotons::diphotonInfo_t      fMatchedDiphotonInfo12;
+      // ExoDiPhotons::diphotonInfo_t      fMatchedDiphotonInfo13;
+      // ExoDiPhotons::diphotonInfo_t      fMatchedDiphotonInfo23;
+      // ExoDiPhotons::triphotonInfo_t     fMatchedTriphotonInfo;
 
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton1Info;
       // ExoDiPhotons::genParticleInfo_t   fSherpaGenPhoton2Info;
